@@ -1,0 +1,68 @@
+.edit-page,
+.response-page {
+  background: var(--background);
+  flex-grow: 1;
+}
+
+.edit-page svg,
+.response-page svg {
+  cursor: pointer;
+}
+
+.box {
+  margin: 15px;
+  background: var(--box);
+  padding: 20px;
+  border-radius: 7px;
+}
+
+.remove-box {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.add-box-button {
+  position: absolute;
+  right: -60px;
+  bottom: 20px;
+}
+
+.more-option {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  justify-content: space-between;
+}
+
+.add-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.copy-link-button {
+  position: absolute;
+  left: -60px;
+  bottom: 20px;
+}
+
+.submit-button-container {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 20px;
+}
+
+.invalid-box {
+  border: 1px solid red;
+}
+
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}

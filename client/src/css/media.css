@@ -1,0 +1,32 @@
+@media only screen and (max-width: 768px) {
+  .add-box-button {
+    right: 10px;
+  }
+
+  .copy-link-button {
+    left: 10px;
+  }
+
+  .auth-form-container {
+    flex-direction: column;
+  }
+
+  .animation-wrapper {
+    max-width: 80%;
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .auth-form-container {
+    justify-content: center;
+    margin-bottom: 50px !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #303030;
+    --box: #2a2a2a;
+  }
+}

@@ -1,14 +1,12 @@
 import { Redirect, Link, useParams, useHistory } from "react-router-dom";
-import { UserContext } from "../App";
+import { userContext } from "../../App";
 import { useState, useContext, useEffect } from "react";
 import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@material-ui/core";
 import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder } from "@material-ui/icons";
-import firebase from "../firebase";
-
-const db = firebase.firestore();
+import axios from "axios";
 
 function FolderRoute() {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser } = useContext(userContext);
   let { id: currentFolderId } = useParams();
   currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
 
@@ -35,32 +33,37 @@ function FolderRoute() {
     let permission;
 
     if (currentFolderId !== null) {
-      const data = await db.collection("folders").doc(currentFolderId).get();
-      let path = data.data().path;
-      setPath([...path, data.id]);
-      path = await Promise.all(
+      const response = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", {
+        id: currentFolderId,
+      });
+      let data = response.data;
+      setPath([...data.path, data._id]);
+      let path = await Promise.all(
         path.map(async (e) => {
-          const child_data = await db.collection("folders").doc(e).get();
+          const child_data = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", {
+            id: e,
+          });
           return {
-            link: "/folder/" + child_data.id,
-            name: child_data.data().name,
+            link: "/folder/" + child_data.data._id,
+            name: child_data.data.name,
           };
         })
       );
       path = [
         ...path,
         {
-          link: data.id,
-          name: data.data().name,
+          link: data._id,
+          name: data.name,
         },
       ];
-      permission = data.data().userId === currentUser.uid;
+
+      permission = data.userId === currentUser.uid;
       setPermission(permission);
 
       if (permission) {
         setBreadcrumb(path);
       } else {
-        setBreadcrumb([{ link: "/folder/" + data.id, name: data.data().name }]);
+        setBreadcrumb([{ link: "/folder/" + data._id, name: data.name }]);
       }
     } else {
       setBreadcrumb([]);
@@ -68,52 +71,8 @@ function FolderRoute() {
       setPermission(permission);
     }
 
-    if (permission === null) {
-      db.collection("folders")
-        .where("userId", "==", currentUser.uid)
-        .where("parentId", "==", null)
-        .onSnapshot((snapshot) => {
-          let arr = [];
-          snapshot.forEach((e) => {
-            arr.push({ ...e.data(), id: e.id });
-          });
-
-          setAllFolder(arr);
-        });
-      db.collection("files")
-        .where("userId", "==", currentUser.uid)
-        .where("parentId", "==", null)
-        .onSnapshot((snapshot) => {
-          let arr = [];
-          snapshot.forEach((e) => {
-            arr.push({ ...e.data(), id: e.id });
-          });
-
-          setAllFiles(arr);
-        });
-    } else {
-      db.collection("folders")
-        .where("parentId", "==", currentFolderId)
-        .onSnapshot((snapshot) => {
-          let arr = [];
-          snapshot.forEach((e) => {
-            arr.push({ ...e.data(), id: e.id });
-          });
-
-          setAllFolder(arr);
-        });
-
-      db.collection("files")
-        .where("parentId", "==", currentFolderId)
-        .onSnapshot((snapshot) => {
-          let arr = [];
-          snapshot.forEach((e) => {
-            arr.push({ ...e.data(), id: e.id });
-          });
-
-          setAllFiles(arr);
-        });
-    }
+    const folderChild = await axios.post(process.env.REACT_APP_SERVER_URL + "folder/folder-child");
+    setAllFolder(folderChild.data);
 
     document.onclick = (e) => {
       let clickedOutside = true;
@@ -144,12 +103,11 @@ function FolderRoute() {
     }
   };
 
-  const createNewFolder = () => {
-    db.collection("folders").add({
+  const createNewFolder = async () => {
+    axios.post(process.env.REACT_APP_SERVER_URL + "folder/create", {
       name: createFolderName,
       path: path,
       parentId: currentFolderId,
-      userId: currentUser.uid,
     });
   };
 
@@ -203,7 +161,7 @@ function FolderRoute() {
               </>
             )}
 
-            <ListItem onClick={() => history.push("/")} className="list-item" button>
+            <ListItem onClick={() => history.push("/drive")} className="list-item" button>
               <Storage className="gray-icon" />
               <Typography className="responsive-label">My Drive</Typography>
             </ListItem>
@@ -308,7 +266,7 @@ function FolderRoute() {
           </Dialog>
         </div>
       ) : (
-        <Redirect to="signin" />
+        <Redirect to="/sign-in" />
       )}
     </>
   );

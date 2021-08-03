@@ -46,9 +46,10 @@ function SignUp() {
 
   const signUp = () => {
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "auth/register", { username, email, password })
+      .post(process.env.REACT_APP_SERVER_URL + "auth/sign-up", { username, email, password })
       .then((res) => {
         alert("Account creation successful, please verify your email");
+        history.push("/sign-in");
       })
       .catch((err) => {
         console.log(err, err.response);
@@ -78,7 +79,7 @@ function SignUp() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push("/signin");
+                  history.push("/sign-in");
                 }}
               >
                 Already have an account? Sign in

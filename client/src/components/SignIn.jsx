@@ -38,7 +38,7 @@ function SignIn() {
 
   const signIn = () => {
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "auth/login", { email, password })
+      .post(process.env.REACT_APP_SERVER_URL + "auth/sign-in", { email, password })
       .then((res) => {
         setCurrentUser(res.data.user);
       })
@@ -65,7 +65,7 @@ function SignIn() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push("/signup");
+                  history.push("/sign-up");
                 }}
               >
                 Don't have an account? Sign up

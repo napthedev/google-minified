@@ -39,6 +39,8 @@ function Edit() {
 
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => (document.title = title + (title ? " - " : "") + "Editing - Google Forms Clone"), [title]);
+
   const getPreviousFormData = () => {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "forms/form", { formId })
@@ -74,7 +76,7 @@ function Edit() {
 
     formTimeout.current = setTimeout(() => {
       postFormData(title, description, data);
-    }, 1000);
+    }, 500);
   }, [data, title, description]);
 
   const postFormData = (title, description, data) => {
@@ -279,20 +281,7 @@ function Edit() {
                           </Tooltip>
                         </div>
                       </Container>
-                      <Snackbar
-                        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-                        open={snackbarOpened}
-                        autoHideDuration={2000}
-                        onClose={() => setSnackbarOpened(false)}
-                        message="Response URL copied!"
-                        action={
-                          <>
-                            <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
-                              <Close fontSize="small" />
-                            </IconButton>
-                          </>
-                        }
-                      />
+                      <Snackbar anchorOrigin={{ horizontal: "right", vertical: "bottom" }} open={snackbarOpened} autoHideDuration={2000} onClose={() => setSnackbarOpened(false)} message="Response URL copied!" />
                     </div>
                   ) : (
                     <div className="edit-page">
@@ -375,7 +364,7 @@ function Edit() {
           )}
         </>
       ) : (
-        <Redirect to="/signup" />
+        <Redirect to="/sign-in" />
       )}
     </>
   );

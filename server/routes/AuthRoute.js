@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const verifyJWT = require("../VerifyJWT");
+const verifyJWT = require("../verifyJWT");
 const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");
@@ -21,7 +21,7 @@ route.get("/verify/:id", async (req, res) => {
   }
 });
 
-route.post("/register", async (req, res) => {
+route.post("/sign-up", async (req, res) => {
   try {
     if (!req.body.email || !req.body.password || !req.body.username)
       return res.status(400).send({
@@ -67,7 +67,7 @@ route.post("/register", async (req, res) => {
   }
 });
 
-route.post("/login", verifyJWT, async (req, res) => {
+route.post("/sign-in", verifyJWT, async (req, res) => {
   try {
     if (!req.user.email || !req.user.password)
       return res.status(400).send({

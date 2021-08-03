@@ -26,6 +26,8 @@ function Response() {
     getFormData();
   }, []);
 
+  useEffect(() => (document.title = title + (title ? " - " : "") + "Response - Google Forms Clone"), [title]);
+
   const getFormData = () => {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "forms/form-response", { formId })

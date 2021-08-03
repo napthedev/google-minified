@@ -23,7 +23,7 @@ function Create() {
 
   useEffect(createForm, []);
 
-  return <>{currentUser ? "" : <Redirect to="/signup" />}</>;
+  return <>{currentUser ? "" : <Redirect to="/sign-in" />}</>;
 }
 
 export default Create;

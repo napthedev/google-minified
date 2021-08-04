@@ -2,23 +2,30 @@ const express = require("express");
 const route = express.Router();
 
 const Folders = require("../models/Folders");
-const verifyJWT = require("../verifyJWT");
+const { verifyJWT, verifyJWTNotStrict } = require("../verifyJWT");
 
-route.get("/my-drive", verifyJWT, async (req, res) => {
+route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
   try {
-    const myFolders = await Folders.find({ userId: req.user.id, parentId: "" });
+    const folder = await Folders.findOne({ _id: req.body.id });
 
-    res.send(myFolders);
+    if (!folder) return res.sendStatus(404);
+
+    res.send({ folder, permission: req.user.id === folder.userId });
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-route.post("/folder-child", async (req, res) => {
+route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
   try {
-    const folder = await Folders.find({ parentId: req.body.parentId });
+    let folderChild;
+    if (req.body.parentId === "") {
+      folderChild = await Folders.find({ parentId: "", userId: req.user.id });
+    } else {
+      folderChild = await Folders.find({ parentId: req.body.parentId });
+    }
 
-    res.send(folder);
+    res.send(folderChild);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -29,25 +36,13 @@ route.post("/create", verifyJWT, async (req, res) => {
     const newFolder = new Folders({
       name: req.body.name,
       path: req.body.path,
-      parentId: req.user.id,
-      userId: req.body.userId,
+      parentId: req.body.parentId,
+      userId: req.user.id,
     });
 
     const saved = await newFolder.save();
 
     res.send(saved);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-route.post("/get-folder", verifyJWT, async (req, res) => {
-  try {
-    const folder = await Folders.findOne({ _id: req.body.id });
-
-    if (!folder) return res.sendStatus(404);
-
-    res.send(folder);
   } catch (error) {
     res.status(500).send(error);
   }

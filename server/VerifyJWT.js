@@ -29,4 +29,13 @@ function verifyJWT(req, res, next) {
   });
 }
 
-module.exports = verifyJWT;
+function verifyJWTNotStrict(req, res, next) {
+  const authToken = req.cookies.token;
+
+  jwt.verify(authToken, process.env.JWT_SECRET_TOKEN, (err, user) => {
+    req.user = user;
+    next();
+  });
+}
+
+module.exports = { verifyJWT, verifyJWTNotStrict };

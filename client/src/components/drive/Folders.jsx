@@ -2,10 +2,10 @@ import { Redirect, Link, useParams, useHistory } from "react-router-dom";
 import { userContext } from "../../App";
 import { useState, useContext, useEffect } from "react";
 import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@material-ui/core";
-import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder } from "@material-ui/icons";
+import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon } from "@material-ui/icons";
 import axios from "axios";
 
-function FolderRoute() {
+function Folder() {
   const { currentUser } = useContext(userContext);
   let { id: currentFolderId } = useParams();
   currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
@@ -30,25 +30,22 @@ function FolderRoute() {
   useEffect(async () => {
     if (!currentUser) return;
 
-    let permission;
-
     if (currentFolderId !== null) {
       const response = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", {
         id: currentFolderId,
       });
-      let data = response.data;
+      let data = response.data.folder;
       setPath([...data.path, data._id]);
       let path = await Promise.all(
-        path.map(async (e) => {
-          const child_data = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", {
-            id: e,
-          });
+        data.path.map(async (e) => {
+          const child_data = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", { id: e });
           return {
-            link: "/folder/" + child_data.data._id,
-            name: child_data.data.name,
+            link: child_data.data.folder._id,
+            name: child_data.data.folder.name,
           };
         })
       );
+      console.log(path);
       path = [
         ...path,
         {
@@ -56,22 +53,27 @@ function FolderRoute() {
           name: data.name,
         },
       ];
+      console.log(path);
 
-      permission = data.userId === currentUser.uid;
-      setPermission(permission);
+      setPermission(response.data.permission);
 
-      if (permission) {
+      console.log(response.data.permission);
+
+      if (response.data.permission) {
         setBreadcrumb(path);
       } else {
-        setBreadcrumb([{ link: "/folder/" + data._id, name: data.name }]);
+        setBreadcrumb([{ link: data._id, name: data.name }]);
       }
     } else {
       setBreadcrumb([]);
-      permission = null;
-      setPermission(permission);
+      setPermission(null);
     }
 
-    const folderChild = await axios.post(process.env.REACT_APP_SERVER_URL + "folder/folder-child");
+    const folderChild = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/folder-child", {
+      parentId: currentFolderId,
+    });
+
+    console.log(folderChild.data);
     setAllFolder(folderChild.data);
 
     document.onclick = (e) => {
@@ -104,7 +106,7 @@ function FolderRoute() {
   };
 
   const createNewFolder = async () => {
-    axios.post(process.env.REACT_APP_SERVER_URL + "folder/create", {
+    axios.post(process.env.REACT_APP_SERVER_URL + "folders/create", {
       name: createFolderName,
       path: path,
       parentId: currentFolderId,
@@ -121,7 +123,7 @@ function FolderRoute() {
         setSelected([id]);
       }
     } else if (e.detail === 2) {
-      history.push("/folder/" + id);
+      history.push("/drive/folder/" + id);
     }
   };
 
@@ -173,7 +175,7 @@ function FolderRoute() {
           <div className="main">
             <div className="actions-wrapper">
               <Breadcrumbs>
-                {permission !== false ? <Link to="/">My Drive</Link> : <Link>Shared with me</Link>}
+                {permission !== false ? <Link to="/drive">My Drive</Link> : <a href="#">Shared with me</a>}
 
                 {breadcrumb.map((e, index) => (
                   <Link key={index} to={e.link}>
@@ -220,8 +222,8 @@ function FolderRoute() {
 
             <div className="main-grid">
               {allFolder.map((e) => (
-                <div onClick={(event) => handleClicks(event, e.id)} key={e.id} className={"folder-container" + (selected.includes(e.id) ? " selected" : "")}>
-                  <Folder className="gray-icon" />
+                <div onClick={(event) => handleClicks(event, e._id)} key={e._id} className={"folder-container" + (selected.includes(e.id) ? " selected" : "")}>
+                  <FolderIcon className="gray-icon" />
                   <Typography>{e.name}</Typography>
                 </div>
               ))}
@@ -235,7 +237,7 @@ function FolderRoute() {
 
             <div className="main-grid">
               {allFiles.map((e) => (
-                <div className="file-container">
+                <div className="file-container" key={e._id}>
                   <div key={e.id} className="center-div" style={{ flexGrow: 1 }}>
                     <div className="center-div" style={{ width: "40%", height: "40%" }}>
                       <img src="https://raw.githubusercontent.com/NAPTheDev/File-Icons/master/default_file.svg" height="100%" />
@@ -272,4 +274,4 @@ function FolderRoute() {
   );
 }
 
-export default FolderRoute;
+export default Folder;

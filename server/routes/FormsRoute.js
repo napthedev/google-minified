@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const verifyJWT = require("../verifyJWT");
+const { verifyJWT } = require("../verifyJWT");
 const Forms = require("../models/Forms");
 const Submits = require("../models/Submits");
 const { nanoid } = require("nanoid");

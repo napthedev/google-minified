@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const verifyJWT = require("../verifyJWT");
+const { verifyJWT } = require("../verifyJWT");
 const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");

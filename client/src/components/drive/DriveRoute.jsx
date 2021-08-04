@@ -56,6 +56,7 @@ function FormsRoute() {
         <Route path={`${path}`} exact>
           <Folders />
         </Route>
+        <Route path={`${path}/folder/:id`} component={Folders}></Route>
       </Switch>
     </>
   );

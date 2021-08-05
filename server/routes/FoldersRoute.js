@@ -6,7 +6,7 @@ const { verifyJWT, verifyJWTNotStrict } = require("../verifyJWT");
 
 route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
   try {
-    const folder = await Folders.findOne({ _id: req.body.id });
+    const folder = await Folders.findOne({ _id: req.body._id });
 
     if (!folder) return res.sendStatus(404);
 
@@ -16,7 +16,7 @@ route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
   }
 });
 
-route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
+route.post("/folder-child", async (req, res) => {
   try {
     let folderChild;
     if (req.body.parentId === "") {

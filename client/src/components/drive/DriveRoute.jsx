@@ -39,7 +39,7 @@ function FormsRoute() {
           </IconButton>
           <div style={{ flexGrow: 1 }}>
             <Typography onClick={() => history.push("/drive")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-              Google Form Clone
+              Google Drive Clone
             </Typography>
           </div>
           {currentUser && (

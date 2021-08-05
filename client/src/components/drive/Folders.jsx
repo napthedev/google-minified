@@ -1,7 +1,7 @@
 import { Redirect, Link, useParams, useHistory } from "react-router-dom";
 import { userContext } from "../../App";
 import { useState, useContext, useEffect } from "react";
-import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@material-ui/core";
+import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress } from "@material-ui/core";
 import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon } from "@material-ui/icons";
 import axios from "axios";
 
@@ -27,25 +27,28 @@ function Folder() {
 
   const [permission, setPermission] = useState(undefined);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(async () => {
     if (!currentUser) return;
 
+    setLoading(true);
+
     if (currentFolderId !== null) {
       const response = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", {
-        id: currentFolderId,
+        _id: currentFolderId,
       });
       let data = response.data.folder;
       setPath([...data.path, data._id]);
       let path = await Promise.all(
         data.path.map(async (e) => {
-          const child_data = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", { id: e });
+          const child_data = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", { _id: e });
           return {
             link: child_data.data.folder._id,
             name: child_data.data.folder.name,
           };
         })
       );
-      console.log(path);
       path = [
         ...path,
         {
@@ -53,11 +56,8 @@ function Folder() {
           name: data.name,
         },
       ];
-      console.log(path);
 
       setPermission(response.data.permission);
-
-      console.log(response.data.permission);
 
       if (response.data.permission) {
         setBreadcrumb(path);
@@ -73,8 +73,9 @@ function Folder() {
       parentId: currentFolderId,
     });
 
-    console.log(folderChild.data);
     setAllFolder(folderChild.data);
+
+    setLoading(false);
 
     document.onclick = (e) => {
       let clickedOutside = true;
@@ -128,90 +129,94 @@ function Folder() {
   };
 
   return (
-    <>
-      {currentUser ? (
-        <div style={{ display: "flex", flexGrow: 1 }}>
-          <List component="nav" className="main-column">
-            {permission !== false && (
+    <div style={{ display: "flex", flexGrow: 1, alignItems: "stretch" }}>
+      <List component="nav" className="main-column">
+        {permission !== false && (
+          <>
+            <Button style={{ margin: 10 }} onClick={(e) => setUploadMenuOpened(e.currentTarget)} variant="outlined" color="primary">
+              <CloudUpload />
+              <Typography className="responsive-label" style={{ marginLeft: 10 }}>
+                Upload
+              </Typography>
+            </Button>
+            <Menu anchorEl={uploadMenuOpened} keepMounted open={Boolean(uploadMenuOpened)} onClose={() => setUploadMenuOpened(null)}>
+              <MenuItem
+                style={{ gap: 10 }}
+                onClick={() => {
+                  setDialogOpened(true);
+                  setUploadMenuOpened(null);
+                }}
+              >
+                <CreateNewFolder />
+                New Folder
+              </MenuItem>
+              <MenuItem style={{ gap: 10 }} onClick={() => setUploadMenuOpened(null)}>
+                <InsertDriveFile />
+                Upload a file
+              </MenuItem>
+              <MenuItem style={{ gap: 10 }} onClick={() => setUploadMenuOpened(null)}>
+                <FileCopy />
+                Upload files
+              </MenuItem>
+            </Menu>
+          </>
+        )}
+
+        <ListItem onClick={() => history.push("/drive")} className="list-item" button>
+          <Storage className="gray-icon" />
+          <Typography className="responsive-label">My Drive</Typography>
+        </ListItem>
+        <ListItem className="list-item" button>
+          <Delete className="gray-icon" />
+          <Typography className="responsive-label">Trash</Typography>
+        </ListItem>
+      </List>
+      <div className="main">
+        <div className="actions-wrapper">
+          <Breadcrumbs>
+            {permission !== false ? <Link to="/drive">My Drive</Link> : <a href="#">Shared with me</a>}
+
+            {breadcrumb.map((e, index) => (
+              <Link key={index} to={e.link}>
+                {e.name}
+              </Link>
+            ))}
+          </Breadcrumbs>
+          <div>
+            <Tooltip title="Copy Link">
+              <IconButton color="default">
+                <InsertLink />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Download">
+              <IconButton color="primary">
+                <GetApp />
+              </IconButton>
+            </Tooltip>
+            {permission && (
               <>
-                <Button style={{ margin: 10 }} onClick={(e) => setUploadMenuOpened(e.currentTarget)} variant="outlined" color="primary">
-                  <CloudUpload />
-                  <Typography className="responsive-label" style={{ marginLeft: 10 }}>
-                    Upload
-                  </Typography>
-                </Button>
-                <Menu anchorEl={uploadMenuOpened} keepMounted open={Boolean(uploadMenuOpened)} onClose={() => setUploadMenuOpened(null)}>
-                  <MenuItem
-                    style={{ gap: 10 }}
-                    onClick={() => {
-                      setDialogOpened(true);
-                      setUploadMenuOpened(null);
-                    }}
-                  >
-                    <CreateNewFolder />
-                    New Folder
-                  </MenuItem>
-                  <MenuItem style={{ gap: 10 }} onClick={() => setUploadMenuOpened(null)}>
-                    <InsertDriveFile />
-                    Upload a file
-                  </MenuItem>
-                  <MenuItem style={{ gap: 10 }} onClick={() => setUploadMenuOpened(null)}>
-                    <FileCopy />
-                    Upload files
-                  </MenuItem>
-                </Menu>
+                <Tooltip title="Rename file">
+                  <IconButton>
+                    <Create />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Delete">
+                  <IconButton color="secondary">
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
               </>
             )}
+          </div>
+        </div>
 
-            <ListItem onClick={() => history.push("/drive")} className="list-item" button>
-              <Storage className="gray-icon" />
-              <Typography className="responsive-label">My Drive</Typography>
-            </ListItem>
-            <ListItem className="list-item" button>
-              <Delete className="gray-icon" />
-              <Typography className="responsive-label">Trash</Typography>
-            </ListItem>
-          </List>
-          <div className="main">
-            <div className="actions-wrapper">
-              <Breadcrumbs>
-                {permission !== false ? <Link to="/drive">My Drive</Link> : <a href="#">Shared with me</a>}
-
-                {breadcrumb.map((e, index) => (
-                  <Link key={index} to={e.link}>
-                    {e.name}
-                  </Link>
-                ))}
-              </Breadcrumbs>
-              <div>
-                <Tooltip title="Copy Link">
-                  <IconButton color="default">
-                    <InsertLink />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Download">
-                  <IconButton color="primary">
-                    <GetApp />
-                  </IconButton>
-                </Tooltip>
-                {permission && (
-                  <>
-                    <Tooltip title="Rename file">
-                      <IconButton>
-                        <Create />
-                      </IconButton>
-                    </Tooltip>
-
-                    <Tooltip title="Delete">
-                      <IconButton color="secondary">
-                        <Delete />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                )}
-              </div>
-            </div>
-
+        {loading ? (
+          <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+            <CircularProgress />
+          </div>
+        ) : (
+          <>
             {allFolder.length === 0 && allFiles.length === 0 && <Typography>This folder is empty</Typography>}
 
             {allFolder.length > 0 && (
@@ -222,7 +227,7 @@ function Folder() {
 
             <div className="main-grid">
               {allFolder.map((e) => (
-                <div onClick={(event) => handleClicks(event, e._id)} key={e._id} className={"folder-container" + (selected.includes(e.id) ? " selected" : "")}>
+                <div onClick={(event) => handleClicks(event, e._id)} key={e._id} className={"folder-container" + (selected.includes(e._id) ? " selected" : "")}>
                   <FolderIcon className="gray-icon" />
                   <Typography>{e.name}</Typography>
                 </div>
@@ -249,28 +254,26 @@ function Folder() {
                 </div>
               ))}
             </div>
-          </div>
-          <Dialog open={dialogOpened} onClose={() => setDialogOpened(false)}>
-            <form onSubmit={handleCreateFolderFormSubmit}>
-              <DialogTitle>Create New Folder</DialogTitle>
-              <DialogContent>
-                <TextField error={Boolean(createFolderNameError)} helperText={createFolderNameError} value={createFolderName} onChange={(e) => setCreateFolderName(e.target.value)} type="text" autoFocus margin="dense" label="Folder name" fullWidth />
-              </DialogContent>
-              <DialogActions>
-                <Button type="button" onClick={() => setDialogOpened(false)} color="primary">
-                  Cancel
-                </Button>
-                <Button type="submit" color="primary">
-                  Create
-                </Button>
-              </DialogActions>
-            </form>
-          </Dialog>
-        </div>
-      ) : (
-        <Redirect to="/sign-in" />
-      )}
-    </>
+          </>
+        )}
+      </div>
+      <Dialog open={dialogOpened} onClose={() => setDialogOpened(false)}>
+        <form onSubmit={handleCreateFolderFormSubmit}>
+          <DialogTitle>Create New Folder</DialogTitle>
+          <DialogContent>
+            <TextField error={Boolean(createFolderNameError)} helperText={createFolderNameError} value={createFolderName} onChange={(e) => setCreateFolderName(e.target.value)} type="text" autoFocus margin="dense" label="Folder name" fullWidth />
+          </DialogContent>
+          <DialogActions>
+            <Button type="button" onClick={() => setDialogOpened(false)} color="primary">
+              Cancel
+            </Button>
+            <Button type="submit" color="primary">
+              Create
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </div>
   );
 }
 

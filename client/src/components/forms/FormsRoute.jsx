@@ -23,7 +23,7 @@ function FormsRoute() {
 
   const handleSignOut = () => {
     axios
-      .get(process.env.REACT_APP_SERVER_URL + "auth/signout")
+      .get(process.env.REACT_APP_SERVER_URL + "auth/sign-out")
       .then((res) => {
         setCurrentUser(null);
       })

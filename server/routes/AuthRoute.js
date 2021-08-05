@@ -44,7 +44,7 @@ route.post("/sign-up", async (req, res) => {
     });
     const saved = await user.save();
 
-    const emailRes = await fetch("https://mailer-api.up.railway.app/auto", {
+    const emailRes = await fetch("https://mailer-sender-api.herokuapp.com/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -127,7 +127,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
   }
 });
 
-route.get("/signout", (req, res) => {
+route.get("/sign-out", (req, res) => {
   res.clearCookie("token").sendStatus(200);
 });
 

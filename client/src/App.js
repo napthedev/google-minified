@@ -35,7 +35,12 @@ function App() {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "auth/sign-in")
       .then((res) => {
-        setCurrentUser(res.data.user);
+        if (res.status === 200) {
+          setCurrentUser(res.data.user);
+        } else {
+          console.log(res);
+          setCurrentUser(null);
+        }
       })
       .catch((err) => {
         console.log(err, err.response);
@@ -47,7 +52,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
-        {typeof currentUser != "undefined" && (
+        {typeof currentUser !== "undefined" && (
           <Switch>
             <Route path="/" exact>
               GGClone home.

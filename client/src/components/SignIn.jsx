@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { TextField, Button, Link } from "@material-ui/core";
 import { userContext } from "../App";
@@ -7,6 +7,8 @@ import axios from "axios";
 import Particles from "./Particles";
 
 function SignIn() {
+  useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/yq4Tp3N.png"), []);
+
   const { currentUser, setCurrentUser } = useContext(userContext);
 
   const history = useHistory();

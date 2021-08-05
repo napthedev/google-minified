@@ -50,6 +50,7 @@ function Edit() {
         setData(JSON.parse(res.data.form.content));
         setView(200);
         setLoading(false);
+        formDidUpdate.current = true;
       })
       .catch((err) => {
         console.log(err, err.response);
@@ -62,26 +63,26 @@ function Edit() {
     axios.post(process.env.REACT_APP_SERVER_URL + "submits/get", { formId }).then((res) => setAllSubmits(res.data.reverse()));
   };
 
-  useEffect(() => {
-    getPreviousFormData();
-    getSubmits();
-  }, []);
-
   const formTimeout = useRef(null);
+  const formDidUpdate = useRef(false);
 
   useEffect(() => {
-    if (formTimeout.current) {
-      clearTimeout(formTimeout.current);
-    }
+    if (!formDidUpdate.current) {
+      getPreviousFormData();
+    } else {
+      if (formTimeout.current) {
+        clearTimeout(formTimeout.current);
+      }
 
-    formTimeout.current = setTimeout(() => {
-      postFormData(title, description, data);
-    }, 500);
+      formTimeout.current = setTimeout(() => {
+        postFormData(title, description, data);
+      }, 500);
+    }
   }, [data, title, description]);
 
-  const postFormData = (title, description, data) => {
-    axios
-      .patch(process.env.REACT_APP_SERVER_URL + "forms/update", {
+  const postFormData = async (title, description, data) => {
+    await axios
+      .post(process.env.REACT_APP_SERVER_URL + "forms/update", {
         formId,
         title,
         description,
@@ -205,6 +206,8 @@ function Edit() {
 
   const [tabValue, setTabValue] = useState(0);
 
+  useEffect(getSubmits, [tabValue]);
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -281,7 +284,7 @@ function Edit() {
                           </Tooltip>
                         </div>
                       </Container>
-                      <Snackbar anchorOrigin={{ horizontal: "right", vertical: "bottom" }} open={snackbarOpened} autoHideDuration={2000} onClose={() => setSnackbarOpened(false)} message="Response URL copied!" />
+                      <Snackbar anchorOrigin={{ horizontal: "left", vertical: "top" }} open={snackbarOpened} autoHideDuration={2000} onClose={() => setSnackbarOpened(false)} message="Response URL copied!" />
                     </div>
                   ) : (
                     <div className="edit-page">

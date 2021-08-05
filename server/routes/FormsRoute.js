@@ -42,7 +42,7 @@ route.get("/", verifyJWT, async (req, res) => {
   }
 });
 
-route.patch("/update", verifyJWT, async (req, res) => {
+route.post("/update", verifyJWT, async (req, res) => {
   try {
     const myForm = await Forms.findOne({
       formId: req.body.formId,

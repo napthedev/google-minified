@@ -10,17 +10,17 @@ route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
 
     if (!folder) return res.sendStatus(404);
 
-    res.send({ folder, permission: req.user.id === folder.userId });
+    res.send({ folder, permission: req.user?.id === folder.userId });
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-route.post("/folder-child", async (req, res) => {
+route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
   try {
     let folderChild;
     if (req.body.parentId === "") {
-      folderChild = await Folders.find({ parentId: "", userId: req.user.id });
+      folderChild = await Folders.find({ parentId: "", userId: req.user?.id });
     } else {
       folderChild = await Folders.find({ parentId: req.body.parentId });
     }

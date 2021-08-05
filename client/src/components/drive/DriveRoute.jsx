@@ -8,7 +8,7 @@ import { userContext } from "../../App";
 
 import Folders from "./Folders";
 
-function FormsRoute() {
+function DriveRoute() {
   useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/7UhjvWJ.png"), []);
 
   const { currentUser, setCurrentUser } = useContext(userContext);
@@ -20,7 +20,7 @@ function FormsRoute() {
 
   const handleSignOut = () => {
     axios
-      .get(process.env.REACT_APP_SERVER_URL + "auth/signout")
+      .get(process.env.REACT_APP_SERVER_URL + "auth/sign-out")
       .then((res) => {
         setCurrentUser(null);
       })
@@ -62,4 +62,4 @@ function FormsRoute() {
   );
 }
 
-export default FormsRoute;
+export default DriveRoute;

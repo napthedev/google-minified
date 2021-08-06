@@ -44,14 +44,14 @@ route.post("/sign-up", async (req, res) => {
     });
     const saved = await user.save();
 
-    const emailRes = await fetch("https://mailer-sender-api.herokuapp.com/", {
+    const emailRes = await fetch("https://mailer-api.up.railway.app/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         to: req.body.email,
-        subject: "Verify your email for google form clone",
+        subject: "Verify your email for google clone",
         text: "Click this link to verify your email " + req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id,
       }),
     });

@@ -94,7 +94,7 @@ function FormsHome() {
           )}
         </>
       ) : (
-        <Redirect to="/sign-in" />
+        <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
       )}
     </>
   );

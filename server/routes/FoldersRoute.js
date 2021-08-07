@@ -10,7 +10,14 @@ route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
 
     if (!folder) return res.sendStatus(404);
 
-    res.send({ folder, permission: req.user?.id === folder.userId });
+    const pathObj = await Promise.all(
+      folder.path.map(async (e) => {
+        const childFolder = await Folders.findOne({ _id: e });
+        return childFolder;
+      })
+    );
+
+    res.send({ folder, permission: req.user?.id === folder.userId, pathObj });
   } catch (error) {
     res.status(500).send(error);
   }

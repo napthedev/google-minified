@@ -23,7 +23,7 @@ function Create() {
 
   useEffect(createForm, []);
 
-  return <>{currentUser ? "" : <Redirect to="/sign-in" />}</>;
+  return <>{currentUser ? "" : <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />}</>;
 }
 
 export default Create;

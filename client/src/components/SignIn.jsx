@@ -1,13 +1,20 @@
 import { useState, useContext, useEffect } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { TextField, Button, Link } from "@material-ui/core";
 import { userContext } from "../App";
 import axios from "axios";
 
 import Particles from "./Particles";
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function SignIn() {
   useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/yq4Tp3N.png"), []);
+
+  const query = useQuery();
+  const redirect = query.get("redirect");
 
   const { currentUser, setCurrentUser } = useContext(userContext);
 
@@ -87,7 +94,7 @@ function SignIn() {
           </div>
         </>
       ) : (
-        <Redirect to="/" />
+        <Redirect to={redirect ? redirect : "/"} />
       )}
     </>
   );

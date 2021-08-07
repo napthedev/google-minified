@@ -46,29 +46,19 @@ function Folder() {
 
       let data = response.data.folder;
       setPath([...data.path, data._id]);
-      let path = await Promise.all(
-        data.path.map(async (e) => {
-          const child_data = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", { _id: e });
-          return {
-            link: child_data.data.folder._id,
-            name: child_data.data.folder.name,
-          };
-        })
-      );
-      path = [
-        ...path,
-        {
-          link: data._id,
-          name: data.name,
-        },
-      ];
 
       setPermission(response.data.permission);
 
       if (response.data.permission) {
-        setBreadcrumb(path);
+        setBreadcrumb([
+          ...response.data.pathObj,
+          {
+            _id: data._id,
+            name: data.name,
+          },
+        ]);
       } else {
-        setBreadcrumb([{ link: data._id, name: data.name }]);
+        setBreadcrumb([{ _id: data._id, name: data.name }]);
       }
     } else {
       setBreadcrumb([]);
@@ -144,7 +134,7 @@ function Folder() {
   return (
     <>
       {!currentUser && !currentFolderId ? (
-        <Redirect to="/sign-in" />
+        <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
       ) : (
         <div style={{ display: "flex", flexGrow: 1, alignItems: "stretch" }}>
           <List component="nav" className="main-column">
@@ -197,7 +187,7 @@ function Folder() {
                   {permission !== false ? <Link to="/drive">My Drive</Link> : <a href="#">Shared with me</a>}
 
                   {breadcrumb.map((e, index) => (
-                    <Link key={index} to={e.link}>
+                    <Link key={index} to={e._id}>
                       {e.name}
                     </Link>
                   ))}

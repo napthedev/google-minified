@@ -101,22 +101,15 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
       password: data.password,
     };
 
-    const accessToken = jwt.sign(user, process.env.JWT_SECRET_TOKEN);
+    const accessToken = jwt.sign(user, process.env.JWT_SECRET_TOKEN, { expiresIn: "7d" });
 
     let date = new Date();
     date.setDate(date.getDate() + 7);
-
-    let domain = req.get("host");
-    if (domain.startsWith("localhost")) domain = "localhost";
-    else if (domain.split(".").length >= 3) domain = domain.replace(domain.split(".")[0], "");
 
     res
       .cookie("token", accessToken, {
         httpOnly: true,
         expires: date,
-        domain: domain,
-        sameSite: "none",
-        secure: true,
       })
       .send({
         user,

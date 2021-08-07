@@ -7,6 +7,7 @@ import { useContext, useEffect } from "react";
 import { userContext } from "../../App";
 
 import Folders from "./Folders";
+import NotFound from "../NotFound";
 
 function DriveRoute() {
   useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/7UhjvWJ.png"), []);
@@ -57,6 +58,9 @@ function DriveRoute() {
           <Folders />
         </Route>
         <Route path={`${path}/folder/:id`} component={Folders}></Route>
+        <Route path={`${path}/*`}>
+          <NotFound />
+        </Route>
       </Switch>
     </>
   );

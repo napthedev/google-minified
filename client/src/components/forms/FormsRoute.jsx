@@ -10,6 +10,7 @@ import FormsHome from "./FormsHome";
 import Edit from "./Edit";
 import Create from "./Create";
 import Response from "./Response";
+import NotFound from "../NotFound";
 
 function FormsRoute() {
   useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/prj8GAN.png"), []);
@@ -64,6 +65,9 @@ function FormsRoute() {
         </Route>
         <Route path={`${path}/edit/:id`} children={<Edit />}></Route>
         <Route path={`${path}/response/:id`} children={<Response />}></Route>
+        <Route path={`${path}/*`}>
+          <NotFound />
+        </Route>
       </Switch>
     </>
   );

@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useMemo } from "react";
 import { Link, Route, Switch } from "react-router-dom";
-import { useMediaQuery, CssBaseline } from "@material-ui/core";
+import { useMediaQuery, CssBaseline, CircularProgress } from "@material-ui/core";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import axios from "axios";
 import SignIn from "./components/SignIn";
@@ -52,7 +52,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
-        {typeof currentUser !== "undefined" && (
+        {typeof currentUser !== "undefined" ? (
           <Switch>
             <Route path="/" exact>
               GGClone home.
@@ -71,6 +71,10 @@ function App() {
               <NotFound />
             </Route>
           </Switch>
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+            <CircularProgress />
+          </div>
         )}
       </userContext.Provider>
     </ThemeProvider>

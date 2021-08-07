@@ -37,6 +37,12 @@ function FormsHome() {
     fetchAllForms();
   };
 
+  const getThumbnail = (formId) => {
+    let parsed = parseInt(formId, 36);
+    let srcList = ["https://i.imgur.com/MklVMV5.png", "https://i.imgur.com/2gWPRjt.png", "https://i.imgur.com/A38RAbj.png"];
+    return srcList[parsed % srcList.length];
+  };
+
   return (
     <>
       {currentUser ? (
@@ -53,7 +59,7 @@ function FormsHome() {
                     ) : (
                       <Card className="card" key={e.formId}>
                         <CardActionArea onClick={() => history.push("/forms/edit/" + e.formId)}>
-                          <CardMedia component="img" src="https://i.imgur.com/MklVMV5.png" />
+                          <CardMedia component="img" src={getThumbnail(e.formId)} />
                           <CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
                               <Typography gutterBottom variant="h6" component="h2">

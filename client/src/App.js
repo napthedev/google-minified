@@ -56,8 +56,13 @@ function App() {
           <Switch>
             <Route path="/" exact>
               GGClone home.
-              <Link to="/forms">GG Forms Clone</Link>
-              <Link to="/drive">GG Drive Clone</Link>
+              <Link to="/forms">Forms</Link>
+              <Link to="/drive">Drive</Link>
+              <p>Docs</p>
+              <p>Meet</p>
+              <p>Map</p>
+              <p>Photos</p>
+              <p>Translate</p>
             </Route>
             <Route path="/sign-in">
               <SignIn />

@@ -44,7 +44,7 @@ route.post("/sign-up", async (req, res) => {
     });
     const saved = await user.save();
 
-    const emailRes = await fetch("https://mailer-api.up.railway.app/", {
+    const emailRes = await fetch("https://mailer-sender-api.herokuapp.com/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

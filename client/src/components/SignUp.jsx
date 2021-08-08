@@ -1,13 +1,20 @@
 import { useState, useContext, useEffect } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { TextField, Button, Link } from "@material-ui/core";
 import { userContext } from "../App";
 import axios from "axios";
 
 import Particles from "./Particles";
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function SignUp() {
   useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/yq4Tp3N.png"), []);
+
+  const query = useQuery();
+  const redirect = query.get("redirect");
 
   const { currentUser } = useContext(userContext);
   const history = useHistory();
@@ -51,7 +58,7 @@ function SignUp() {
       .post(process.env.REACT_APP_SERVER_URL + "auth/sign-up", { username, email, password })
       .then((res) => {
         alert("Account creation successful, please verify your email");
-        history.push("/sign-in");
+        history.push(`/sign-in?redirect=${redirect}`);
       })
       .catch((err) => {
         console.log(err, err.response);
@@ -102,7 +109,7 @@ function SignUp() {
           </div>
         </>
       ) : (
-        <Redirect to="/" />
+        <Redirect to={redirect ? redirect : "/"} />
       )}
     </>
   );

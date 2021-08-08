@@ -74,7 +74,7 @@ function SignIn() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push("/sign-up");
+                  history.push(`/sign-up?redirect=${redirect}`);
                 }}
               >
                 Don't have an account? Sign up

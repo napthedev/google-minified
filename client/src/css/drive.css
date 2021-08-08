@@ -52,7 +52,7 @@ body {
   flex-basis: 20%;
   display: flex;
   align-items: center;
-  padding-left: 20px;
+  padding: 0 20px;
   border-top: thin solid lightgray;
 }
 
@@ -85,6 +85,38 @@ body {
   color: #1f6efd !important;
 }
 
+.selected .file-container-label {
+  border-top: thin solid #1f6efd;
+}
+
+.upload-progress-box {
+  position: absolute;
+  right: clamp(5px, 5%, 30px);
+  bottom: 30px;
+  width: 100%;
+  max-width: 300px;
+  z-index: 100;
+}
+
+.upload-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: #353535;
+  color: white;
+  padding: 0 15px;
+}
+
+.upload-progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  background: #fff;
+  border: thin solid lightgray;
+}
+
 @media only screen and (max-width: 768px) {
   .responsive-label {
     display: none;
@@ -104,5 +136,14 @@ body {
 @media (prefers-color-scheme: dark) {
   .gray-icon {
     color: white;
+  }
+
+  .upload-progress-header {
+    background: #26292a;
+  }
+
+  .upload-progress-row {
+    background: #181a1b;
+    border: thin solid #1c1e1f;
   }
 }

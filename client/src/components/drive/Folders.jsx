@@ -1,15 +1,18 @@
 import { Redirect, Link, useParams, useHistory } from "react-router-dom";
 import { userContext } from "../../App";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress } from "@material-ui/core";
 import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon } from "@material-ui/icons";
 import axios from "axios";
 import NotFound from "../NotFound";
 
-function Folder() {
+function Folder(props) {
   const { currentUser } = useContext(userContext);
   let { id: currentFolderId } = useParams();
   currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
+
+  const { uploadFile } = props;
+  const fileInput = useRef();
 
   const history = useHistory();
 
@@ -36,7 +39,7 @@ function Folder() {
     if (currentFolderId !== null) {
       let response;
       try {
-        response = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/get-folder", {
+        response = await axios.post(process.env.REACT_APP_SERVER_URL + "drive/get-folder", {
           _id: currentFolderId,
         });
       } catch (err) {
@@ -65,11 +68,12 @@ function Folder() {
       setPermission(true);
     }
 
-    const folderChild = await axios.post(process.env.REACT_APP_SERVER_URL + "folders/folder-child", {
+    const folderChild = await axios.post(process.env.REACT_APP_SERVER_URL + "drive/folder-child", {
       parentId: currentFolderId,
     });
 
-    setAllFolder(folderChild.data);
+    setAllFolder(folderChild.data.folders);
+    setAllFiles(folderChild.data.files);
   };
 
   useEffect(async () => {
@@ -108,7 +112,7 @@ function Folder() {
   };
 
   const createNewFolder = async () => {
-    await axios.post(process.env.REACT_APP_SERVER_URL + "folders/create", {
+    await axios.post(process.env.REACT_APP_SERVER_URL + "drive/create-folder", {
       name: createFolderName,
       path: path,
       parentId: currentFolderId,
@@ -117,7 +121,7 @@ function Folder() {
     fetchFolderData();
   };
 
-  const handleClicks = (e, id) => {
+  const handleClicks = (e, id, type) => {
     if (e.detail === 1) {
       if (e.ctrlKey) {
         let clone = [...selected];
@@ -127,7 +131,7 @@ function Folder() {
         setSelected([id]);
       }
     } else if (e.detail === 2) {
-      history.push("/drive/folder/" + id);
+      if (type === "folder") history.push("/drive/folder/" + id);
     }
   };
 
@@ -159,7 +163,14 @@ function Folder() {
                     <CreateNewFolder />
                     New Folder
                   </MenuItem>
-                  <MenuItem style={{ gap: 10 }} onClick={() => setUploadMenuOpened(null)}>
+                  <input type="file" hidden onChange={(e) => uploadFile(e, currentFolderId)} ref={fileInput} />
+                  <MenuItem
+                    style={{ gap: 10 }}
+                    onClick={() => {
+                      fileInput.current.click();
+                      setUploadMenuOpened(null);
+                    }}
+                  >
                     <InsertDriveFile />
                     Upload a file
                   </MenuItem>
@@ -237,7 +248,7 @@ function Folder() {
 
                   <div className="main-grid">
                     {allFolder.map((e) => (
-                      <div onClick={(event) => handleClicks(event, e._id)} key={e._id} className={"folder-container" + (selected.includes(e._id) ? " selected" : "")}>
+                      <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-container" + (selected.includes(e._id) ? " selected" : "")}>
                         <FolderIcon className="gray-icon" />
                         <Typography>{e.name}</Typography>
                       </div>
@@ -252,10 +263,10 @@ function Folder() {
 
                   <div className="main-grid">
                     {allFiles.map((e) => (
-                      <div className="file-container" key={e._id}>
-                        <div key={e.id} className="center-div" style={{ flexGrow: 1 }}>
-                          <div className="center-div" style={{ width: "40%", height: "40%" }}>
-                            <img src="https://raw.githubusercontent.com/NAPTheDev/File-Icons/master/default_file.svg" height="100%" />
+                      <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-container" + (selected.includes(e._id) ? " selected" : "")} key={e._id}>
+                        <div className="center-div" style={{ flexGrow: 1 }}>
+                          <div className="center-div" style={{ height: "40%" }}>
+                            <img onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1]}.svg`} height="100%" />
                           </div>
                         </div>
                         <div className="file-container-label">

@@ -8,11 +8,18 @@ import NotFound from "../NotFound";
 
 function Folder(props) {
   const { currentUser } = useContext(userContext);
-  let { id: currentFolderId } = useParams();
-  currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
+  let { id } = useParams();
+  id = typeof id === "undefined" ? null : id;
+
+  useEffect(() => {
+    setCurrentFolderId(id);
+  }, [id]);
+
+  const [currentFolderId, setCurrentFolderId] = useState(id);
 
   const { uploadFile } = props;
   const fileInput = useRef();
+  const multipleFilesInput = useRef();
 
   const history = useHistory();
 
@@ -35,14 +42,8 @@ function Folder(props) {
 
   const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    const bc = new BroadcastChannel("channel");
-    bc.onmessage = (message) => {
-      fetchFolderData();
-    };
-  }, []);
-
   const fetchFolderData = async () => {
+    console.log(currentFolderId);
     if (currentFolderId !== null) {
       let response;
       try {
@@ -82,6 +83,14 @@ function Folder(props) {
     setAllFolder(folderChild.data.folders);
     setAllFiles(folderChild.data.files);
   };
+
+  useEffect(() => {
+    const bc = new BroadcastChannel("channel");
+    bc.onmessage = (message) => {
+      console.log(currentFolderId, id);
+      fetchFolderData();
+    };
+  }, []);
 
   useEffect(async () => {
     setNotFound(false);
@@ -143,7 +152,7 @@ function Folder(props) {
       }
     } else if (e.detail === 2) {
       if (type === "folder") history.push("/drive/folder/" + id);
-      else if (type === "file") history.push("/drive/file/" + id);
+      else if (type === "file") history.push(`/drive/file/${id}?redirect=${encodeURIComponent(window.location.pathname)}`);
     }
   };
 
@@ -175,7 +184,7 @@ function Folder(props) {
                     <CreateNewFolder />
                     New Folder
                   </MenuItem>
-                  <input type="file" hidden onChange={(e) => uploadFile(e, currentFolderId)} ref={fileInput} />
+                  <input type="file" hidden onChange={(e) => uploadFile(e.target.files[0], currentFolderId)} ref={fileInput} />
                   <MenuItem
                     style={{ gap: 10 }}
                     onClick={() => {
@@ -186,7 +195,26 @@ function Folder(props) {
                     <InsertDriveFile />
                     Upload a file
                   </MenuItem>
-                  <MenuItem style={{ gap: 10 }} onClick={() => setUploadMenuOpened(null)}>
+                  <input
+                    type="file"
+                    hidden
+                    multiple
+                    onChange={(e) => {
+                      let files = e.target.files;
+                      console.log(files);
+                      Object.keys(files).forEach((e) => {
+                        uploadFile(files[e], currentFolderId);
+                      });
+                    }}
+                    ref={multipleFilesInput}
+                  />
+                  <MenuItem
+                    style={{ gap: 10 }}
+                    onClick={() => {
+                      multipleFilesInput.current.click();
+                      setUploadMenuOpened(null);
+                    }}
+                  >
                     <FileCopy />
                     Upload files
                   </MenuItem>
@@ -278,7 +306,7 @@ function Folder(props) {
                       <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-container" + (selected.includes(e._id) ? " selected" : "")} key={e._id}>
                         <div className="center-div" style={{ flexGrow: 1 }}>
                           <div className="center-div" style={{ height: "40%" }}>
-                            <img onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1]}.svg`} height="100%" />
+                            <img onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
                           </div>
                         </div>
                         <div className="file-container-label">

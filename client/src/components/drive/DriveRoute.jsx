@@ -56,8 +56,7 @@ function DriveRoute() {
 
   const [filesUploading, setFilesUploading] = useState([]);
 
-  const uploadFile = async (event, parentId) => {
-    const file = event.target.files[0];
+  const uploadFile = async (file, parentId) => {
     console.log(file);
     let formData = new FormData();
     let id = nanoid();
@@ -106,7 +105,7 @@ function DriveRoute() {
   return (
     <>
       {!location.pathname.startsWith("/drive/file") && (
-        <AppBar position="static" color="transparent">
+        <AppBar position="static" color="transparent" elevation={1}>
           <Toolbar>
             <IconButton onClick={() => history.push("/drive")} edge="start" color="inherit" aria-label="menu">
               <img height={30} src="https://i.imgur.com/7UhjvWJ.png" />
@@ -133,12 +132,14 @@ function DriveRoute() {
             {filesUploading.every((e) => e.percentage === 100) && <CloseBtn setFilesUploading={setFilesUploading} />}
           </div>
 
-          {filesUploading.map((e) => (
-            <div className="upload-progress-row" key={e.id}>
-              <p>{e.name}</p>
-              <CircularProgressWithLabel value={e.percentage} />
-            </div>
-          ))}
+          <div style={{ maxHeight: 150, overflow: "auto" }}>
+            {filesUploading.map((e) => (
+              <div className="upload-progress-row" key={e.id}>
+                <p>{e.name}</p>
+                <CircularProgressWithLabel value={e.percentage} />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

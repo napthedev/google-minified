@@ -1,10 +1,11 @@
 import { useState, useContext, useEffect } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
-import { TextField, Button, Link } from "@material-ui/core";
+import { TextField, Link } from "@material-ui/core";
 import { userContext } from "../App";
 import axios from "axios";
 
 import Particles from "./Particles";
+import CircularIntegration from "./CircularIntegration";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -25,6 +26,8 @@ function SignUp() {
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const validateUsername = () => {
     if (!username.trim()) {
@@ -53,12 +56,18 @@ function SignUp() {
     if (!usernameError && !emailError && !passwordError) signUp();
   };
 
-  const signUp = () => {
-    axios
+  const signUp = async () => {
+    setLoading(true);
+
+    await axios
       .post(process.env.REACT_APP_SERVER_URL + "auth/sign-up", { username, email, password })
       .then((res) => {
-        alert("Account creation successful, please verify your email");
-        history.push(`/sign-in?redirect=${redirect}`);
+        let url = new URL(window.location.href);
+        let params = new URLSearchParams(url.search);
+
+        if (redirect) params.set("redirect", redirect);
+        params.set("alert", 1);
+        history.push(`/sign-in?${params.toString()}`);
       })
       .catch((err) => {
         console.log(err, err.response);
@@ -66,12 +75,14 @@ function SignUp() {
           if (err.response.data.code === "email-in-use") {
             setEmailError(err.response.data.message);
           } else {
-            alert("Account creation failed! Please try again later");
+            setEmailError("Account creation failed! Please try again later");
           }
         } else {
           alert(err);
         }
       });
+
+    setLoading(false);
   };
 
   return (
@@ -88,23 +99,20 @@ function SignUp() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push("/sign-in");
+                  history.push(`/sign-in${redirect ? "?redirect=" + encodeURIComponent(redirect) : ""}`);
                 }}
               >
                 Already have an account? Sign in
               </Link>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
+              <CircularIntegration
                 onClick={() => {
                   validateUsername();
                   validateEmail();
                   validatePassword();
                 }}
-              >
-                Sign up
-              </Button>
+                text="Sign up"
+                loading={loading}
+              />
             </form>
           </div>
         </>

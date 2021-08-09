@@ -1,10 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
-import { TextField, Button, Link } from "@material-ui/core";
+import { TextField, Link, Snackbar, IconButton } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 import { userContext } from "../App";
 import axios from "axios";
 
 import Particles from "./Particles";
+import CircularIntegration from "./CircularIntegration";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -24,6 +26,10 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [snackbarOpened, setSnackbarOpened] = useState(Boolean(Number(query.get("alert"))));
 
   const validateEmail = () => {
     if (!/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
@@ -45,8 +51,10 @@ function SignIn() {
     if (!emailError && !passwordError) signIn();
   };
 
-  const signIn = () => {
-    axios
+  const signIn = async () => {
+    setLoading(true);
+
+    await axios
       .post(process.env.REACT_APP_SERVER_URL + "auth/sign-in", { email, password })
       .then((res) => {
         setCurrentUser(res.data.user);
@@ -59,6 +67,8 @@ function SignIn() {
           setPasswordError(err.response.data.message);
         }
       });
+
+    setLoading(false);
   };
 
   return (
@@ -74,24 +84,35 @@ function SignIn() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push(`/sign-up?redirect=${redirect}`);
+                  history.push(`/sign-up${redirect ? "?redirect=" + encodeURIComponent(redirect) : ""}`);
                 }}
               >
                 Don't have an account? Sign up
               </Link>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
+              <CircularIntegration
                 onClick={() => {
                   validateEmail();
                   validatePassword();
                 }}
-              >
-                Sign in
-              </Button>
+                text="Sign in"
+                loading={loading}
+              />
             </form>
           </div>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={snackbarOpened}
+            onClose={() => setSnackbarOpened(false)}
+            message="Please verify your email address"
+            action={
+              <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
+                <Close fontSize="small" />
+              </IconButton>
+            }
+          />
         </>
       ) : (
         <Redirect to={redirect ? redirect : "/"} />

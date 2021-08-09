@@ -90,7 +90,7 @@ body {
 }
 
 .upload-progress-box {
-  position: absolute;
+  position: fixed;
   right: clamp(5px, 5%, 30px);
   bottom: 30px;
   width: 100%;

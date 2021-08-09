@@ -35,6 +35,13 @@ function Folder(props) {
 
   const [notFound, setNotFound] = useState(false);
 
+  useEffect(() => {
+    const bc = new BroadcastChannel("channel");
+    bc.onmessage = (message) => {
+      fetchFolderData();
+    };
+  }, []);
+
   const fetchFolderData = async () => {
     if (currentFolderId !== null) {
       let response;
@@ -125,13 +132,18 @@ function Folder(props) {
     if (e.detail === 1) {
       if (e.ctrlKey) {
         let clone = [...selected];
-        clone.push(id);
+        if (clone.includes(id)) {
+          clone = clone.filter((e) => e !== id);
+        } else {
+          clone.push(id);
+        }
         setSelected(clone);
       } else {
         setSelected([id]);
       }
     } else if (e.detail === 2) {
       if (type === "folder") history.push("/drive/folder/" + id);
+      else if (type === "file") history.push("/drive/file/" + id);
     }
   };
 
@@ -233,7 +245,7 @@ function Folder(props) {
               </div>
 
               {loading ? (
-                <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+                <div className="center-container">
                   <CircularProgress />
                 </div>
               ) : (

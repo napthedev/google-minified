@@ -65,7 +65,7 @@ route.post("/get-file", verifyJWTNotStrict, async (req, res) => {
 
     if (!file) return res.sendStatus(404);
 
-    res.send({ file, permission: req.user?.id === folder.userId });
+    res.send(file);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -78,6 +78,7 @@ route.post("/create-file", verifyJWT, async (req, res) => {
       parentId: req.body.parentId,
       userId: req.user.id,
       url: req.body.url,
+      type: req.body.type,
     });
 
     const saved = await newFile.save();

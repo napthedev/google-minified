@@ -8,17 +8,28 @@ import { userContext } from "../../App";
 
 import Folders from "./Folders";
 import NotFound from "../NotFound";
+import Files from "./Files";
+
 import { nanoid } from "nanoid";
 
 function CircularProgressWithLabel(props) {
   return (
     <Box position="relative" display="inline-flex">
-      <CircularProgress variant="determinate" {...props} />
+      <CircularProgress size={30} variant="determinate" {...props} />
       <Box top={0} left={0} bottom={0} right={0} position="absolute" display="flex" alignItems="center" justifyContent="center">
-        <Typography variant="caption" component="div" color="textSecondary">{`${Math.round(props.value)}%`}</Typography>
+        <Typography style={{ fontSize: 9 }} variant="caption" component="div" color="textSecondary">{`${Math.round(props.value)}%`}</Typography>
       </Box>
     </Box>
   );
+}
+
+function CloseBtn(props) {
+  useEffect(() => {
+    setTimeout(() => setFilesUploading([]), 5000);
+  });
+  const { setFilesUploading } = props;
+
+  return <Close onClick={() => setFilesUploading([])} style={{ cursor: "pointer" }} />;
 }
 
 function DriveRoute() {
@@ -81,7 +92,11 @@ function DriveRoute() {
           parentId,
           userId: currentUser.id,
           url: res.data.url,
+          type: file.type,
         });
+
+        const bc = new BroadcastChannel("channel");
+        bc.postMessage("update");
       })
       .catch((err) => {
         console.log(err);
@@ -90,31 +105,32 @@ function DriveRoute() {
 
   return (
     <>
-      <AppBar position="static" color="transparent" elevation={location.pathname.startsWith("/forms/edit") ? 0 : 1}>
-        <Toolbar>
-          <IconButton onClick={() => history.push("/drive")} edge="start" color="inherit" aria-label="menu">
-            <img height={30} src="https://i.imgur.com/7UhjvWJ.png" />
-          </IconButton>
-          <div style={{ flexGrow: 1 }}>
-            <Typography onClick={() => history.push("/drive")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-              Google Drive Clone
-            </Typography>
-          </div>
-          {currentUser && (
-            <Tooltip title="Sign out">
-              <IconButton onClick={handleSignOut} color="secondary">
-                <ExitToApp />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Toolbar>
-      </AppBar>
-
+      {!location.pathname.startsWith("/drive/file") && (
+        <AppBar position="static" color="transparent">
+          <Toolbar>
+            <IconButton onClick={() => history.push("/drive")} edge="start" color="inherit" aria-label="menu">
+              <img height={30} src="https://i.imgur.com/7UhjvWJ.png" />
+            </IconButton>
+            <div style={{ flexGrow: 1 }}>
+              <Typography onClick={() => history.push("/drive")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
+                Google Drive Clone
+              </Typography>
+            </div>
+            {currentUser && (
+              <Tooltip title="Sign out">
+                <IconButton onClick={handleSignOut} color="secondary">
+                  <ExitToApp />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Toolbar>
+        </AppBar>
+      )}
       {filesUploading.length > 0 && (
         <div className="upload-progress-box">
           <div className="upload-progress-header">
             <p> Uploading {filesUploading.length} file</p>
-            {filesUploading.every((e) => e.percentage === 100) && <Close onClick={setFilesUploading([])} style={{ cursor: "pointer" }} />}
+            {filesUploading.every((e) => e.percentage === 100) && <CloseBtn setFilesUploading={setFilesUploading} />}
           </div>
 
           {filesUploading.map((e) => (
@@ -127,6 +143,7 @@ function DriveRoute() {
       )}
 
       <Switch>
+        <Route path={`${path}/file/:id`} component={Files}></Route>
         <Route path={`${path}`} exact>
           <Folders uploadFile={uploadFile} />
         </Route>

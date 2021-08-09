@@ -21,6 +21,9 @@ const filesSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("files", filesSchema);

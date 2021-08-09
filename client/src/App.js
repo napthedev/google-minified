@@ -58,11 +58,7 @@ function App() {
               GGClone home.
               <Link to="/forms">Forms</Link>
               <Link to="/drive">Drive</Link>
-              <p>Docs</p>
-              <p>Meet</p>
-              <p>Map</p>
-              <p>Photos</p>
-              <p>Translate</p>
+              <p>Todo: Docs, Sheets, Meet, Map, Photos, Translate</p>
             </Route>
             <Route path="/sign-in">
               <SignIn />
@@ -77,7 +73,7 @@ function App() {
             </Route>
           </Switch>
         ) : (
-          <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+          <div className="center-container">
             <CircularProgress />
           </div>
         )}

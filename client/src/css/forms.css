@@ -59,10 +59,3 @@
 .invalid-box {
   border: 1px solid red;
 }
-
-.center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-}

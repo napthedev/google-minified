@@ -12,6 +12,8 @@ import { copyToClipboard } from "../Functions";
 import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
 
+import { saveAs } from "file-saver";
+
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -77,13 +79,7 @@ function Files() {
   };
 
   const downloadFile = () => {
-    let anchor = document.createElement("a");
-    anchor.href = file.url + "?dl=1";
-    anchor.download = file.name;
-    anchor.style.display = "none";
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    saveAs(file.url + "?dl=1", file.name);
   };
 
   return (

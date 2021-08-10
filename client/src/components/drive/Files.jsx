@@ -9,6 +9,8 @@ import { InsertLink, GetApp, ArrowBack, Close } from "@material-ui/icons";
 
 import { copyToClipboard } from "../Functions";
 
+import { saveAs } from "file-saver";
+
 import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
 
@@ -77,14 +79,7 @@ function Files() {
   };
 
   const downloadFile = () => {
-    let anchor = document.createElement("a");
-    anchor.href = file.url + "?dl=1";
-    anchor.download = file.name;
-    anchor.target = "_blank";
-    anchor.style.display = "none";
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    saveAs(file.url + "?dl=1", file.name);
   };
 
   return (

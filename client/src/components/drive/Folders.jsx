@@ -6,6 +6,7 @@ import { Delete, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create,
 import axios from "axios";
 import NotFound from "../NotFound";
 import { copyToClipboard } from "../Functions";
+import { saveAs } from "file-saver";
 
 function Folder(props) {
   const { currentUser } = useContext(userContext);
@@ -176,14 +177,8 @@ function Folder(props) {
     function download(i) {
       if (i < selected.length) {
         const file = allFiles.find((elem) => elem._id === selected[i].id);
-        let anchor = document.createElement("a");
-        anchor.href = file.url + "?dl=1";
-        anchor.download = file.name;
-        anchor.target = "_blank";
-        anchor.style.display = "none";
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
+
+        saveAs(file.url + "?dl=1", file.name);
 
         setTimeout(() => {
           i++;

@@ -179,6 +179,7 @@ function Folder(props) {
         let anchor = document.createElement("a");
         anchor.href = file.url + "?dl=1";
         anchor.download = file.name;
+        anchor.target = "_blank";
         anchor.style.display = "none";
         document.body.appendChild(anchor);
         anchor.click();

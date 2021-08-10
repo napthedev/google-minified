@@ -8,14 +8,14 @@ import NotFound from "../NotFound";
 
 function Folder(props) {
   const { currentUser } = useContext(userContext);
-  let { id } = useParams();
-  id = typeof id === "undefined" ? null : id;
+  let { id: currentFolderId } = useParams();
+  currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
 
   useEffect(() => {
-    setCurrentFolderId(id);
-  }, [id]);
+    currentFolderIdRef.current = currentFolderId;
+  }, [currentFolderId]);
 
-  const [currentFolderId, setCurrentFolderId] = useState(id);
+  const currentFolderIdRef = useRef();
 
   const { uploadFile } = props;
   const fileInput = useRef();
@@ -43,12 +43,11 @@ function Folder(props) {
   const [notFound, setNotFound] = useState(false);
 
   const fetchFolderData = async () => {
-    console.log(currentFolderId);
-    if (currentFolderId !== null) {
+    if (currentFolderIdRef.current !== null) {
       let response;
       try {
         response = await axios.post(process.env.REACT_APP_SERVER_URL + "drive/get-folder", {
-          _id: currentFolderId,
+          _id: currentFolderIdRef.current,
         });
       } catch (err) {
         setNotFound(true);
@@ -77,7 +76,7 @@ function Folder(props) {
     }
 
     const folderChild = await axios.post(process.env.REACT_APP_SERVER_URL + "drive/folder-child", {
-      parentId: currentFolderId,
+      parentId: currentFolderIdRef.current,
     });
 
     setAllFolder(folderChild.data.folders);
@@ -87,7 +86,6 @@ function Folder(props) {
   useEffect(() => {
     const bc = new BroadcastChannel("channel");
     bc.onmessage = (message) => {
-      console.log(currentFolderId, id);
       fetchFolderData();
     };
   }, []);
@@ -152,7 +150,7 @@ function Folder(props) {
       }
     } else if (e.detail === 2) {
       if (type === "folder") history.push("/drive/folder/" + id);
-      else if (type === "file") history.push(`/drive/file/${id}?redirect=${encodeURIComponent(window.location.pathname)}`);
+      else if (type === "file") history.push(`/drive/file/${id}?back=1`);
     }
   };
 

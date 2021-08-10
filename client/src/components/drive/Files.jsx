@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import NotFound from "../NotFound";
-import { CircularProgress, IconButton, Tooltip } from "@material-ui/core";
-import { InsertLink, GetApp, ArrowBack } from "@material-ui/icons";
+import { Button, CircularProgress, IconButton, Tooltip, Snackbar } from "@material-ui/core";
+import { InsertLink, GetApp, ArrowBack, Close } from "@material-ui/icons";
+
+import { copyToClipboard } from "../Functions";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -13,7 +15,7 @@ function useQuery() {
 
 function Files() {
   const query = useQuery();
-  const redirect = query.get("redirect");
+  const back = query.get("back");
 
   const history = useHistory();
 
@@ -27,6 +29,8 @@ function Files() {
     name: "",
     url: "",
   });
+
+  const [snackbarOpened, setSnackbarOpened] = useState(false);
 
   useEffect(async () => {
     axios
@@ -63,29 +67,46 @@ function Files() {
       });
   }, []);
 
+  const copyLink = () => {
+    copyToClipboard(window.location.origin + window.location.pathname).then(() => {
+      setSnackbarOpened(true);
+    });
+  };
+
+  const downloadFile = () => {
+    let anchor = document.createElement("a");
+    anchor.href = file.url;
+    anchor.download = file.name;
+    anchor.target = "_blank";
+    anchor.style.display = "none";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+  };
+
   return (
     <>
       {view === 200 ? (
         <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 50, paddingLeft: 10, width: "100%" }}>
             <div style={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-              {Boolean(redirect) && (
-                <Tooltip title="Back" onClick={() => history.push(redirect)}>
+              {Boolean(Number(back)) && (
+                <Tooltip title="Back" onClick={() => history.goBack()}>
                   <IconButton>
                     <ArrowBack />
                   </IconButton>
                 </Tooltip>
               )}
               <img style={{ height: 30, width: "auto", padding: "0 20px 0 10px" }} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${file.name.split(".")[file.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
-              <p style={{ maxWidth: Boolean(redirect) ? "calc(100vw - 230px)" : "calc(100vw - 180px)" }}>{file.name}</p>
+              <p style={{ maxWidth: Boolean(Number(back)) ? "calc(100vw - 230px)" : "calc(100vw - 180px)" }}>{file.name}</p>
             </div>
             <div style={{ display: "flex", alignItems: "center", marginRight: 10 }}>
-              <Tooltip title="Copy link">
+              <Tooltip title="Copy link" onClick={copyLink}>
                 <IconButton>
                   <InsertLink />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Download">
+              <Tooltip title="Download" onClick={downloadFile}>
                 <IconButton color="primary">
                   <GetApp />
                 </IconButton>
@@ -111,12 +132,36 @@ function Files() {
               </div>
             ) : type === "pdf" ? (
               <div style={{ display: "flex", flexDirection: "column", height: "100%", alignItems: "center" }}>
-                <iframe frameBorder={0} style={{ maxWidth: 600, width: "100%", height: "100%", flexGrow: 1 }} src={data + "#toolbar=0&navpanes=0"} />
+                <iframe frameBorder={0} style={{ maxWidth: 600, width: "100%", height: "100%", flexGrow: 1 }} src={data + "#toolbar=0"} />
               </div>
             ) : (
-              ""
+              <div className="center-container">
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <h1>File cannot be previewed</h1>
+                  <Button color="primary" variant="contained" onClick={downloadFile}>
+                    <GetApp style={{ marginRight: 10 }} />
+                    Download
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
+
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            open={snackbarOpened}
+            autoHideDuration={5000}
+            onClose={() => setSnackbarOpened(false)}
+            message="URL Copied to clipboard"
+            action={
+              <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
+                <Close fontSize="small" />
+              </IconButton>
+            }
+          />
         </div>
       ) : view === 404 ? (
         <NotFound />

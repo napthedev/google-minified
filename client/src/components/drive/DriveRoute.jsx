@@ -1,6 +1,6 @@
 import { useHistory, useLocation, useRouteMatch, Route, Switch } from "react-router-dom";
 import { AppBar, Toolbar, Typography, IconButton, Tooltip, Box, CircularProgress } from "@material-ui/core";
-import { ExitToApp, Close } from "@material-ui/icons";
+import { ExitToApp, Close, Done } from "@material-ui/icons";
 import axios from "axios";
 
 import { useContext, useEffect, useState } from "react";
@@ -15,9 +15,15 @@ import { nanoid } from "nanoid";
 function CircularProgressWithLabel(props) {
   return (
     <Box position="relative" display="inline-flex">
-      <CircularProgress size={30} variant="determinate" {...props} />
+      {props.value !== 100 && <CircularProgress size={30} variant="determinate" {...props} />}
       <Box top={0} left={0} bottom={0} right={0} position="absolute" display="flex" alignItems="center" justifyContent="center">
-        <Typography style={{ fontSize: 9 }} variant="caption" component="div" color="textSecondary">{`${Math.round(props.value)}%`}</Typography>
+        {props.value === 100 ? (
+          <Done style={{ fill: "#00FFFF", marginRight: 20 }} />
+        ) : (
+          <Typography style={{ fontSize: 9 }} variant="caption" component="div" color="textSecondary">
+            {`${props.value}%`}
+          </Typography>
+        )}
       </Box>
     </Box>
   );
@@ -57,7 +63,6 @@ function DriveRoute() {
   const [filesUploading, setFilesUploading] = useState([]);
 
   const uploadFile = async (file, parentId) => {
-    console.log(file);
     let formData = new FormData();
     let id = nanoid();
     formData.append("file", file);
@@ -72,7 +77,7 @@ function DriveRoute() {
     ]);
 
     axios
-      .post("http://localhost:4000/upload", formData, {
+      .post(process.env.REACT_APP_UPLOAD_SERVER + "upload", formData, {
         onUploadProgress: (progress) => {
           let percentage = Math.round((progress.loaded / progress.total) * 100);
 
@@ -85,7 +90,6 @@ function DriveRoute() {
         },
       })
       .then((res) => {
-        console.log(res);
         axios.post(process.env.REACT_APP_SERVER_URL + "drive/create-file", {
           name: file.name,
           parentId,

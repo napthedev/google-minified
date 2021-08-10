@@ -1,8 +1,8 @@
 import { Redirect, Link, useParams, useHistory } from "react-router-dom";
 import { userContext } from "../../App";
 import { useState, useContext, useEffect, useRef } from "react";
-import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Snackbar } from "@material-ui/core";
-import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon, Close } from "@material-ui/icons";
+import { Button, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Snackbar } from "@material-ui/core";
+import { Delete, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon, Close } from "@material-ui/icons";
 import axios from "axios";
 import NotFound from "../NotFound";
 import { copyToClipboard } from "../Functions";
@@ -24,10 +24,12 @@ function Folder(props) {
 
   const history = useHistory();
 
-  const [uploadMenuOpened, setUploadMenuOpened] = useState(null);
+  const [currentDialog, setCurrentDialog] = useState("");
+
   const [dialogOpened, setDialogOpened] = useState(false);
-  const [createFolderName, setCreateFolderName] = useState("");
-  const [createFolderNameError, setCreateFolderNameError] = useState("");
+  const [dialogTextField, setDialogTextField] = useState("");
+  const [dialogTextFieldError, setDialogTextFieldError] = useState("");
+
   const [path, setPath] = useState([]);
 
   const [allFolder, setAllFolder] = useState([]);
@@ -45,6 +47,10 @@ function Folder(props) {
 
   const [snackbarOpened, setSnackbarOpened] = useState(false);
 
+  const [fileDragging, setFileDragging] = useState(false);
+
+  const [currentFileToRename, setCurrentFileToRename] = useState({ id: "", type: "" });
+
   const fetchFolderData = async () => {
     if (currentFolderIdRef.current !== null) {
       let response;
@@ -61,6 +67,8 @@ function Folder(props) {
       setPath([...data.path, data._id]);
 
       setPermission(response.data.permission);
+
+      console.log(response.data);
 
       if (response.data.permission) {
         setBreadcrumb([
@@ -116,21 +124,22 @@ function Folder(props) {
     };
   }, [currentFolderId]);
 
-  const handleCreateFolderFormSubmit = (e) => {
+  const handleDialogFormSubmit = (e) => {
     e.preventDefault();
-    if (!createFolderName.trim()) {
-      setCreateFolderNameError("Please enter the folder name");
+    if (!dialogTextField.trim()) {
+      setDialogTextFieldError("Please enter the name");
     } else {
-      setCreateFolderName("");
-      setCreateFolderNameError("");
-      createNewFolder();
+      setDialogTextField("");
+      setDialogTextFieldError("");
+      if (currentDialog === "create-new-folder") createNewFolder(dialogTextField);
+      else if (currentDialog === "rename") handleRename(dialogTextField);
       setDialogOpened(false);
     }
   };
 
-  const createNewFolder = async () => {
+  const createNewFolder = async (name) => {
     await axios.post(process.env.REACT_APP_SERVER_URL + "drive/create-folder", {
-      name: createFolderName,
+      name,
       path: path,
       parentId: currentFolderId,
     });
@@ -142,8 +151,8 @@ function Folder(props) {
     if (e.detail === 1) {
       if (e.ctrlKey) {
         let clone = [...selected];
-        if (clone.includes(id)) {
-          clone = clone.filter((e) => e !== id);
+        if (clone.filter((e) => e.id === id).length > 0) {
+          clone = clone.filter((e) => e.id !== id);
         } else {
           clone.push({ type, id });
         }
@@ -164,15 +173,83 @@ function Folder(props) {
   };
 
   const downloadFile = () => {
-    const file = allFiles.find((e) => e._id === selected[0].id);
-    let anchor = document.createElement("a");
-    anchor.href = file.url + "?dl=1";
-    anchor.download = file.name;
-    anchor.target = "_blank";
-    anchor.style.display = "none";
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    function download(i) {
+      if (i < selected.length) {
+        const file = allFiles.find((elem) => elem._id === selected[i].id);
+        let anchor = document.createElement("a");
+        anchor.href = file.url + "?dl=1";
+        anchor.download = file.name;
+        anchor.style.display = "none";
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+
+        setTimeout(() => {
+          i++;
+          download(i);
+        }, 500);
+      }
+    }
+
+    download(0);
+  };
+
+  const fileDragFocus = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFileDragging(true);
+  };
+
+  const fileDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFileDragging(false);
+  };
+
+  const dropFile = (e) => {
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+      let items = e.dataTransfer.items;
+      let files = e.dataTransfer.files;
+
+      for (let i = 0, item; (item = items[i]); ++i) {
+        let entry = item.webkitGetAsEntry();
+        if (entry.isFile) {
+          console.log(files[i]);
+          uploadFile(files[i], currentFolderId);
+        }
+      }
+
+      setFileDragging(false);
+    } catch (error) {
+      setFileDragging(false);
+    }
+  };
+
+  const handleRename = async (name) => {
+    await axios
+      .post(process.env.REACT_APP_SERVER_URL + "drive/rename", {
+        _id: currentFileToRename.id,
+        type: currentFileToRename.type,
+        name,
+      })
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err, err.response));
+
+    fetchFolderData();
+  };
+
+  const deleteFileOrFolder = async (type, id) => {
+    await axios
+      .post(process.env.REACT_APP_SERVER_URL + "drive/delete", {
+        type,
+        _id: id,
+      })
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err, err.response));
+
+    fetchFolderData();
   };
 
   return (
@@ -180,76 +257,51 @@ function Folder(props) {
       {!currentUser && !currentFolderId ? (
         <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
       ) : (
-        <div style={{ display: "flex", flexGrow: 1, alignItems: "stretch" }}>
-          <List component="nav" className="main-column">
-            {permission !== false && (
-              <>
-                {permission && (
-                  <Button style={{ margin: 10 }} onClick={(e) => setUploadMenuOpened(e.currentTarget)} variant="outlined" color="primary">
-                    <CloudUpload />
-                    <Typography className="responsive-label" style={{ marginLeft: 10 }}>
-                      Upload
-                    </Typography>
-                  </Button>
-                )}
-                <Menu anchorEl={uploadMenuOpened} keepMounted open={Boolean(uploadMenuOpened)} onClose={() => setUploadMenuOpened(null)}>
-                  <MenuItem
-                    style={{ gap: 10 }}
-                    onClick={() => {
-                      setDialogOpened(true);
-                      setUploadMenuOpened(null);
-                    }}
-                  >
-                    <CreateNewFolder />
-                    New Folder
-                  </MenuItem>
-                  <input type="file" hidden onChange={(e) => uploadFile(e.target.files[0], currentFolderId)} ref={fileInput} />
-                  <MenuItem
-                    style={{ gap: 10 }}
-                    onClick={() => {
-                      fileInput.current.click();
-                      setUploadMenuOpened(null);
-                    }}
-                  >
-                    <InsertDriveFile />
-                    Upload a file
-                  </MenuItem>
-                  <input
-                    type="file"
-                    hidden
-                    multiple
-                    onChange={(e) => {
-                      let files = e.target.files;
-                      console.log(files);
-                      Object.keys(files).forEach((e) => {
-                        uploadFile(files[e], currentFolderId);
-                      });
-                    }}
-                    ref={multipleFilesInput}
-                  />
-                  <MenuItem
-                    style={{ gap: 10 }}
-                    onClick={() => {
-                      multipleFilesInput.current.click();
-                      setUploadMenuOpened(null);
-                    }}
-                  >
-                    <FileCopy />
-                    Upload files
-                  </MenuItem>
-                </Menu>
-              </>
-            )}
+        <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={fileDragLeave} onDragEnter={fileDragFocus} onDragOver={fileDragFocus} className={fileDragging ? " file-dragging" : ""}>
+          {permission !== false && !notFound && (
+            <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
+              <Button
+                onClick={() => {
+                  setCurrentDialog("create-new-folder");
+                  setDialogOpened(true);
+                }}
+              >
+                <CreateNewFolder style={{ marginRight: 10 }} />
+                <span>New Folder</span>
+              </Button>
+              <input type="file" hidden onChange={(e) => uploadFile(e.target.files[0], currentFolderId)} ref={fileInput} />
+              <Button
+                onClick={() => {
+                  fileInput.current.click();
+                }}
+              >
+                <InsertDriveFile style={{ marginRight: 10 }} />
+                <span>Upload a file</span>
+              </Button>
+              <input
+                type="file"
+                hidden
+                multiple
+                onChange={(e) => {
+                  let files = e.target.files;
+                  console.log(files);
+                  Object.keys(files).forEach((e) => {
+                    uploadFile(files[e], currentFolderId);
+                  });
+                }}
+                ref={multipleFilesInput}
+              />
+              <Button
+                onClick={() => {
+                  multipleFilesInput.current.click();
+                }}
+              >
+                <FileCopy style={{ marginRight: 10 }} />
+                <span>Upload files</span>
+              </Button>
+            </div>
+          )}
 
-            <ListItem onClick={() => history.push("/drive")} className="list-item" button>
-              <Storage className="gray-icon" />
-              <Typography className="responsive-label">My Drive</Typography>
-            </ListItem>
-            <ListItem className="list-item" button>
-              <Delete className="gray-icon" />
-              <Typography className="responsive-label">Trash</Typography>
-            </ListItem>
-          </List>
           {!notFound ? (
             <div className="main">
               <div className="actions-wrapper">
@@ -271,7 +323,7 @@ function Folder(props) {
                     </Tooltip>
                   )}
 
-                  {selected.length === 1 && selected[0]?.type === "file" && (
+                  {selected.length > 0 && selected.every((e) => e.type === "file") && (
                     <Tooltip title="Download" onClick={downloadFile}>
                       <IconButton color="primary">
                         <GetApp />
@@ -280,17 +332,35 @@ function Folder(props) {
                   )}
                   {permission && (
                     <>
-                      <Tooltip title="Rename">
-                        <IconButton>
-                          <Create />
-                        </IconButton>
-                      </Tooltip>
+                      {selected.length === 1 && (
+                        <Tooltip
+                          title="Rename"
+                          onClick={() => {
+                            setCurrentFileToRename(selected[0]);
+                            setCurrentDialog("rename");
+                            setDialogOpened(true);
+                          }}
+                        >
+                          <IconButton>
+                            <Create />
+                          </IconButton>
+                        </Tooltip>
+                      )}
 
-                      <Tooltip title="Delete">
-                        <IconButton color="secondary">
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
+                      {selected.length > 0 && (
+                        <Tooltip
+                          title="Delete"
+                          onClick={() => {
+                            selected.forEach((e) => {
+                              deleteFileOrFolder(e.type, e.id);
+                            });
+                          }}
+                        >
+                          <IconButton color="secondary">
+                            <Delete />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </>
                   )}
                 </div>
@@ -302,7 +372,7 @@ function Folder(props) {
                 </div>
               ) : (
                 <>
-                  {allFolder.length === 0 && allFiles.length === 0 && <Typography>This folder is empty</Typography>}
+                  {allFolder.length === 0 && allFiles.length === 0 && (currentFolderId ? <Typography>This folder is empty</Typography> : <Typography>Your Drive is empty</Typography>)}
 
                   {allFolder.length > 0 && (
                     <Typography style={{ margin: 10 }} variant="subtitle2">
@@ -330,7 +400,7 @@ function Folder(props) {
                       <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-container" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
                         <div className="center-div" style={{ flexGrow: 1 }}>
                           <div className="center-div" style={{ height: "40%" }}>
-                            <img onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                            <img draggable={false} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
                           </div>
                         </div>
                         <div className="file-container-label">
@@ -346,10 +416,10 @@ function Folder(props) {
             <NotFound />
           )}
           <Dialog open={dialogOpened} onClose={() => setDialogOpened(false)}>
-            <form onSubmit={handleCreateFolderFormSubmit}>
-              <DialogTitle>Create New Folder</DialogTitle>
+            <form onSubmit={handleDialogFormSubmit}>
+              <DialogTitle>{currentDialog === "create-new-folder" ? "Create New Folder" : currentDialog === "rename" ? "Rename" : ""}</DialogTitle>
               <DialogContent>
-                <TextField error={Boolean(createFolderNameError)} helperText={createFolderNameError} value={createFolderName} onChange={(e) => setCreateFolderName(e.target.value)} type="text" autoFocus margin="dense" label="Folder name" fullWidth />
+                <TextField error={Boolean(dialogTextFieldError)} helperText={dialogTextFieldError} value={dialogTextField} onChange={(e) => setDialogTextField(e.target.value)} type="text" autoFocus margin="dense" label={currentDialog === "create-new-folder" ? "Folder name" : currentDialog === "rename" ? "New name" : ""} fullWidth />
               </DialogContent>
               <DialogActions>
                 <Button type="button" onClick={() => setDialogOpened(false)} color="primary">

@@ -12,11 +12,26 @@ body {
 }
 
 .main {
-  padding: 20px;
+  padding: 0 20px;
   width: 100%;
   user-select: none;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+}
+
+.file-dragging {
+  position: relative;
+}
+
+.file-dragging::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(9, 102, 213, 0.1);
 }
 
 .main-grid {
@@ -56,12 +71,6 @@ body {
   border-top: thin solid lightgray;
 }
 
-.main-column {
-  flex-basis: 250px;
-  border-right: thin solid lightgray;
-  min-height: 100%;
-}
-
 .list-item {
   gap: 5px;
 }
@@ -70,10 +79,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.actions-wrapper * {
-  white-space: nowrap;
+  min-height: 48px;
 }
 
 .selected {
@@ -140,10 +146,6 @@ body {
 @media only screen and (max-width: 768px) {
   .responsive-label {
     display: none;
-  }
-
-  .main-column {
-    flex-basis: 30px;
   }
 
   .list-item {

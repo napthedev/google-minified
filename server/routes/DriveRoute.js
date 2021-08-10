@@ -11,12 +11,17 @@ route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
 
     if (!folder) return res.sendStatus(404);
 
-    const pathObj = await Promise.all(
-      folder.path.map(async (e) => {
-        const childFolder = await Folders.findOne({ _id: e });
-        return childFolder;
-      })
-    );
+    let pathObj;
+    if (folder.path.length === 1 && folder.path[0] === null) {
+      pathObj = [];
+    } else {
+      pathObj = await Promise.all(
+        folder.path.map(async (e) => {
+          const childFolder = await Folders.findOne({ _id: e });
+          return childFolder;
+        })
+      );
+    }
 
     res.send({ folder, permission: req.user?.id === folder.userId, pathObj });
   } catch (error) {
@@ -84,6 +89,53 @@ route.post("/create-file", verifyJWT, async (req, res) => {
     const saved = await newFile.save();
 
     res.send(saved);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+route.post("/rename", verifyJWT, async (req, res) => {
+  try {
+    let existing;
+    if (req.body.type === "file") {
+      existing = await Files.findOne({
+        _id: req.body._id,
+      });
+    } else if (req.body.type === "folder") {
+      existing = await Folders.findOne({
+        _id: req.body._id,
+      });
+    }
+
+    if (!existing) return res.sendStatus(404);
+
+    if (existing.userId !== req.user.id) return res.sendStatus(403);
+
+    if (req.body.type === "file") existing.name = `${req.body.name}.${existing.name.split(".")[existing.name.split(".").length - 1]}`;
+    else if (req.body.type === "folder") existing.name = req.body.name;
+
+    const saved = await existing.save();
+
+    res.send(saved);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+route.post("/delete", verifyJWT, async (req, res) => {
+  try {
+    if (req.body.type === "file") {
+      const deleted = await Files.findOneAndDelete({ _id: req.body._id });
+      return res.send(deleted);
+    }
+    if (req.body.type === "folder") {
+      const deletedFolder = await Folders.findOneAndDelete({ _id: req.body._id });
+      const deletedFolders = await Folders.deleteMany({ path: req.body._id });
+      const deletedFiles = await Files.deleteMany({ path: req.body._id });
+
+      return res.send({ deletedFiles, deletedFolders, deletedFolder });
+    }
+    res.sendStatus(400);
   } catch (error) {
     res.status(500).send(error);
   }

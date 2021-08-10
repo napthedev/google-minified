@@ -1,10 +1,11 @@
 import { Redirect, Link, useParams, useHistory } from "react-router-dom";
 import { userContext } from "../../App";
 import { useState, useContext, useEffect, useRef } from "react";
-import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress } from "@material-ui/core";
-import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon } from "@material-ui/icons";
+import { List, ListItem, Button, Menu, MenuItem, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Snackbar } from "@material-ui/core";
+import { Storage, Delete, CloudUpload, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon, Close } from "@material-ui/icons";
 import axios from "axios";
 import NotFound from "../NotFound";
+import { copyToClipboard } from "../Functions";
 
 function Folder(props) {
   const { currentUser } = useContext(userContext);
@@ -41,6 +42,8 @@ function Folder(props) {
   const [loading, setLoading] = useState(true);
 
   const [notFound, setNotFound] = useState(false);
+
+  const [snackbarOpened, setSnackbarOpened] = useState(false);
 
   const fetchFolderData = async () => {
     if (currentFolderIdRef.current !== null) {
@@ -142,16 +145,34 @@ function Folder(props) {
         if (clone.includes(id)) {
           clone = clone.filter((e) => e !== id);
         } else {
-          clone.push(id);
+          clone.push({ type, id });
         }
         setSelected(clone);
       } else {
-        setSelected([id]);
+        setSelected([{ type, id }]);
       }
     } else if (e.detail === 2) {
       if (type === "folder") history.push("/drive/folder/" + id);
       else if (type === "file") history.push(`/drive/file/${id}?back=1`);
     }
+  };
+
+  const copyLink = async () => {
+    const urlToCopy = selected[0].type === "folder" ? `${window.location.origin}/drive/folder/${selected[0].id}` : `${window.location.origin}/drive/file/${selected[0].id}`;
+    await copyToClipboard(urlToCopy);
+    setSnackbarOpened(true);
+  };
+
+  const downloadFile = () => {
+    const file = allFiles.find((e) => e._id === selected[0].id);
+    let anchor = document.createElement("a");
+    anchor.href = file.url + "?dl=1";
+    anchor.download = file.name;
+    anchor.target = "_blank";
+    anchor.style.display = "none";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
   };
 
   return (
@@ -242,19 +263,24 @@ function Folder(props) {
                   ))}
                 </Breadcrumbs>
                 <div>
-                  <Tooltip title="Copy Link">
-                    <IconButton color="default">
-                      <InsertLink />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Download">
-                    <IconButton color="primary">
-                      <GetApp />
-                    </IconButton>
-                  </Tooltip>
+                  {selected.length === 1 && (
+                    <Tooltip title="Copy Link" onClick={copyLink}>
+                      <IconButton color="default">
+                        <InsertLink />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+
+                  {selected.length === 1 && selected[0]?.type === "file" && (
+                    <Tooltip title="Download" onClick={downloadFile}>
+                      <IconButton color="primary">
+                        <GetApp />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                   {permission && (
                     <>
-                      <Tooltip title="Rename file">
+                      <Tooltip title="Rename">
                         <IconButton>
                           <Create />
                         </IconButton>
@@ -286,7 +312,7 @@ function Folder(props) {
 
                   <div className="main-grid">
                     {allFolder.map((e) => (
-                      <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-container" + (selected.includes(e._id) ? " selected" : "")}>
+                      <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-container" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
                         <FolderIcon className="gray-icon" />
                         <Typography>{e.name}</Typography>
                       </div>
@@ -301,7 +327,7 @@ function Folder(props) {
 
                   <div className="main-grid">
                     {allFiles.map((e) => (
-                      <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-container" + (selected.includes(e._id) ? " selected" : "")} key={e._id}>
+                      <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-container" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
                         <div className="center-div" style={{ flexGrow: 1 }}>
                           <div className="center-div" style={{ height: "40%" }}>
                             <img onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
@@ -335,6 +361,21 @@ function Folder(props) {
               </DialogActions>
             </form>
           </Dialog>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            open={snackbarOpened}
+            autoHideDuration={5000}
+            onClose={() => setSnackbarOpened(false)}
+            message="URL Copied to clipboard"
+            action={
+              <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
+                <Close fontSize="small" />
+              </IconButton>
+            }
+          />
         </div>
       )}
     </>

@@ -78,7 +78,7 @@ function Files() {
 
   const downloadFile = () => {
     let anchor = document.createElement("a");
-    anchor.href = file.url;
+    anchor.href = file.url + "?dl=1";
     anchor.download = file.name;
     anchor.target = "_blank";
     anchor.style.display = "none";

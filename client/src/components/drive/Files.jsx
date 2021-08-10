@@ -9,6 +9,9 @@ import { InsertLink, GetApp, ArrowBack, Close } from "@material-ui/icons";
 
 import { copyToClipboard } from "../Functions";
 
+import Highlight from "react-highlight";
+import "../../css/railscasts.min.css";
+
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -115,8 +118,8 @@ function Files() {
           </div>
           <div style={{ flex: 1, height: "calc(100vh - 50px)" }}>
             {type === "text" ? (
-              <div className="center-container">
-                <pre>{data}</pre>
+              <div className="highlight-js-container">
+                <Highlight className={file.name.split(".")[file.name.split(".").length - 1]}>{data}</Highlight>
               </div>
             ) : type === "video" ? (
               <div className="center-container">

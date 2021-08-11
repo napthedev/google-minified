@@ -133,5 +133,6 @@ body {
 
 .highlight-js-container pre {
   width: 100%;
-  height: calc(100% - 15px);
+  height: 100%;
+  margin: 0;
 }

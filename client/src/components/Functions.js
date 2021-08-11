@@ -41,3 +41,13 @@ export const calculateCreatedTime = (timeCreated) => {
 
   return "Just now";
 };
+
+export const anchorDownloadFile = (url) => {
+  var anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = url;
+  anchor.style.display = "none";
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+};

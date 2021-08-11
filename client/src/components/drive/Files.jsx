@@ -12,7 +12,7 @@ import { copyToClipboard } from "../Functions";
 import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
 
-import { saveAs } from "file-saver";
+import { anchorDownloadFile } from "../Functions";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -79,7 +79,7 @@ function Files() {
   };
 
   const downloadFile = () => {
-    saveAs(file.url + "?dl=1", file.name);
+    anchorDownloadFile(file.url + "?dl=1");
   };
 
   return (

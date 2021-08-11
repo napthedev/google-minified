@@ -29,4 +29,17 @@
     --background: #303030;
     --box: #424242;
   }
+
+  .dynamic-icon {
+    color: white;
+  }
+
+  .upload-progress-header {
+    background: #26292a;
+  }
+
+  .upload-progress-row {
+    background: #181a1b;
+    border: thin solid #1c1e1f;
+  }
 }

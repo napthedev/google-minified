@@ -183,7 +183,7 @@ function Folder(props) {
         setTimeout(() => {
           i++;
           download(i);
-        }, 500);
+        }, 1000);
       }
     }
 

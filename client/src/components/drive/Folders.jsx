@@ -253,7 +253,7 @@ function Folder(props) {
         <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
       ) : (
         <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
-          {permission !== false && !notFound && (
+          {permission && !notFound && (
             <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
               <div className="center-div">
                 <Button

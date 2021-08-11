@@ -33,11 +33,11 @@ route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
   try {
     let folderChild;
     let filesChild;
-    if (req.body.parentId === "") {
-      if (!req.user?.id) return res.sendStatus(403);
+    if (!req.body.parentId) {
+      if (!req.user?.id) return res.sendStatus(400);
 
-      folderChild = await Folders.find({ parentId: "", userId: req.user?.id });
-      filesChild = await Files.find({ parentId: "", userId: req.user?.id });
+      folderChild = await Folders.find({ parentId: null, userId: req.user.id });
+      filesChild = await Files.find({ parentId: null, userId: req.user.id });
     } else {
       folderChild = await Folders.find({ parentId: req.body.parentId });
       filesChild = await Files.find({ parentId: req.body.parentId });
@@ -127,15 +127,21 @@ route.post("/rename", verifyJWT, async (req, res) => {
 route.post("/delete", verifyJWT, async (req, res) => {
   try {
     if (req.body.type === "file") {
-      const deleted = await Files.findOneAndDelete({ _id: req.body._id });
+      const file = await Files.findOne({ _id: req.body._id });
+      if (file.userId !== req.user.id) return res.sendStatus(403);
+      const deleted = await file.delete();
       return res.send(deleted);
     }
     if (req.body.type === "folder") {
-      const deletedFolder = await Folders.findOneAndDelete({ _id: req.body._id });
+      const folder = await Folders.findOne({ _id: req.body._id });
+      if (folder.userId !== req.user.id) return res.sendStatus(403);
+
+      const deleted = await folder.delete();
+
       const deletedFolders = await Folders.deleteMany({ path: req.body._id });
       const deletedFiles = await Files.deleteMany({ path: req.body._id });
 
-      return res.send({ deletedFiles, deletedFolders, deletedFolder });
+      return res.send({ deletedFiles, deletedFolders, deleted });
     }
     res.sendStatus(400);
   } catch (error) {

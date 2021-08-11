@@ -111,8 +111,8 @@ function Folder(props) {
     document.onclick = (e) => {
       let clickedOutside = true;
 
-      let foldersEl = Array.prototype.slice.call(document.getElementsByClassName("folder-container"));
-      let filesEl = Array.prototype.slice.call(document.getElementsByClassName("file-container"));
+      let foldersEl = Array.prototype.slice.call(document.getElementsByClassName("folder-box"));
+      let filesEl = Array.prototype.slice.call(document.getElementsByClassName("file-box"));
       let allEl = foldersEl.concat(filesEl);
 
       for (const el of allEl) {
@@ -190,39 +190,6 @@ function Folder(props) {
     download(0);
   };
 
-  const fileDragFocus = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFileDragging(true);
-  };
-
-  const fileDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFileDragging(false);
-  };
-
-  const dropFile = (e) => {
-    try {
-      e.preventDefault();
-      e.stopPropagation();
-      let items = e.dataTransfer.items;
-      let files = e.dataTransfer.files;
-
-      for (let i = 0, item; (item = items[i]); ++i) {
-        let entry = item.webkitGetAsEntry();
-        if (entry.isFile) {
-          console.log(files[i]);
-          uploadFile(files[i], currentFolderId);
-        }
-      }
-
-      setFileDragging(false);
-    } catch (error) {
-      setFileDragging(false);
-    }
-  };
-
   const handleRename = async (name) => {
     await axios
       .post(process.env.REACT_APP_SERVER_URL + "drive/rename", {
@@ -248,32 +215,68 @@ function Folder(props) {
     fetchFolderData();
   };
 
+  const dragBlur = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFileDragging(false);
+  };
+
+  const dragFocus = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFileDragging(true);
+  };
+
+  const dropFile = (e) => {
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+      let items = e.dataTransfer.items;
+      let files = e.dataTransfer.files;
+
+      for (let i = 0, item; (item = items[i]); ++i) {
+        let entry = item.webkitGetAsEntry();
+        if (entry.isFile) {
+          uploadFile(files[i], currentFolderId);
+        }
+      }
+
+      setFileDragging(false);
+    } catch (error) {
+      setFileDragging(false);
+    }
+  };
+
   return (
     <>
       {!currentUser && !currentFolderId ? (
         <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
       ) : (
-        <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={fileDragLeave} onDragEnter={fileDragFocus} onDragOver={fileDragFocus} className={fileDragging ? " file-dragging" : ""}>
+        <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
           {permission !== false && !notFound && (
-            <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
-              <Button
-                onClick={() => {
-                  setCurrentDialog("create-new-folder");
-                  setDialogOpened(true);
-                }}
-              >
-                <CreateNewFolder style={{ marginRight: 10 }} />
-                <span>New Folder</span>
-              </Button>
+            <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
+              <div className="center-div">
+                <Button
+                  onClick={() => {
+                    setCurrentDialog("create-new-folder");
+                    setDialogOpened(true);
+                  }}
+                >
+                  <CreateNewFolder style={{ marginRight: 10 }} />
+                  <span>New Folder</span>
+                </Button>
+              </div>
               <input type="file" hidden onChange={(e) => uploadFile(e.target.files[0], currentFolderId)} ref={fileInput} />
-              <Button
-                onClick={() => {
-                  fileInput.current.click();
-                }}
-              >
-                <InsertDriveFile style={{ marginRight: 10 }} />
-                <span>Upload a file</span>
-              </Button>
+              <div className="center-div">
+                <Button
+                  onClick={() => {
+                    fileInput.current.click();
+                  }}
+                >
+                  <InsertDriveFile style={{ marginRight: 10 }} />
+                  <span>Upload a file</span>
+                </Button>
+              </div>
               <input
                 type="file"
                 hidden
@@ -287,14 +290,16 @@ function Folder(props) {
                 }}
                 ref={multipleFilesInput}
               />
-              <Button
-                onClick={() => {
-                  multipleFilesInput.current.click();
-                }}
-              >
-                <FileCopy style={{ marginRight: 10 }} />
-                <span>Upload files</span>
-              </Button>
+              <div className="center-div">
+                <Button
+                  onClick={() => {
+                    multipleFilesInput.current.click();
+                  }}
+                >
+                  <FileCopy style={{ marginRight: 10 }} />
+                  <span>Upload files</span>
+                </Button>
+              </div>
             </div>
           )}
 
@@ -378,8 +383,8 @@ function Folder(props) {
 
                   <div className="main-grid">
                     {allFolder.map((e) => (
-                      <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-container" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
-                        <FolderIcon className="gray-icon" />
+                      <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-box" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
+                        <FolderIcon className="dynamic-icon" />
                         <Typography>{e.name}</Typography>
                       </div>
                     ))}
@@ -393,13 +398,13 @@ function Folder(props) {
 
                   <div className="main-grid">
                     {allFiles.map((e) => (
-                      <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-container" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
+                      <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-box" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
                         <div className="center-div" style={{ flexGrow: 1 }}>
                           <div className="center-div" style={{ height: "40%" }}>
                             <img draggable={false} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
                           </div>
                         </div>
-                        <div className="file-container-label">
+                        <div className="file-box-label">
                           <Typography>{e.name}</Typography>
                         </div>
                       </div>

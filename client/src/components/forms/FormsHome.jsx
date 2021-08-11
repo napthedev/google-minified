@@ -48,7 +48,7 @@ function FormsHome() {
       {currentUser ? (
         <>
           {!loading ? (
-            <div className="container">
+            <div className="forms-grid">
               {allForms?.length > 0 && (
                 <>
                   {allForms.map((e) =>
@@ -87,8 +87,8 @@ function FormsHome() {
                 </>
               )}
 
-              <Tooltip title="Create new form" className="create-form-button" style={{ aspectRatio: allForms.length === 0 ? "1 / 1" : "" }}>
-                <Button variant="outlined" onClick={() => history.push("/forms/create")}>
+              <Tooltip title="Create new form" style={{ aspectRatio: allForms.length === 0 ? "1 / 1" : "" }}>
+                <Button style={{ fontSize: 50 }} variant="outlined" onClick={() => history.push("/forms/create")}>
                   +
                 </Button>
               </Tooltip>

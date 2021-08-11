@@ -253,7 +253,7 @@ function Edit() {
                   {tabValue === 0 ? (
                     <div className="edit-page" style={{ display: "flex", flexDirection: "column" }}>
                       <Container style={{ maxWidth: 700, flexGrow: 1, display: "flex", flexDirection: "column" }}>
-                        <div className="form-container" style={{ flexGrow: 1 }}>
+                        <div className="edit-form-container" style={{ flexGrow: 1 }}>
                           <div className="box" style={{ borderTop: "8px solid #673ab7" }}>
                             <TextField onFocus={(e) => e.target.select()} fullWidth placeholder="Form name" onChange={(e) => setTitle(e.target.value)} value={title} inputProps={{ style: { fontSize: 35 } }} />
                             <TextField onFocus={(e) => e.target.select()} fullWidth placeholder="Form description" onChange={(e) => setDescription(e.target.value)} value={description} />

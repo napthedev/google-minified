@@ -111,6 +111,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         httpOnly: true,
         expires: date,
         path: "/",
+        domain: req.get("host").split(".").slice(-2).join("."),
       })
       .send({
         user,
@@ -130,6 +131,7 @@ route.get("/sign-out", (req, res) => {
       httpOnly: true,
       expires: date,
       path: "/",
+      domain: req.get("host").split(".").slice(-2).join("."),
     })
     .sendStatus(200);
 });

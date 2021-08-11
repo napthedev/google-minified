@@ -110,6 +110,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
       .cookie("token", accessToken, {
         httpOnly: true,
         expires: date,
+        path: "/",
       })
       .send({
         user,
@@ -121,12 +122,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
 });
 
 route.get("/sign-out", (req, res) => {
-  res
-    .cookie("token", "", {
-      httpOnly: true,
-      expires: Date.now(),
-    })
-    .sendStatus(200);
+  res.clearCookie("token", { path: "/" }).sendStatus(200);
 });
 
 module.exports = route;

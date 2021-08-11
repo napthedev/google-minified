@@ -1,0 +1,40 @@
+.translate-container {
+  display: flex;
+  flex-direction: column;
+  margin: 50px 5% 0 5%;
+}
+
+.translate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  background: #282829;
+  padding: 0 20px;
+  position: relative;
+}
+
+.translate-flex {
+  display: flex;
+  width: 100%;
+}
+
+.translate-box {
+  min-height: 200px;
+  outline: none;
+  padding: 20px;
+  font-size: 24px;
+  width: 50%;
+  resize: none;
+  border: none;
+  color: white;
+  word-wrap: break-word;
+}
+
+.swap-button {
+  position: absolute !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -41,24 +41,12 @@ function CloseBtn(props) {
 function DriveRoute() {
   useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/7UhjvWJ.png"), []);
 
-  const { currentUser, setCurrentUser } = useContext(userContext);
+  const { currentUser, handleSignOut } = useContext(userContext);
 
   const { path } = useRouteMatch();
 
   const history = useHistory();
   const location = useLocation();
-
-  const handleSignOut = () => {
-    axios
-      .get(process.env.REACT_APP_SERVER_URL + "auth/sign-out")
-      .then((res) => {
-        setCurrentUser(null);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-        alert("Failed to sign out, try to delete the cookie");
-      });
-  };
 
   const [filesUploading, setFilesUploading] = useState([]);
 

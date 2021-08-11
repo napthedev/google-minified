@@ -9,6 +9,7 @@ import NotFound from "./components/NotFound";
 
 import FormsRoute from "./components/forms/FormsRoute";
 import DriveRoute from "./components/drive/DriveRoute";
+import TranslateRoute from "./components/translate/TranslateRoute";
 
 export const userContext = createContext(null);
 
@@ -48,17 +49,30 @@ function App() {
       });
   }, []);
 
+  const handleSignOut = () => {
+    axios
+      .get(process.env.REACT_APP_SERVER_URL + "auth/sign-out")
+      .then((res) => {
+        setCurrentUser(null);
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+        alert("Failed to sign out, try to delete the cookie");
+      });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
+      <userContext.Provider value={{ currentUser, setCurrentUser, theme, handleSignOut }}>
         {typeof currentUser !== "undefined" ? (
           <Switch>
             <Route path="/" exact>
               GGClone home.
               <Link to="/forms">Forms</Link>
               <Link to="/drive">Drive</Link>
-              <p>Todo: Docs, Sheets, Meet, Map, Photos, Translate</p>
+              <Link to="/translate">Translate</Link>
+              <p>Todo: Docs, Sheets, Meet, Map, Photos</p>
             </Route>
             <Route path="/sign-in">
               <SignIn />
@@ -68,6 +82,7 @@ function App() {
             </Route>
             <Route path="/forms" component={FormsRoute}></Route>
             <Route path="/drive" component={DriveRoute}></Route>
+            <Route path="/translate" component={TranslateRoute}></Route>
             <Route>
               <NotFound />
             </Route>

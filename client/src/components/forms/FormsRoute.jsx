@@ -1,7 +1,6 @@
 import { useHistory, useLocation, useRouteMatch, Route, Switch } from "react-router-dom";
 import { AppBar, Toolbar, Typography, IconButton, Tooltip } from "@material-ui/core";
 import { ExitToApp } from "@material-ui/icons";
-import axios from "axios";
 
 import { useContext, useEffect } from "react";
 import { userContext } from "../../App";
@@ -15,24 +14,12 @@ import NotFound from "../NotFound";
 function FormsRoute() {
   useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/prj8GAN.png"), []);
 
-  const { currentUser, setCurrentUser } = useContext(userContext);
+  const { currentUser, handleSignOut } = useContext(userContext);
 
   const { path } = useRouteMatch();
 
   const history = useHistory();
   const location = useLocation();
-
-  const handleSignOut = () => {
-    axios
-      .get(process.env.REACT_APP_SERVER_URL + "auth/sign-out")
-      .then((res) => {
-        setCurrentUser(null);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-        alert("Failed to sign out, try to delete the cookie");
-      });
-  };
 
   return (
     <>

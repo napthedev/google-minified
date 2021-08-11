@@ -121,7 +121,12 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
 });
 
 route.get("/sign-out", (req, res) => {
-  res.clearCookie("token").sendStatus(200);
+  res
+    .cookie("token", "", {
+      httpOnly: true,
+      expires: Date.now(),
+    })
+    .sendStatus(200);
 });
 
 module.exports = route;

@@ -16,7 +16,10 @@ export const userContext = createContext(null);
 axios.defaults.withCredentials = true;
 
 function App() {
-  useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/yq4Tp3N.png"), []);
+  useEffect(() => {
+    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/UcOrFtl.png";
+    document.title = "Google Clone";
+  }, []);
 
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 

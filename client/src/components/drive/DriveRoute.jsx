@@ -39,7 +39,9 @@ function CloseBtn(props) {
 }
 
 function DriveRoute() {
-  useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/7UhjvWJ.png"), []);
+  useEffect(() => {
+    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/Cr3oZGy.png";
+  }, []);
 
   const { currentUser, handleSignOut } = useContext(userContext);
 
@@ -100,7 +102,7 @@ function DriveRoute() {
         <AppBar position="static" color="transparent" elevation={1}>
           <Toolbar>
             <IconButton onClick={() => history.push("/drive")} edge="start" color="inherit" aria-label="menu">
-              <img height={30} src="https://i.imgur.com/7UhjvWJ.png" />
+              <img height={30} src="https://i.imgur.com/Cr3oZGy.png" />
             </IconButton>
             <div style={{ flexGrow: 1 }}>
               <Typography onClick={() => history.push("/drive")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>

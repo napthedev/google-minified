@@ -15,6 +15,7 @@ function Folder(props) {
 
   useEffect(() => {
     currentFolderIdRef.current = currentFolderId;
+    if (!currentFolderId) document.title = "My Drive - Google Drive Clone";
   }, [currentFolderId]);
 
   const currentFolderIdRef = useRef();
@@ -65,11 +66,12 @@ function Folder(props) {
       }
 
       let data = response.data.folder;
+
+      document.title = data.name + " - Folder - Google Drive Clone";
+
       setPath([...data.path, data._id]);
 
       setPermission(response.data.permission);
-
-      console.log(response.data);
 
       if (response.data.permission) {
         setBreadcrumb([

@@ -12,7 +12,9 @@ import Response from "./Response";
 import NotFound from "../NotFound";
 
 function FormsRoute() {
-  useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/prj8GAN.png"), []);
+  useEffect(() => {
+    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/prj8GAN.png";
+  }, []);
 
   const { currentUser, handleSignOut } = useContext(userContext);
 

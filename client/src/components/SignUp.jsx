@@ -12,7 +12,9 @@ function useQuery() {
 }
 
 function SignUp() {
-  useEffect(() => (document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/yq4Tp3N.png"), []);
+  useEffect(() => {
+    document.title = "Sign Up - Google Clone";
+  }, []);
 
   const query = useQuery();
   const redirect = query.get("redirect");

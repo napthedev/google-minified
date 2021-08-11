@@ -41,6 +41,8 @@ function Files() {
     axios
       .post(process.env.REACT_APP_SERVER_URL + "drive/get-file", { _id: id })
       .then(async (res) => {
+        document.title = res.data.name + " - File - Google Drive Clone";
+
         if (res.data.type.startsWith("text")) {
           const textData = await axios.get(res.data.url);
           setData(textData.data);

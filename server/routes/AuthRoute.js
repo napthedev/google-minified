@@ -5,6 +5,15 @@ const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");
 
+const getDomainWithoutSubdomain = (url) => {
+  const urlParts = new URL(url).hostname.split(".");
+
+  return urlParts
+    .slice(0)
+    .slice(-(urlParts.length === 4 ? 3 : 2))
+    .join(".");
+};
+
 route.get("/verify/:id", async (req, res) => {
   try {
     const data = await Auth.findOne({ id: req.params.id });
@@ -111,6 +120,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         httpOnly: true,
         expires: date,
         path: "/",
+        domain: getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) : "localhost",
       })
       .send({
         user,
@@ -130,8 +140,9 @@ route.get("/sign-out", (req, res) => {
       httpOnly: true,
       expires: date,
       path: "/",
+      domain: getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) : "localhost",
     })
-    .sendStatus(200);
+    .send("Logged out");
 });
 
 module.exports = route;

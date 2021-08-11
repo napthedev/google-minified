@@ -17,6 +17,8 @@ app.use(cors({ origin: true, credentials: true }));
 
 app.use(cookieParser());
 
+app.enable("trust proxy");
+
 app.get("/", (req, res) => {
   res.send("Google Clone Server");
 });

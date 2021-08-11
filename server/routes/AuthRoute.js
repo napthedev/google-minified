@@ -111,7 +111,6 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         httpOnly: true,
         expires: date,
         path: "/",
-        domain: req.get("origin"),
       })
       .send({
         user,
@@ -123,7 +122,16 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
 });
 
 route.get("/sign-out", (req, res) => {
-  res.clearCookie("token", { httpOnly: true, path: "/", domain: req.get("origin") }).sendStatus(200);
+  let date = new Date();
+  date.setSeconds(date.getSeconds() + 1);
+
+  res
+    .cookie("token", "token", {
+      httpOnly: true,
+      expires: date,
+      path: "/",
+    })
+    .sendStatus(200);
 });
 
 module.exports = route;

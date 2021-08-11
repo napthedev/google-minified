@@ -34,6 +34,8 @@ route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
     let folderChild;
     let filesChild;
     if (req.body.parentId === "") {
+      if (!req.user?.id) return res.sendStatus(403);
+
       folderChild = await Folders.find({ parentId: "", userId: req.user?.id });
       filesChild = await Files.find({ parentId: "", userId: req.user?.id });
     } else {

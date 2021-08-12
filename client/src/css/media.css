@@ -43,6 +43,7 @@
     --translate-box: #282829;
     --translate-box-color: white;
     --translate-box-border: #3a3a3a;
+    --translate-box-placeholder: #bebebe;
   }
 
   .dynamic-icon {

@@ -4,6 +4,7 @@
   --translate-box: white;
   --translate-box-border: #e0e0e0;
   --translate-box-color: black;
+  --translate-box-placeholder: #d4d4d4;
 }
 
 * {

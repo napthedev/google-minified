@@ -56,3 +56,8 @@
   right: 7px;
   bottom: 3px;
 }
+
+div[contenteditable]:empty::before {
+  content: "Text...";
+  color: var(--translate-box-placeholder);
+}

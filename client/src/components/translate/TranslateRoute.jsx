@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { userContext } from "../../App";
 
 import { AppBar, Toolbar, IconButton, Typography, Tooltip, FormControl, Select, MenuItem, Snackbar } from "@material-ui/core";
-import { ExitToApp, SwapHoriz, FileCopy } from "@material-ui/icons";
+import { ExitToApp, SwapHoriz, FileCopy, Close } from "@material-ui/icons";
 
 import ContentEditable from "react-contenteditable";
 
@@ -28,6 +28,8 @@ function TranslateRoute() {
 
   const [snackbarOpened, setSnackbarOpened] = useState(false);
 
+  const inputRef = useRef();
+
   const handleCopy = () => {
     copyToClipboard(data)
       .then((res) => {
@@ -41,33 +43,32 @@ function TranslateRoute() {
     localStorage.setItem("languageTo", languageTo);
 
     if (valueDidUpdate.current) {
-      if (!inputValue.trim()) {
-        setData("");
-      } else {
-        if (timeOutRef.current) clearTimeout(timeOutRef.current);
+      if (timeOutRef.current) clearTimeout(timeOutRef.current);
 
-        setData(null);
+      setData(null);
 
-        timeOutRef.current = setTimeout(() => {
+      timeOutRef.current = setTimeout(() => {
+        if (!inputRef.current.outerText.trim()) setData("");
+        else {
           fetch("https://libretranslate.de/translate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              q: inputValue.trim(),
+              q: inputRef.current.outerText.trim(),
               source: languageFrom,
               target: languageTo,
             }),
           })
             .then((res) => res.json())
             .then((data) => {
-              setData(data.translatedText);
+              if (inputRef.current.outerText.trim()) setData(data.translatedText);
             })
             .catch((err) => {
               console.log(err);
               setData("");
             });
-        }, 500);
-      }
+        }
+      }, 500);
     }
     valueDidUpdate.current = true;
   }, [languageFrom, languageTo, inputValue]);
@@ -150,17 +151,21 @@ function TranslateRoute() {
           <div className="translate-box-container">
             <ContentEditable
               className="translate-box"
-              html={inputValue.replaceAll("\n", "<br>")}
+              html={inputValue}
+              innerRef={inputRef}
               onChange={(e) => {
-                let pre = document.createElement("pre");
-                pre.innerHTML = e.target.value.replaceAll("<br>", "\\n");
-                let output = pre.outerText.replaceAll("\\n", "\n");
-                if (output.length <= 5000) setInputValue(output);
+                if (e.target.value === "<div><br></div>") setInputValue("");
+                else setInputValue(e.target.value);
+              }}
+              onBlur={() => {
+                if (!inputRef.current.outerText.trim()) setInputValue("");
               }}
             />
-            <Typography variant="subtitle1" className="float-right">
-              {inputValue.trim().length} / 5000
-            </Typography>
+            {inputRef.current?.outerText?.trim() && (
+              <IconButton className="float-right" onClick={() => setInputValue("")}>
+                <Close />
+              </IconButton>
+            )}
           </div>
           <div className="translate-box-container">
             <div className="translate-box">{data === null ? "Translating..." : data}</div>

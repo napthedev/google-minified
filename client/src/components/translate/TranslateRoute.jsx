@@ -1,8 +1,12 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { userContext } from "../../App";
 
-import { AppBar, Toolbar, IconButton, Typography, Tooltip, FormControl, Select, MenuItem, TextareaAutosize } from "@material-ui/core";
-import { ExitToApp, SwapHoriz } from "@material-ui/icons";
+import { AppBar, Toolbar, IconButton, Typography, Tooltip, FormControl, Select, MenuItem, Snackbar } from "@material-ui/core";
+import { ExitToApp, SwapHoriz, FileCopy } from "@material-ui/icons";
+
+import ContentEditable from "react-contenteditable";
+
+import { copyToClipboard } from "../Functions";
 
 const languages = { en: "English", vi: "Vietnamese", ar: "Arabic", zh: "Chinese", fr: "French", de: "German", hi: "Hindi", id: "Indonesian", ga: "Irish", it: "Italian", ja: "Japanese", ko: "Korean", pl: "Polish", pt: "Portuguese", ru: "Russian", es: "Spanish", tr: "Turkish" };
 
@@ -17,10 +21,20 @@ function TranslateRoute() {
   const [languageFrom, setLanguageFrom] = useState(localStorage.getItem("languageFrom") ? localStorage.getItem("languageFrom") : "en");
   const [languageTo, setLanguageTo] = useState(localStorage.getItem("languageTo") ? localStorage.getItem("languageTo") : "vi");
   const [inputValue, setInputValue] = useState("");
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState("");
 
   const valueDidUpdate = useRef(false);
   const timeOutRef = useRef(null);
+
+  const [snackbarOpened, setSnackbarOpened] = useState(false);
+
+  const handleCopy = () => {
+    copyToClipboard(data)
+      .then((res) => {
+        setSnackbarOpened(true);
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(async () => {
     localStorage.setItem("languageFrom", languageFrom);
@@ -28,7 +42,7 @@ function TranslateRoute() {
 
     if (valueDidUpdate.current) {
       if (!inputValue.trim()) {
-        setData(undefined);
+        setData("");
       } else {
         if (timeOutRef.current) clearTimeout(timeOutRef.current);
 
@@ -39,7 +53,7 @@ function TranslateRoute() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              q: inputValue,
+              q: inputValue.trim(),
               source: languageFrom,
               target: languageTo,
             }),
@@ -50,7 +64,7 @@ function TranslateRoute() {
             })
             .catch((err) => {
               console.log(err);
-              setData(undefined);
+              setData("");
             });
         }, 500);
       }
@@ -106,7 +120,7 @@ function TranslateRoute() {
               setLanguageFrom(languageTo);
               setLanguageTo(languageFrom);
               setInputValue(data ? data : "");
-              setData(undefined);
+              setData("");
             }}
             className="swap-button"
             disabled={languageFrom === "auto"}
@@ -133,10 +147,41 @@ function TranslateRoute() {
           </div>
         </div>
         <div className="translate-flex">
-          <TextareaAutosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Text..." className="translate-box translate-box-1" />
-          <div className="translate-box translate-box-2">{data === null ? "Translating..." : typeof data === "undefined" ? "" : data}</div>
+          <div className="translate-box-container">
+            <ContentEditable
+              className="translate-box"
+              html={inputValue.replaceAll("\n", "<br>")}
+              onChange={(e) => {
+                let pre = document.createElement("pre");
+                pre.innerHTML = e.target.value.replaceAll("<br>", "\\n");
+                setInputValue(pre.outerText.replaceAll("\\n", "\n"));
+              }}
+            />
+            <Typography variant="subtitle1" className="float-right">
+              {inputValue.trim().length} / 1000
+            </Typography>
+          </div>
+          <div className="translate-box-container">
+            <div className="translate-box">{data === null ? "Translating..." : data}</div>
+            {data && (
+              <IconButton className="float-right" onClick={handleCopy}>
+                <FileCopy />
+              </IconButton>
+            )}
+          </div>
         </div>
       </div>
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        open={snackbarOpened}
+        autoHideDuration={2000}
+        onClose={() => setSnackbarOpened(false)}
+        message="Text copied to clipboard!"
+      />
     </div>
   );
 }

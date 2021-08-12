@@ -24,8 +24,7 @@
     flex-direction: column;
   }
 
-  .translate-box,
-  .translate-box-result {
+  .translate-box-container {
     width: 100%;
   }
 }

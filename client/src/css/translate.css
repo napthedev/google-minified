@@ -19,16 +19,25 @@
 .translate-flex {
   display: flex;
   width: 100%;
+  height: max-content;
+}
+
+.translate-box-container {
+  width: 50%;
+  display: flex;
+  position: relative;
+  min-height: max-content;
+  overflow: auto;
 }
 
 .translate-box {
   min-height: 200px;
   outline: none;
-  padding: 20px;
   font-size: 24px;
-  width: 50%;
+  padding: 20px;
+  padding-bottom: 40px;
+  width: 100%;
   resize: none;
-  border: none;
   color: var(--translate-box-color);
   word-wrap: break-word;
   background: var(--translate-box);
@@ -40,4 +49,10 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.float-right {
+  position: absolute !important;
+  right: 7px;
+  bottom: 3px;
 }

@@ -154,11 +154,12 @@ function TranslateRoute() {
               onChange={(e) => {
                 let pre = document.createElement("pre");
                 pre.innerHTML = e.target.value.replaceAll("<br>", "\\n");
-                setInputValue(pre.outerText.replaceAll("\\n", "\n"));
+                let output = pre.outerText.replaceAll("\\n", "\n");
+                if (output.length <= 5000) setInputValue(output);
               }}
             />
             <Typography variant="subtitle1" className="float-right">
-              {inputValue.trim().length} / 1000
+              {inputValue.trim().length} / 5000
             </Typography>
           </div>
           <div className="translate-box-container">

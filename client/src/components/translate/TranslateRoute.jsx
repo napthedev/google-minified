@@ -133,10 +133,8 @@ function TranslateRoute() {
           </div>
         </div>
         <div className="translate-flex">
-          <TextareaAutosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Text..." className="translate-box" style={{ background: "#262627" }} />
-          <div className="translate-box" style={{ background: "#29292a" }}>
-            {data === null ? "Translating..." : typeof data === "undefined" ? "" : data}
-          </div>
+          <TextareaAutosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Text..." className="translate-box translate-box-1" />
+          <div className="translate-box translate-box-2">{data === null ? "Translating..." : typeof data === "undefined" ? "" : data}</div>
         </div>
       </div>
     </div>

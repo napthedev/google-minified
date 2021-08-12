@@ -1,6 +1,9 @@
 :root {
   --background: #f0ebf8;
   --box: white;
+  --translate-box: white;
+  --translate-box-border: #e0e0e0;
+  --translate-box-color: black;
 }
 
 * {

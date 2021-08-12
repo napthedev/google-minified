@@ -41,6 +41,9 @@
   :root {
     --background: #303030;
     --box: #424242;
+    --translate-box: #282829;
+    --translate-box-color: white;
+    --translate-box-border: #3a3a3a;
   }
 
   .dynamic-icon {

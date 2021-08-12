@@ -9,13 +9,13 @@ const languages = { en: "English", vi: "Vietnamese", ar: "Arabic", zh: "Chinese"
 function TranslateRoute() {
   useEffect(() => {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/PAS1jhL.png";
-    document.title = "";
+    document.title = "Google Translate Clone";
   }, []);
 
   const { currentUser, handleSignOut } = useContext(userContext);
 
-  const [languageFrom, setLanguageFrom] = useState("en");
-  const [languageTo, setLanguageTo] = useState("vi");
+  const [languageFrom, setLanguageFrom] = useState(localStorage.getItem("languageFrom") ? localStorage.getItem("languageFrom") : "en");
+  const [languageTo, setLanguageTo] = useState(localStorage.getItem("languageTo") ? localStorage.getItem("languageTo") : "vi");
   const [inputValue, setInputValue] = useState("");
   const [data, setData] = useState(undefined);
 
@@ -23,6 +23,9 @@ function TranslateRoute() {
   const timeOutRef = useRef(null);
 
   useEffect(async () => {
+    localStorage.setItem("languageFrom", languageFrom);
+    localStorage.setItem("languageTo", languageTo);
+
     if (valueDidUpdate.current) {
       if (!inputValue.trim()) {
         setData(undefined);

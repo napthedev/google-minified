@@ -10,6 +10,7 @@ import NotFound from "./components/NotFound";
 import FormsRoute from "./components/forms/FormsRoute";
 import DriveRoute from "./components/drive/DriveRoute";
 import TranslateRoute from "./components/translate/TranslateRoute";
+import MapsRoute from "./components/maps/MapsRoute";
 
 export const userContext = createContext(null);
 
@@ -75,7 +76,8 @@ function App() {
               <Link to="/forms">Forms</Link>
               <Link to="/drive">Drive</Link>
               <Link to="/translate">Translate</Link>
-              <p>Todo: Docs, Sheets, Meet, Map, Photos</p>
+              <Link to="/maps">Maps</Link>
+              <p>Todo: Docs, Sheets, Meet, Photos</p>
             </Route>
             <Route path="/sign-in">
               <SignIn />
@@ -86,6 +88,7 @@ function App() {
             <Route path="/forms" component={FormsRoute}></Route>
             <Route path="/drive" component={DriveRoute}></Route>
             <Route path="/translate" component={TranslateRoute}></Route>
+            <Route path="/maps" component={MapsRoute}></Route>
             <Route>
               <NotFound />
             </Route>

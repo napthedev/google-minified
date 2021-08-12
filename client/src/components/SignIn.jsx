@@ -14,6 +14,7 @@ function useQuery() {
 
 function SignIn() {
   useEffect(() => {
+    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/UcOrFtl.png";
     document.title = "Sign In - Google Clone";
   }, []);
 
@@ -67,6 +68,9 @@ function SignIn() {
           setEmailError(err.response.data.message);
         } else if (err.response.data.code === "incorrect-password") {
           setPasswordError(err.response.data.message);
+        } else {
+          setEmailError("Unknown error occured");
+          setLoading(false);
         }
       });
 
@@ -108,7 +112,7 @@ function SignIn() {
             }}
             open={snackbarOpened}
             onClose={() => setSnackbarOpened(false)}
-            message="Please verify your email address"
+            message="Please verify your email address. You may check your spam folder!"
             action={
               <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
                 <Close fontSize="small" />

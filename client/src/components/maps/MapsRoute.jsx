@@ -1,13 +1,18 @@
 import { useRef, useEffect } from "react";
-import mapboxgl from "mapbox-gl";
+import mapboxgl from "!mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 
 import { createTheme } from "@material-ui/core/styles";
-import { ThemeProvider, CssBaseline, CircularProgress } from "@material-ui/core";
+import { ThemeProvider, CssBaseline } from "@material-ui/core";
 
 function MapsRoute() {
+  useEffect(() => {
+    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/7xyU04L.png";
+    document.title = "Google Maps Clone";
+  }, []);
+
   const mapContainer = useRef(null);
   const map = useRef(null);
 

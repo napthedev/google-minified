@@ -87,8 +87,8 @@ function FormsHome() {
                 </>
               )}
 
-              <Tooltip title="Create new form" style={{ aspectRatio: allForms.length === 0 ? "1 / 1" : "" }}>
-                <Button style={{ fontSize: 50 }} variant="outlined" onClick={() => history.push("/forms/create")}>
+              <Tooltip title="Create new form">
+                <Button style={{ fontSize: 50, aspectRatio: allForms.length === 0 ? "1 / 1" : "" }} variant="outlined" onClick={() => history.push("/forms/create")}>
                   +
                 </Button>
               </Tooltip>

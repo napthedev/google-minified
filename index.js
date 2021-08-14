@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.enable("trust proxy");
 
 app.get("/", (req, res) => {
-  res.send("Google Clone Server");
+  res.send("Googlify Server");
 });
 
 app.use("/auth", AuthRoute);

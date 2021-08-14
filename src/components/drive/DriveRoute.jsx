@@ -88,8 +88,12 @@ function DriveRoute() {
           type: file.type,
         });
 
-        const bc = new BroadcastChannel("channel");
-        bc.postMessage("update");
+        try {
+          const bc = new BroadcastChannel("channel");
+          bc.postMessage("update");
+        } catch (error) {
+          console.log(error);
+        }
       })
       .catch((err) => {
         console.log(err);

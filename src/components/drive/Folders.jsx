@@ -98,10 +98,14 @@ function Folder(props) {
   };
 
   useEffect(() => {
-    const bc = new BroadcastChannel("channel");
-    bc.onmessage = (message) => {
-      fetchFolderData();
-    };
+    try {
+      const bc = new BroadcastChannel("channel");
+      bc.onmessage = (message) => {
+        fetchFolderData();
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   useEffect(async () => {

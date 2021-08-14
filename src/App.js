@@ -19,7 +19,7 @@ axios.defaults.withCredentials = true;
 function App() {
   useEffect(() => {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/UcOrFtl.png";
-    document.title = "Google Clone";
+    document.title = "Googlify";
   }, []);
 
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -72,7 +72,6 @@ function App() {
         {typeof currentUser !== "undefined" ? (
           <Switch>
             <Route path="/" exact>
-              GGClone home.
               <Link to="/forms">Forms</Link>
               <Link to="/drive">Drive</Link>
               <Link to="/translate">Translate</Link>

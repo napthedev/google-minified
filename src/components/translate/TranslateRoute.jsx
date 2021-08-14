@@ -13,7 +13,7 @@ const languages = { en: "English", vi: "Vietnamese", ar: "Arabic", zh: "Chinese"
 function TranslateRoute() {
   useEffect(() => {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/PAS1jhL.png";
-    document.title = "Google Translate Clone";
+    document.title = "Googlify Translate";
   }, []);
 
   const { currentUser, handleSignOut } = useContext(userContext);
@@ -82,7 +82,7 @@ function TranslateRoute() {
           </IconButton>
           <div style={{ flexGrow: 1 }}>
             <Typography variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-              Google Translate Clone
+              Googlify Translate
             </Typography>
           </div>
           {currentUser && (

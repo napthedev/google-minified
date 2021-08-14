@@ -14,7 +14,7 @@ function useQuery() {
 function SignUp() {
   useEffect(() => {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/UcOrFtl.png";
-    document.title = "Sign Up - Google Clone";
+    document.title = "Sign Up - Googlify";
   }, []);
 
   const query = useQuery();

@@ -26,7 +26,7 @@ function Response() {
     getFormData();
   }, []);
 
-  useEffect(() => (document.title = title + (title ? " - " : "") + "Response - Google Forms Clone"), [title]);
+  useEffect(() => (document.title = title + (title ? " - " : "") + "Response - Googlify Forms"), [title]);
 
   const getFormData = () => {
     axios

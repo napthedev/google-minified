@@ -106,7 +106,7 @@ function DriveRoute() {
             </IconButton>
             <div style={{ flexGrow: 1 }}>
               <Typography onClick={() => history.push("/drive")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-                Google Drive Clone
+                Googlify Drive
               </Typography>
             </div>
             {currentUser && (

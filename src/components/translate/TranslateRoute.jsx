@@ -45,29 +45,30 @@ function TranslateRoute() {
     if (valueDidUpdate.current) {
       if (timeOutRef.current) clearTimeout(timeOutRef.current);
 
+      if (!inputRef.current.outerText.trim()) return;
+
       setData(null);
 
       timeOutRef.current = setTimeout(() => {
-        if (!inputRef.current.outerText.trim()) setData("");
-        else {
-          fetch("https://libretranslate.de/translate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              q: inputRef.current.outerText.trim(),
-              source: languageFrom,
-              target: languageTo,
-            }),
+        if (!inputRef.current.outerText.trim()) return;
+
+        fetch("https://libretranslate.de/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            q: inputRef.current.outerText.trim(),
+            source: languageFrom,
+            target: languageTo,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (inputRef.current.outerText.trim()) setData(data.translatedText);
           })
-            .then((res) => res.json())
-            .then((data) => {
-              if (inputRef.current.outerText.trim()) setData(data.translatedText);
-            })
-            .catch((err) => {
-              console.log(err);
-              setData("");
-            });
-        }
+          .catch((err) => {
+            console.log(err);
+            setData("");
+          });
       }, 500);
     }
     valueDidUpdate.current = true;

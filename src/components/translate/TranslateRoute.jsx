@@ -45,12 +45,12 @@ function TranslateRoute() {
     if (valueDidUpdate.current) {
       if (timeOutRef.current) clearTimeout(timeOutRef.current);
 
-      if (!inputRef.current.outerText.trim()) return;
+      if (!inputRef.current.outerText.trim()) setData("");
 
       setData(null);
 
       timeOutRef.current = setTimeout(() => {
-        if (!inputRef.current.outerText.trim()) return;
+        if (!inputRef.current.outerText.trim()) setData("");
 
         fetch("https://libretranslate.de/translate", {
           method: "POST",

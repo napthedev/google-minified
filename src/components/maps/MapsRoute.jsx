@@ -37,6 +37,8 @@ function MapsRoute() {
 
     const directions = new MapboxDirections({ accessToken: mapboxgl.accessToken });
     map.current.addControl(directions, "top-left");
+
+    new mapboxgl.Marker().setLngLat([longitude, latitude]).addTo(map.current);
   };
 
   useEffect(() => {

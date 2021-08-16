@@ -19,7 +19,7 @@ axios.defaults.withCredentials = true;
 function App() {
   useEffect(() => {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/UcOrFtl.png";
-    document.title = "Googlify";
+    document.title = "Google Minified";
   }, []);
 
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");

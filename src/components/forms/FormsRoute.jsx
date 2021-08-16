@@ -32,7 +32,7 @@ function FormsRoute() {
           </IconButton>
           <div style={{ flexGrow: 1 }}>
             <Typography onClick={() => history.push("/forms")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-              Googlify Form
+              Google Form Minified
             </Typography>
           </div>
           {currentUser && (

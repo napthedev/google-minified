@@ -39,7 +39,7 @@ function Edit() {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => (document.title = title + (title ? " - " : "") + "Editing - Googlify Forms"), [title]);
+  useEffect(() => (document.title = title + (title ? " - " : "") + "Editing - Google Forms Minified"), [title]);
 
   const getPreviousFormData = () => {
     axios

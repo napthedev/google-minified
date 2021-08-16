@@ -10,7 +10,7 @@ import { ThemeProvider, CssBaseline } from "@material-ui/core";
 function MapsRoute() {
   useEffect(() => {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/7xyU04L.png";
-    document.title = "Googlify Maps";
+    document.title = "Google Maps Minified";
   }, []);
 
   const mapContainer = useRef(null);

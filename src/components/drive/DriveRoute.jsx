@@ -110,7 +110,7 @@ function DriveRoute() {
             </IconButton>
             <div style={{ flexGrow: 1 }}>
               <Typography onClick={() => history.push("/drive")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-                Googlify Drive
+                Google Drive Minified
               </Typography>
             </div>
             {currentUser && (

@@ -15,7 +15,7 @@ function Folder(props) {
 
   useEffect(() => {
     currentFolderIdRef.current = currentFolderId;
-    if (!currentFolderId) document.title = "My Drive - Googlify Drive";
+    if (!currentFolderId) document.title = "My Drive - Google Drive Minified";
   }, [currentFolderId]);
 
   const currentFolderIdRef = useRef();
@@ -67,7 +67,7 @@ function Folder(props) {
 
       let data = response.data.folder;
 
-      document.title = data.name + " - Folder - Googlify Drive";
+      document.title = data.name + " - Folder - Google Drive Minified";
 
       setPath([...data.path, data._id]);
 

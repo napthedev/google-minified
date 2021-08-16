@@ -6,7 +6,7 @@ import { userContext } from "../../App";
 import axios from "axios";
 
 function FormsHome() {
-  useEffect(() => (document.title = "My Forms - Googlify Forms"), []);
+  useEffect(() => (document.title = "My Forms - Google Forms Minified"), []);
 
   const { currentUser } = useContext(userContext);
 

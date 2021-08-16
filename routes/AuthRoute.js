@@ -60,7 +60,7 @@ route.post("/sign-up", async (req, res) => {
       },
       body: JSON.stringify({
         to: req.body.email,
-        subject: "Verify your email for googlify",
+        subject: "Verify your email for google minified",
         text: "Click this link to verify your email " + req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id,
       }),
     });

@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.enable("trust proxy");
 
 app.get("/", (req, res) => {
-  res.send("Googlify Server");
+  res.send("Google Minified Server");
 });
 
 app.use("/auth", AuthRoute);

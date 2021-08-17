@@ -120,7 +120,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         httpOnly: true,
         expires: date,
         path: "/",
-        domain: getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) : "localhost",
+        domain: getDomainWithoutSubdomain(req.get("origin")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.get("origin")) : "localhost",
       })
       .send({
         user,
@@ -140,7 +140,7 @@ route.get("/sign-out", (req, res) => {
       httpOnly: true,
       expires: date,
       path: "/",
-      domain: getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.protocol + "://" + req.get("host")) : "localhost",
+      domain: getDomainWithoutSubdomain(req.get("origin")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.get("origin")) : "localhost",
     })
     .send("Logged out");
 });

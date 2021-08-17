@@ -95,6 +95,7 @@ function Folder(props) {
 
     setAllFolder(folderChild.data.folders);
     setAllFiles(folderChild.data.files);
+    setSelected([]);
   };
 
   useEffect(() => {

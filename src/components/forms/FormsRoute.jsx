@@ -1,9 +1,6 @@
-import { useHistory, useLocation, useRouteMatch, Route, Switch } from "react-router-dom";
-import { AppBar, Toolbar, Typography, IconButton, Tooltip } from "@material-ui/core";
-import { ExitToApp } from "@material-ui/icons";
+import { useRouteMatch, Route, Switch } from "react-router-dom";
 
-import { useContext, useEffect } from "react";
-import { userContext } from "../../App";
+import { useEffect } from "react";
 
 import FormsHome from "./FormsHome";
 import Edit from "./Edit";
@@ -11,39 +8,18 @@ import Create from "./Create";
 import Response from "./Response";
 import NotFound from "../NotFound";
 
+import Navbar from "../Navbar";
+
 function FormsRoute() {
   useEffect(() => {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/prj8GAN.png";
   }, []);
 
-  const { currentUser, handleSignOut } = useContext(userContext);
-
   const { path } = useRouteMatch();
-
-  const history = useHistory();
-  const location = useLocation();
 
   return (
     <>
-      <AppBar position="static" color="transparent" elevation={location.pathname.startsWith("/forms/edit") ? 0 : 1}>
-        <Toolbar>
-          <IconButton onClick={() => history.push("/forms")} edge="start" color="inherit" aria-label="menu">
-            <img height={30} src="https://i.imgur.com/prj8GAN.png" />
-          </IconButton>
-          <div style={{ flexGrow: 1 }}>
-            <Typography onClick={() => history.push("/forms")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-              Google Form Minified
-            </Typography>
-          </div>
-          {currentUser && (
-            <Tooltip title="Sign out">
-              <IconButton onClick={handleSignOut} color="secondary">
-                <ExitToApp />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Toolbar>
-      </AppBar>
+      <Navbar name="Forms" />
 
       <Switch>
         <Route path={`${path}`} exact>

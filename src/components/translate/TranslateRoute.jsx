@@ -1,12 +1,13 @@
-import { useState, useEffect, useContext, useRef } from "react";
-import { userContext } from "../../App";
+import { useState, useEffect, useRef } from "react";
 
-import { AppBar, Toolbar, IconButton, Typography, Tooltip, FormControl, Select, MenuItem, Snackbar } from "@material-ui/core";
-import { ExitToApp, SwapHoriz, FileCopy, Close } from "@material-ui/icons";
+import { IconButton, Typography, Tooltip, FormControl, Select, MenuItem, Snackbar } from "@material-ui/core";
+import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
 
 import ContentEditable from "react-contenteditable";
 
 import { copyToClipboard } from "../Functions";
+
+import Navbar from "../Navbar";
 
 const languages = { en: "English", vi: "Vietnamese", ar: "Arabic", zh: "Chinese", fr: "French", de: "German", hi: "Hindi", id: "Indonesian", ga: "Irish", it: "Italian", ja: "Japanese", ko: "Korean", pl: "Polish", pt: "Portuguese", ru: "Russian", es: "Spanish", tr: "Turkish" };
 
@@ -15,8 +16,6 @@ function TranslateRoute() {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/PAS1jhL.png";
     document.title = "Google Translate Minified";
   }, []);
-
-  const { currentUser, handleSignOut } = useContext(userContext);
 
   const [languageFrom, setLanguageFrom] = useState(localStorage.getItem("languageFrom") ? localStorage.getItem("languageFrom") : "en");
   const [languageTo, setLanguageTo] = useState(localStorage.getItem("languageTo") ? localStorage.getItem("languageTo") : "vi");
@@ -82,25 +81,7 @@ function TranslateRoute() {
 
   return (
     <div>
-      <AppBar position="static" color="transparent" elevation={1}>
-        <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <img height={30} src="https://i.imgur.com/PAS1jhL.png" />
-          </IconButton>
-          <div style={{ flexGrow: 1 }}>
-            <Typography variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-              Google Translate Minified
-            </Typography>
-          </div>
-          {currentUser && (
-            <Tooltip title="Sign out">
-              <IconButton onClick={handleSignOut} color="secondary">
-                <ExitToApp />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Toolbar>
-      </AppBar>
+      <Navbar name="Translate" />
 
       <div className="translate-container">
         <div className="translate-header">

@@ -56,3 +56,11 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+#profile-menu .MuiListItem-root {
+  gap: 10px;
+}
+
+#profile-menu .MuiListItem-root img {
+  margin: 0 2px;
+}

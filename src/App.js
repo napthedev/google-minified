@@ -54,22 +54,10 @@ function App() {
       });
   }, []);
 
-  const handleSignOut = () => {
-    axios
-      .get("auth/sign-out")
-      .then((res) => {
-        setCurrentUser(null);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-        alert("Failed to sign out, try to delete the cookie");
-      });
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <userContext.Provider value={{ currentUser, setCurrentUser, theme, handleSignOut }}>
+      <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
         {typeof currentUser !== "undefined" ? (
           <Switch>
             <Route path="/" exact>

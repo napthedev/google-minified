@@ -59,7 +59,7 @@ function FormsHome() {
                     ) : (
                       <Card className="card" key={e.formId}>
                         <CardActionArea onClick={() => history.push("/forms/edit/" + e.formId)}>
-                          <CardMedia component="img" src={getThumbnail(e.formId)} />
+                          <CardMedia draggable="false" component="img" src={getThumbnail(e.formId)} />
                           <CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
                               <Typography gutterBottom variant="h6" component="h2">

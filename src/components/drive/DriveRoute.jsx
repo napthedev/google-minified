@@ -1,6 +1,6 @@
-import { useHistory, useLocation, useRouteMatch, Route, Switch } from "react-router-dom";
-import { AppBar, Toolbar, Typography, IconButton, Tooltip, Box, CircularProgress } from "@material-ui/core";
-import { ExitToApp, Close, Done } from "@material-ui/icons";
+import { useLocation, useRouteMatch, Route, Switch } from "react-router-dom";
+import { Typography, Box, CircularProgress } from "@material-ui/core";
+import { Close, Done } from "@material-ui/icons";
 import axios from "axios";
 
 import { useContext, useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { userContext } from "../../App";
 import Folders from "./Folders";
 import NotFound from "../NotFound";
 import Files from "./Files";
+import Navbar from "../Navbar";
 
 import { nanoid } from "nanoid";
 
@@ -43,11 +44,10 @@ function DriveRoute() {
     document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/Cr3oZGy.png";
   }, []);
 
-  const { currentUser, handleSignOut } = useContext(userContext);
+  const { currentUser } = useContext(userContext);
 
   const { path } = useRouteMatch();
 
-  const history = useHistory();
   const location = useLocation();
 
   const [filesUploading, setFilesUploading] = useState([]);
@@ -102,27 +102,7 @@ function DriveRoute() {
 
   return (
     <>
-      {!location.pathname.startsWith("/drive/file") && (
-        <AppBar position="static" color="transparent" elevation={1}>
-          <Toolbar>
-            <IconButton onClick={() => history.push("/drive")} edge="start" color="inherit" aria-label="menu">
-              <img height={30} src="https://i.imgur.com/Cr3oZGy.png" />
-            </IconButton>
-            <div style={{ flexGrow: 1 }}>
-              <Typography onClick={() => history.push("/drive")} variant="h6" style={{ cursor: "pointer", display: "inline" }}>
-                Google Drive Minified
-              </Typography>
-            </div>
-            {currentUser && (
-              <Tooltip title="Sign out">
-                <IconButton onClick={handleSignOut} color="secondary">
-                  <ExitToApp />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Toolbar>
-        </AppBar>
-      )}
+      {!location.pathname.startsWith("/drive/file") && <Navbar name="Drive" />}
       {filesUploading.length > 0 && (
         <div className="upload-progress-box">
           <div className="upload-progress-header">

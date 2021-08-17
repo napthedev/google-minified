@@ -17,7 +17,7 @@ function FormsHome() {
 
   const fetchAllForms = () => {
     axios
-      .get(process.env.REACT_APP_SERVER_URL + "forms")
+      .get("forms")
       .then((res) => {
         setAllForms(res.data);
         setLoading(false);
@@ -33,7 +33,7 @@ function FormsHome() {
     form.deleting = true;
     setAllForms(clone);
 
-    await axios.delete(process.env.REACT_APP_SERVER_URL + "forms", { data: { formId } }).catch((err) => console.log(err, err.response));
+    await axios.delete("forms", { data: { formId } }).catch((err) => console.log(err, err.response));
     fetchAllForms();
   };
 

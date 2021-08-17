@@ -63,7 +63,7 @@ function SignUp() {
     setLoading(true);
 
     await axios
-      .post(process.env.REACT_APP_SERVER_URL + "auth/sign-up", { username, email, password })
+      .post("auth/sign-up", { username, email, password })
       .then((res) => {
         let url = new URL(window.location.href);
         let params = new URLSearchParams(url.search);

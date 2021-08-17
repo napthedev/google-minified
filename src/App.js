@@ -15,6 +15,7 @@ import MapsRoute from "./components/maps/MapsRoute";
 export const userContext = createContext(null);
 
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL || "http://localhost:5000/";
 
 function App() {
   useEffect(() => {
@@ -38,7 +39,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "auth/sign-in")
+      .post("auth/sign-in")
       .then((res) => {
         if (res.status === 200) {
           setCurrentUser(res.data.user);
@@ -55,7 +56,7 @@ function App() {
 
   const handleSignOut = () => {
     axios
-      .get(process.env.REACT_APP_SERVER_URL + "auth/sign-out")
+      .get("auth/sign-out")
       .then((res) => {
         setCurrentUser(null);
       })

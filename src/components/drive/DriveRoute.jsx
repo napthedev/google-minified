@@ -80,7 +80,7 @@ function DriveRoute() {
         },
       })
       .then((res) => {
-        axios.post(process.env.REACT_APP_SERVER_URL + "drive/create-file", {
+        axios.post("drive/create-file", {
           name: file.name,
           parentId,
           userId: currentUser.id,

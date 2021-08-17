@@ -11,7 +11,7 @@ function Create() {
   const createForm = () => {
     if (!currentUser) return;
     axios
-      .get(process.env.REACT_APP_SERVER_URL + "forms/create")
+      .get("forms/create")
       .then((res) => {
         history.push("/forms/edit/" + res.data.formId);
       })

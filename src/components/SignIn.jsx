@@ -58,7 +58,7 @@ function SignIn() {
     setLoading(true);
 
     await axios
-      .post(process.env.REACT_APP_SERVER_URL + "auth/sign-in", { email, password })
+      .post("auth/sign-in", { email, password })
       .then((res) => {
         setCurrentUser(res.data.user);
       })

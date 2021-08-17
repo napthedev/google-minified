@@ -39,7 +39,7 @@ function Files() {
 
   useEffect(async () => {
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "drive/get-file", { _id: id })
+      .post("drive/get-file", { _id: id })
       .then(async (res) => {
         document.title = res.data.name + " - File - Google Drive Minified";
 

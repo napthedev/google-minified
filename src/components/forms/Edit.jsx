@@ -43,7 +43,7 @@ function Edit() {
 
   const getPreviousFormData = () => {
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "forms/form", { formId })
+      .post("forms/form", { formId })
       .then((res) => {
         setTitle(res.data.form.title);
         setDescription(res.data.form.description);
@@ -60,7 +60,7 @@ function Edit() {
   };
 
   const getSubmits = () => {
-    axios.post(process.env.REACT_APP_SERVER_URL + "submits/get", { formId }).then((res) => setAllSubmits(res.data.reverse()));
+    axios.post("submits/get", { formId }).then((res) => setAllSubmits(res.data.reverse()));
   };
 
   const formTimeout = useRef(null);
@@ -82,7 +82,7 @@ function Edit() {
 
   const postFormData = async (title, description, data) => {
     await axios
-      .post(process.env.REACT_APP_SERVER_URL + "forms/update", {
+      .post("forms/update", {
         formId,
         title,
         description,

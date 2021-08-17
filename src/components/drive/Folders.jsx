@@ -57,7 +57,7 @@ function Folder(props) {
     if (currentFolderIdRef.current !== null) {
       let response;
       try {
-        response = await axios.post(process.env.REACT_APP_SERVER_URL + "drive/get-folder", {
+        response = await axios.post("drive/get-folder", {
           _id: currentFolderIdRef.current,
         });
       } catch (err) {
@@ -89,7 +89,7 @@ function Folder(props) {
       setPermission(true);
     }
 
-    const folderChild = await axios.post(process.env.REACT_APP_SERVER_URL + "drive/folder-child", {
+    const folderChild = await axios.post("drive/folder-child", {
       parentId: currentFolderIdRef.current,
     });
 
@@ -145,7 +145,7 @@ function Folder(props) {
   };
 
   const createNewFolder = async (name) => {
-    await axios.post(process.env.REACT_APP_SERVER_URL + "drive/create-folder", {
+    await axios.post("drive/create-folder", {
       name,
       path: path,
       parentId: currentFolderId,
@@ -198,7 +198,7 @@ function Folder(props) {
 
   const handleRename = async (name) => {
     await axios
-      .post(process.env.REACT_APP_SERVER_URL + "drive/rename", {
+      .post("drive/rename", {
         _id: currentFileToRename.id,
         type: currentFileToRename.type,
         name,
@@ -211,7 +211,7 @@ function Folder(props) {
 
   const deleteFileOrFolder = async (type, id) => {
     await axios
-      .post(process.env.REACT_APP_SERVER_URL + "drive/delete", {
+      .post("drive/delete", {
         type,
         _id: id,
       })

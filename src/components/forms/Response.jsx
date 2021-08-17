@@ -30,7 +30,7 @@ function Response() {
 
   const getFormData = () => {
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "forms/form-response", { formId })
+      .post("forms/form-response", { formId })
       .then((res) => {
         setTitle(res.data.form.title);
         setDescription(res.data.form.description);
@@ -111,7 +111,7 @@ function Response() {
 
   const postFormData = () => {
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "submits/create", { formId, content: JSON.stringify(data) })
+      .post("submits/create", { formId, content: JSON.stringify(data) })
       .then((res) => setView("submitted"))
       .catch((err) => console.log(err, err.response));
   };

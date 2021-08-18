@@ -22,7 +22,7 @@ route.post("/get", async (req, res) => {
       formId: req.body.formId,
     });
 
-    if (!mySubmits) return res.status(404).send("Submits not found");
+    if (!mySubmits) return res.sendStatus(404);
 
     res.send(mySubmits);
   } catch (error) {

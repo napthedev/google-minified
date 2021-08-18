@@ -18,7 +18,7 @@ route.get("/verify/:id", async (req, res) => {
   try {
     const data = await Auth.findOne({ id: req.params.id });
 
-    if (!data) return res.status(404).send("404 not found");
+    if (!data) return res.sendStatus(404);
 
     if (data.emailVerified) return res.send("Your email has already been verified!");
 

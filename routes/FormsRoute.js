@@ -48,7 +48,7 @@ route.post("/update", verifyJWT, async (req, res) => {
       formId: req.body.formId,
     });
 
-    if (myForm.userId !== req.user.id) return res.status(400).send("No permission to edit form");
+    if (myForm.userId !== req.user.id) return res.sendStatus(403);
 
     if (myForm) {
       myForm.title = req.body.title;
@@ -86,7 +86,7 @@ route.post("/form-response", async (req, res) => {
       formId: req.body.formId,
     });
 
-    if (!myForm) return res.status(404).send("Form not found");
+    if (!myForm) return res.sendStatus(404);
 
     res.send({ form: myForm });
   } catch (error) {
@@ -96,15 +96,13 @@ route.post("/form-response", async (req, res) => {
 
 route.delete("/", verifyJWT, async (req, res) => {
   try {
-    if (!req.body.formId) return res.status(400).send("Form id not provided");
-
     const myForm = await Forms.findOne({
       formId: req.body.formId,
     });
 
-    if (!myForm) return res.status(404).send("Form not found");
+    if (!myForm) return res.sendStatus("404");
 
-    if (myForm.userId !== req.user.id) return res.status(403).send("No access to form");
+    if (myForm.userId !== req.user.id) return res.sendStatus(403);
 
     const deleted = await Forms.deleteOne({
       formId: req.body.formId,

@@ -11,6 +11,7 @@ const AuthRoute = require("./routes/AuthRoute");
 const FormsRoute = require("./routes/FormsRoute");
 const SubmitsRoute = require("./routes/SubmitsRoute");
 const DriveRoute = require("./routes/DriveRoute");
+const DocumentsRoute = require("./routes/DocumentsRoute");
 
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
@@ -27,6 +28,7 @@ app.use("/auth", AuthRoute);
 app.use("/forms", FormsRoute);
 app.use("/submits", SubmitsRoute);
 app.use("/drive", DriveRoute);
+app.use("/docs", DocumentsRoute);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}`));

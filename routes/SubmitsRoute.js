@@ -5,7 +5,7 @@ const Submits = require("../models/Submits");
 route.post("/create", async (req, res) => {
   try {
     const newSubmit = new Submits({
-      formId: req.body.formId,
+      _id: req.body._id,
       content: req.body.content,
     });
 
@@ -19,7 +19,7 @@ route.post("/create", async (req, res) => {
 route.post("/get", async (req, res) => {
   try {
     const mySubmits = await Submits.find({
-      formId: req.body.formId,
+      _id: req.body._id,
     });
 
     if (!mySubmits) return res.sendStatus(404);

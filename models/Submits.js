@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const SubmitsSchema = new mongoose.Schema({
-  formId: {
+  _id: {
     type: String,
     required: true,
   },

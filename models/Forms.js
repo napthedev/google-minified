@@ -6,7 +6,7 @@ const FormsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  formId: {
+  _id: {
     type: String,
     required: true,
     default: nanoid,

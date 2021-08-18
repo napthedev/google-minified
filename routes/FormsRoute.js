@@ -45,7 +45,7 @@ route.get("/", verifyJWT, async (req, res) => {
 route.post("/update", verifyJWT, async (req, res) => {
   try {
     const myForm = await Forms.findOne({
-      formId: req.body.formId,
+      _id: req.body._id,
     });
 
     if (myForm.userId !== req.user.id) return res.sendStatus(403);
@@ -67,7 +67,7 @@ route.post("/update", verifyJWT, async (req, res) => {
 route.post("/form", verifyJWT, async (req, res) => {
   try {
     const myForm = await Forms.findOne({
-      formId: req.body.formId,
+      _id: req.body._id,
     });
 
     if (!myForm) return res.sendStatus(404);
@@ -83,7 +83,7 @@ route.post("/form", verifyJWT, async (req, res) => {
 route.post("/form-response", async (req, res) => {
   try {
     const myForm = await Forms.findOne({
-      formId: req.body.formId,
+      _id: req.body._id,
     });
 
     if (!myForm) return res.sendStatus(404);
@@ -97,7 +97,7 @@ route.post("/form-response", async (req, res) => {
 route.delete("/", verifyJWT, async (req, res) => {
   try {
     const myForm = await Forms.findOne({
-      formId: req.body.formId,
+      _id: req.body._id,
     });
 
     if (!myForm) return res.sendStatus("404");
@@ -105,11 +105,11 @@ route.delete("/", verifyJWT, async (req, res) => {
     if (myForm.userId !== req.user.id) return res.sendStatus(403);
 
     const deleted = await Forms.deleteOne({
-      formId: req.body.formId,
+      _id: req.body._id,
     });
 
     const deletedSubmits = await Submits.deleteMany({
-      formId: req.body.formId,
+      _id: req.body._id,
     });
 
     res.send({ deleted, deletedSubmits });

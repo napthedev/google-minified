@@ -5,50 +5,50 @@ import { Delete } from "@material-ui/icons";
 import { userContext } from "../../App";
 import axios from "axios";
 
-function FormsHome() {
-  useEffect(() => (document.title = "My Forms - Google Forms Minified"), []);
+function DocsHome() {
+  useEffect(() => (document.title = "My Documents - Google Docs Minified"), []);
 
   const { currentUser } = useContext(userContext);
 
   const history = useHistory();
 
-  const [allForms, setAllForms] = useState([]);
+  const [allDocs, setAllDocs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [backdropOpened, setBackdropOpened] = useState(false);
 
-  const fetchAllForms = () => {
+  const fetchAllDocuments = () => {
     axios
-      .get("forms")
+      .get("docs")
       .then((res) => {
-        setAllForms(res.data);
+        setAllDocs(res.data);
         setLoading(false);
       })
       .catch((err) => console.log(err, err.response));
   };
 
-  useEffect(fetchAllForms, []);
+  useEffect(fetchAllDocuments, []);
 
-  const deleteForm = async (formId) => {
-    let clone = [...allForms];
-    let form = clone.find((e) => e.formId === formId);
-    form.deleting = true;
-    setAllForms(clone);
+  const deleteDocument = async (_id) => {
+    let clone = [...allDocs];
+    let document = clone.find((e) => e._id === _id);
+    document.deleting = true;
+    setAllDocs(clone);
 
-    await axios.delete("forms", { data: { formId } }).catch((err) => console.log(err, err.response));
-    fetchAllForms();
+    await axios.delete("docs", { data: { _id } }).catch((err) => console.log(err, err.response));
+    fetchAllDocuments();
   };
 
-  const getThumbnail = (formId) => {
-    let parsed = parseInt(formId, 36);
+  const getThumbnail = (_id) => {
+    let parsed = parseInt(_id, 36);
     let srcList = ["https://i.imgur.com/MklVMV5.png", "https://i.imgur.com/2gWPRjt.png", "https://i.imgur.com/A38RAbj.png"];
     return srcList[parsed % srcList.length];
   };
 
-  const createForm = async () => {
+  const createDocument = async () => {
     await axios
-      .get("forms/create")
+      .get("docs/create")
       .then((res) => {
-        history.push("/forms/edit/" + res.data.formId);
+        history.push("/docs/" + res.data._id);
       })
       .catch((err) => {
         console.log(err, err.response);
@@ -62,32 +62,29 @@ function FormsHome() {
         <>
           {!loading ? (
             <div className="home-grid">
-              {allForms?.length > 0 && (
+              {allDocs?.length > 0 && (
                 <>
-                  {allForms.map((e) =>
+                  {allDocs.map((e) =>
                     e.deleting ? (
-                      <Button key={e.formId} variant="outlined" color="default" className={allForms.length <= 1 ? "square-button" : ""}>
+                      <Button key={e._id} variant="outlined" color="default" className={allDocs.length <= 1 ? "square-button" : ""}>
                         <CircularProgress color="secondary" />
                       </Button>
                     ) : (
-                      <Card className="card" key={e.formId}>
-                        <CardActionArea onClick={() => history.push("/forms/edit/" + e.formId)}>
-                          <CardMedia draggable="false" component="img" src={getThumbnail(e.formId)} />
+                      <Card className="card" key={e._id}>
+                        <CardActionArea onClick={() => history.push("/docs/" + e._id)}>
+                          <CardMedia draggable="false" component="img" src={getThumbnail(e._id)} />
                           <CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
-                              <Typography gutterBottom variant="h6" component="h2">
-                                {e.title ? e.title : "Untitled form"}
-                              </Typography>
-                              <Typography variant="body2" color="textSecondary" component="p">
-                                {e.description ? e.description : "No description"}
+                              <Typography variant="h6" component="h2">
+                                {e.name ? e.name : "Untitled document"}
                               </Typography>
                             </div>
-                            <Tooltip title="Delete form">
+                            <Tooltip title="Delete document">
                               <Delete
                                 color="secondary"
                                 onClick={(event) => {
                                   event.stopPropagation();
-                                  deleteForm(e.formId);
+                                  deleteDocument(e._id);
                                 }}
                               />
                             </Tooltip>
@@ -99,14 +96,14 @@ function FormsHome() {
                 </>
               )}
 
-              <Tooltip title="Create new form">
+              <Tooltip title="Create new document">
                 <Button
-                  className={allForms.length === 0 ? "square-button" : ""}
+                  className={allDocs.length === 0 ? "square-button" : ""}
                   style={{ fontSize: 50 }}
                   variant="outlined"
                   onClick={() => {
                     setBackdropOpened(true);
-                    createForm();
+                    createDocument();
                   }}
                 >
                   +
@@ -129,4 +126,4 @@ function FormsHome() {
   );
 }
 
-export default FormsHome;
+export default DocsHome;

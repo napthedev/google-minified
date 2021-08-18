@@ -26,9 +26,14 @@ export const allApps = [
     route: "/maps",
     icon: "https://i.imgur.com/7xyU04L.png",
   },
+  {
+    name: "Docs",
+    route: "/docs",
+    icon: "https://i.imgur.com/6oRhxKL.png",
+  },
 ];
 
-function ProfileMenu(props) {
+function Navbar(props) {
   const { name } = props;
 
   const { currentUser, setCurrentUser } = useContext(userContext);
@@ -139,4 +144,4 @@ function ProfileMenu(props) {
   );
 }
 
-export default ProfileMenu;
+export default Navbar;

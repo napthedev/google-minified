@@ -11,6 +11,7 @@ import FormsRoute from "./components/forms/FormsRoute";
 import DriveRoute from "./components/drive/DriveRoute";
 import TranslateRoute from "./components/translate/TranslateRoute";
 import MapsRoute from "./components/maps/MapsRoute";
+import DocsRoute from "./components/docs/DocsRoute";
 import { allApps } from "./components/Navbar";
 
 export const userContext = createContext(null);
@@ -78,6 +79,7 @@ function App() {
             <Route path="/drive" component={DriveRoute}></Route>
             <Route path="/translate" component={TranslateRoute}></Route>
             <Route path="/maps" component={MapsRoute}></Route>
+            <Route path="/docs" component={DocsRoute}></Route>
             <Route>
               <NotFound />
             </Route>

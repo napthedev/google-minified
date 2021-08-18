@@ -53,7 +53,7 @@ function FormsHome() {
                 <>
                   {allForms.map((e) =>
                     e.deleting ? (
-                      <Button key={e.formId} variant="outlined" color="default" style={{ aspectRatio: allForms.length <= 1 ? "1 / 1" : "" }}>
+                      <Button key={e.formId} variant="outlined" color="default" className={allForms.length <= 1 ? "square-button" : ""}>
                         <CircularProgress color="secondary" />
                       </Button>
                     ) : (

@@ -74,3 +74,13 @@
 .invalid-box {
   border: 1px solid red;
 }
+
+.square-button {
+  aspect-ratio: 1 / 1;
+}
+
+@supports not (aspect-ratio: 1 / 1) {
+  .square-button {
+    min-height: 300px;
+  }
+}

@@ -3,7 +3,7 @@ const route = express.Router();
 const { verifyJWT } = require("../verifyJWT");
 const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
-const fetch = require("node-fetch");
+const nodemailer = require("nodemailer");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -53,23 +53,34 @@ route.post("/sign-up", async (req, res) => {
     });
     const saved = await user.save();
 
-    const emailRes = await fetch("https://mailer-sender-api.herokuapp.com/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAILER_ACCOUNT,
+        pass: process.env.MAILER_ACCOUNT_PASSWORD,
       },
-      body: JSON.stringify({
-        to: req.body.email,
-        subject: "Verify your email for google minified",
-        text: "Click this link to verify your email " + req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id,
-      }),
     });
 
-    const emailData = await emailRes.json();
+    let mailOptions = {
+      from: process.env.MAILER_ACCOUNT,
+      to: req.body.email,
+      subject: "Verify your email for google minified",
+      text: "Click this link to verify your email: " + req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id,
+    };
 
-    res.send({
-      user: saved,
-      emailSent: emailData,
+    let mailResult;
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        mailResult = error;
+      } else {
+        mailResult = info;
+      }
+
+      res.send({
+        user: saved,
+        emailSent: mailResult,
+      });
     });
   } catch (error) {
     res.status(500).send(error);

@@ -54,10 +54,10 @@ function ProfileMenu(props) {
   return (
     <AppBar position="static" color="transparent" elevation={location.pathname.startsWith("/forms/edit") ? 0 : 1}>
       <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu">
+        <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => history.push(allApps.find((e) => e.name === name).route)}>
           <img height={30} src={allApps.find((e) => e.name === name).icon} />
         </IconButton>
-        <div style={{ flexGrow: 1 }}>
+        <div style={{ flexGrow: 1 }} onClick={() => history.push(allApps.find((e) => e.name === name).route)}>
           <Typography variant="h6" style={{ cursor: "pointer", display: "inline" }}>
             Google {name} Minified
           </Typography>

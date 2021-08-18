@@ -4,7 +4,6 @@ import { useEffect } from "react";
 
 import FormsHome from "./FormsHome";
 import Edit from "./Edit";
-import Create from "./Create";
 import Response from "./Response";
 import NotFound from "../NotFound";
 
@@ -24,9 +23,6 @@ function FormsRoute() {
       <Switch>
         <Route path={`${path}`} exact>
           <FormsHome />
-        </Route>
-        <Route path={`${path}/create`}>
-          <Create />
         </Route>
         <Route path={`${path}/edit/:id`} children={<Edit />}></Route>
         <Route path={`${path}/response/:id`} children={<Response />}></Route>

@@ -63,7 +63,9 @@ function App() {
           <Switch>
             <Route path="/" exact>
               {allApps.map((e) => (
-                <Link to={e.route}>{e.name}</Link>
+                <Link key={e.name} to={e.route}>
+                  {e.name}
+                </Link>
               ))}
             </Route>
             <Route path="/sign-in">

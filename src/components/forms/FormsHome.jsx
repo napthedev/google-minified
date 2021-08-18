@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useHistory, Redirect } from "react-router-dom";
-import { Button, Card, CardActionArea, CardMedia, CardContent, CardActions, Typography, Tooltip, IconButton, CircularProgress, Paper } from "@material-ui/core";
+import { Button, Card, CardActionArea, CardMedia, CardContent, Typography, Tooltip, CircularProgress, Backdrop } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import { userContext } from "../../App";
 import axios from "axios";
@@ -14,6 +14,7 @@ function FormsHome() {
 
   const [allForms, setAllForms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [backdropOpened, setBackdropOpened] = useState(false);
 
   const fetchAllForms = () => {
     axios
@@ -41,6 +42,18 @@ function FormsHome() {
     let parsed = parseInt(formId, 36);
     let srcList = ["https://i.imgur.com/MklVMV5.png", "https://i.imgur.com/2gWPRjt.png", "https://i.imgur.com/A38RAbj.png"];
     return srcList[parsed % srcList.length];
+  };
+
+  const createForm = async () => {
+    await axios
+      .get("forms/create")
+      .then((res) => {
+        history.push("/forms/edit/" + res.data.formId);
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+      });
+    setBackdropOpened(false);
   };
 
   return (
@@ -88,10 +101,21 @@ function FormsHome() {
               )}
 
               <Tooltip title="Create new form">
-                <Button style={{ fontSize: 50, aspectRatio: allForms.length === 0 ? "1 / 1" : "" }} variant="outlined" onClick={() => history.push("/forms/create")}>
+                <Button
+                  className={allForms.length === 0 ? "square-button" : ""}
+                  style={{ fontSize: 50 }}
+                  variant="outlined"
+                  onClick={() => {
+                    setBackdropOpened(true);
+                    createForm();
+                  }}
+                >
                   +
                 </Button>
               </Tooltip>
+              <Backdrop style={{ zIndex: 1000 }} open={backdropOpened}>
+                <CircularProgress color="primary" />
+              </Backdrop>
             </div>
           ) : (
             <div className="center-container">

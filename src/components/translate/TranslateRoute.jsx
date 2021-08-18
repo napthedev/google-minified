@@ -7,13 +7,13 @@ import ContentEditable from "react-contenteditable";
 
 import { copyToClipboard } from "../Functions";
 
-import Navbar from "../Navbar";
+import Navbar, { allApps } from "../Navbar";
 
 const languages = { en: "English", vi: "Vietnamese", ar: "Arabic", zh: "Chinese", fr: "French", de: "German", hi: "Hindi", id: "Indonesian", ga: "Irish", it: "Italian", ja: "Japanese", ko: "Korean", pl: "Polish", pt: "Portuguese", ru: "Russian", es: "Spanish", tr: "Turkish" };
 
 function TranslateRoute() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/PAS1jhL.png";
+    document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Translate").icon;
     document.title = "Google Translate Minified";
   }, []);
 

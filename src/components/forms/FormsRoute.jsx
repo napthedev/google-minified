@@ -8,11 +8,11 @@ import Create from "./Create";
 import Response from "./Response";
 import NotFound from "../NotFound";
 
-import Navbar from "../Navbar";
+import Navbar, { allApps } from "../Navbar";
 
 function FormsRoute() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/prj8GAN.png";
+    document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Forms").icon;
   }, []);
 
   const { path } = useRouteMatch();

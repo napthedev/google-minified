@@ -9,7 +9,7 @@ import { userContext } from "../../App";
 import Folders from "./Folders";
 import NotFound from "../NotFound";
 import Files from "./Files";
-import Navbar from "../Navbar";
+import Navbar, { allApps } from "../Navbar";
 
 import { nanoid } from "nanoid";
 
@@ -41,7 +41,7 @@ function CloseBtn(props) {
 
 function DriveRoute() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/Cr3oZGy.png";
+    document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Drive").icon;
   }, []);
 
   const { currentUser } = useContext(userContext);

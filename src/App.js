@@ -11,6 +11,7 @@ import FormsRoute from "./components/forms/FormsRoute";
 import DriveRoute from "./components/drive/DriveRoute";
 import TranslateRoute from "./components/translate/TranslateRoute";
 import MapsRoute from "./components/maps/MapsRoute";
+import { allApps } from "./components/Navbar";
 
 export const userContext = createContext(null);
 
@@ -61,11 +62,9 @@ function App() {
         {typeof currentUser !== "undefined" ? (
           <Switch>
             <Route path="/" exact>
-              <Link to="/forms">Forms</Link>
-              <Link to="/drive">Drive</Link>
-              <Link to="/translate">Translate</Link>
-              <Link to="/maps">Maps</Link>
-              <p>Todo: Docs, Sheets, Meet, Photos</p>
+              {allApps.map((e) => (
+                <Link to={e.route}>{e.name}</Link>
+              ))}
             </Route>
             <Route path="/sign-in">
               <SignIn />

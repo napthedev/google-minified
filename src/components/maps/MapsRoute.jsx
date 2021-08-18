@@ -7,9 +7,11 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { createTheme } from "@material-ui/core/styles";
 import { ThemeProvider, CssBaseline } from "@material-ui/core";
 
+import { allApps } from "../Navbar";
+
 function MapsRoute() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/7xyU04L.png";
+    document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Maps").icon;
     document.title = "Google Maps Minified";
   }, []);
 

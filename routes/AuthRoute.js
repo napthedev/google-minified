@@ -65,7 +65,7 @@ route.post("/sign-up", async (req, res) => {
       from: process.env.MAILER_ACCOUNT,
       to: req.body.email,
       subject: "Verify your email for google minified",
-      text: "Click this link to verify your email: " + req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id,
+      html: `Click this link to verify your email: <a target="_blank" href="${req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id}">Verify here</a>`,
     };
 
     let mailResult;

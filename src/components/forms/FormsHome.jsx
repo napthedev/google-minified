@@ -28,18 +28,18 @@ function FormsHome() {
 
   useEffect(fetchAllForms, []);
 
-  const deleteForm = async (formId) => {
+  const deleteForm = async (_id) => {
     let clone = [...allForms];
-    let form = clone.find((e) => e.formId === formId);
+    let form = clone.find((e) => e._id === _id);
     form.deleting = true;
     setAllForms(clone);
 
-    await axios.delete("forms", { data: { formId } }).catch((err) => console.log(err, err.response));
+    await axios.delete("forms", { data: { _id } }).catch((err) => console.log(err, err.response));
     fetchAllForms();
   };
 
-  const getThumbnail = (formId) => {
-    let parsed = parseInt(formId, 36);
+  const getThumbnail = (_id) => {
+    let parsed = parseInt(_id, 36);
     let srcList = ["https://i.imgur.com/MklVMV5.png", "https://i.imgur.com/2gWPRjt.png", "https://i.imgur.com/A38RAbj.png"];
     return srcList[parsed % srcList.length];
   };
@@ -48,7 +48,7 @@ function FormsHome() {
     await axios
       .get("forms/create")
       .then((res) => {
-        history.push("/forms/edit/" + res.data.formId);
+        history.push("/forms/edit/" + res.data._id);
       })
       .catch((err) => {
         console.log(err, err.response);
@@ -66,13 +66,13 @@ function FormsHome() {
                 <>
                   {allForms.map((e) =>
                     e.deleting ? (
-                      <Button key={e.formId} variant="outlined" color="default" className={allForms.length <= 1 ? "square-button" : ""}>
+                      <Button key={e._id} variant="outlined" color="default" className={allForms.length <= 1 ? "square-button" : ""}>
                         <CircularProgress color="secondary" />
                       </Button>
                     ) : (
-                      <Card className="card" key={e.formId}>
-                        <CardActionArea onClick={() => history.push("/forms/edit/" + e.formId)}>
-                          <CardMedia draggable="false" component="img" src={getThumbnail(e.formId)} />
+                      <Card className="card" key={e._id}>
+                        <CardActionArea onClick={() => history.push("/forms/edit/" + e._id)}>
+                          <CardMedia draggable="false" component="img" src={getThumbnail(e._id)} />
                           <CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
                               <Typography gutterBottom variant="h6" component="h2">
@@ -87,7 +87,7 @@ function FormsHome() {
                                 color="secondary"
                                 onClick={(event) => {
                                   event.stopPropagation();
-                                  deleteForm(e.formId);
+                                  deleteForm(e._id);
                                 }}
                               />
                             </Tooltip>

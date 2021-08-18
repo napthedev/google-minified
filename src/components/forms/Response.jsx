@@ -14,7 +14,7 @@ import FormSubmitted from "./ResponsePage/FormSubmitted";
 function Response() {
   const [view, setView] = useState("");
 
-  const { id: formId } = useParams();
+  const { id: _id } = useParams();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -30,7 +30,7 @@ function Response() {
 
   const getFormData = () => {
     axios
-      .post("forms/form-response", { formId })
+      .post("forms/form-response", { _id })
       .then((res) => {
         setTitle(res.data.form.title);
         setDescription(res.data.form.description);
@@ -111,7 +111,7 @@ function Response() {
 
   const postFormData = () => {
     axios
-      .post("submits/create", { formId, content: JSON.stringify(data) })
+      .post("submits/create", { _id, content: JSON.stringify(data) })
       .then((res) => setView("submitted"))
       .catch((err) => console.log(err, err.response));
   };

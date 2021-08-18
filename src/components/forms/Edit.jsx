@@ -26,7 +26,7 @@ function Edit() {
 
   const [view, setView] = useState("");
 
-  const { id: formId } = useParams();
+  const { id: _id } = useParams();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -43,7 +43,7 @@ function Edit() {
 
   const getPreviousFormData = () => {
     axios
-      .post("forms/form", { formId })
+      .post("forms/form", { _id })
       .then((res) => {
         setTitle(res.data.form.title);
         setDescription(res.data.form.description);
@@ -60,7 +60,7 @@ function Edit() {
   };
 
   const getSubmits = () => {
-    axios.post("submits/get", { formId }).then((res) => setAllSubmits(res.data.reverse()));
+    axios.post("submits/get", { _id }).then((res) => setAllSubmits(res.data.reverse()));
   };
 
   const formTimeout = useRef(null);
@@ -83,7 +83,7 @@ function Edit() {
   const postFormData = async (title, description, data) => {
     await axios
       .post("forms/update", {
-        formId,
+        _id,
         title,
         description,
         content: JSON.stringify(data),

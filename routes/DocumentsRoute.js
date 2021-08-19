@@ -5,12 +5,12 @@ const Documents = require("../models/Documents");
 
 route.get("/create", verifyJWT, async (req, res) => {
   try {
-    const newForm = new Documents({
+    const newDocument = new Documents({
       userId: req.user.id,
       data: "",
     });
 
-    const saved = await newForm.save();
+    const saved = await newDocument.save();
     res.json(saved);
   } catch (error) {
     res.status(500).send(error);
@@ -29,19 +29,30 @@ route.get("/", verifyJWT, async (req, res) => {
   }
 });
 
-route.patch("/", verifyJWT, async (req, res) => {
+route.post("/document", async (req, res) => {
   try {
-    const myForm = await Documents.findOne({
+    const myDocument = await Documents.findOne({
       _id: req.body._id,
     });
 
-    if (myForm.userId !== req.user.id) return res.status(400).send("No permission to edit form");
+    if (!myDocument) return res.sendStatus(404);
 
-    if (myForm) {
-      myForm.title = req.body.title;
-      myForm.description = req.body.description;
-      myForm.content = req.body.content;
-      const saved = await myForm.save();
+    res.send(myDocument);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+route.patch("/", async (req, res) => {
+  try {
+    const myDocument = await Documents.findOne({
+      _id: req.body._id,
+    });
+
+    if (myDocument) {
+      // myDocument.name = req.body.name;
+      myDocument.data = req.body.data;
+      const saved = await myDocument.save();
       return res.send(saved);
     }
 
@@ -53,13 +64,13 @@ route.patch("/", verifyJWT, async (req, res) => {
 
 route.delete("/", verifyJWT, async (req, res) => {
   try {
-    const myForm = await Documents.findOne({
+    const myDocument = await Documents.findOne({
       _id: req.body._id,
     });
 
-    if (!myForm) return res.sendStatus(404);
+    if (!myDocument) return res.sendStatus(404);
 
-    if (myForm.userId !== req.user.id) return res.sendStatus(403);
+    if (myDocument.userId !== req.user.id) return res.sendStatus(403);
 
     const deleted = await Documents.deleteOne({
       _id: req.body._id,

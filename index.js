@@ -1,5 +1,13 @@
 const express = require("express");
 const app = express();
+const server = require("http").createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -30,5 +38,18 @@ app.use("/submits", SubmitsRoute);
 app.use("/drive", DriveRoute);
 app.use("/docs", DocumentsRoute);
 
+io.of("/docs").on("connection", (socket) => {
+  let room = "";
+
+  socket.on("join-room", (data) => {
+    socket.join(data);
+    room = data;
+  });
+
+  socket.on("update-data", (data) => {
+    socket.broadcast.to(room).emit("new-data", data);
+  });
+});
+
 const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Listening on port ${port}`));
+server.listen(port, () => console.log(`Listening on port ${port}`));

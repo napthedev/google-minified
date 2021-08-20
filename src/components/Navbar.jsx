@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { userContext } from "../App";
 import { IconButton, Menu, MenuItem, Divider, AppBar, Toolbar, Typography } from "@material-ui/core";
-import { Person, ExitToApp, Home, AccountCircle } from "@material-ui/icons";
+import { Person, ExitToApp, Home, AccountCircle, VpnKey, AssignmentReturn } from "@material-ui/icons";
 import axios from "axios";
 
 export const allApps = [
@@ -121,19 +121,23 @@ function Navbar(props) {
             </IconButton>
             <Menu anchorEl={authMenuOpened} keepMounted open={Boolean(authMenuOpened)} onClose={() => setAuthMenuOpened(null)}>
               <MenuItem
+                style={{ gap: 10 }}
                 onClick={() => {
                   setAuthMenuOpened(null);
                   history.push(`/sign-in?redirect=${encodeURIComponent(location.pathname)}`);
                 }}
               >
+                <AssignmentReturn />
                 Sign in
               </MenuItem>
               <MenuItem
+                style={{ gap: 10 }}
                 onClick={() => {
                   setAuthMenuOpened(null);
                   history.push(`/sign-up?redirect=${encodeURIComponent(location.pathname)}`);
                 }}
               >
+                <VpnKey />
                 Sign up
               </MenuItem>
             </Menu>

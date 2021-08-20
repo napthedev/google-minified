@@ -40,7 +40,7 @@ function Document() {
     mySocket.emit("join-room", id);
 
     mySocket.on("new-data", (data) => {
-      editorRef.current.getEditor().updateContents(data);
+      editorRef.current?.getEditor().updateContents(data);
     });
     setSocket(mySocket);
   }, [id]);

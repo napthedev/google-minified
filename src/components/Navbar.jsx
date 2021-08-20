@@ -62,8 +62,8 @@ function Navbar(props) {
         <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => history.push(allApps.find((e) => e.name === name).route)}>
           <img height={30} src={allApps.find((e) => e.name === name).icon} />
         </IconButton>
-        <div style={{ flexGrow: 1 }} onClick={() => history.push(allApps.find((e) => e.name === name).route)}>
-          <Typography variant="h6" style={{ cursor: "pointer", display: "inline" }}>
+        <div style={{ flexGrow: 1 }}>
+          <Typography variant="h6" style={{ cursor: "pointer", display: "inline" }} onClick={() => history.push(allApps.find((e) => e.name === name).route)}>
             Google {name} Minified
           </Typography>
         </div>

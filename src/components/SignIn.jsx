@@ -60,7 +60,13 @@ function SignIn() {
     await axios
       .post("auth/sign-in", { email, password })
       .then((res) => {
-        setCurrentUser(res.data.user);
+        if (res.status === 200) {
+          setCurrentUser(res.data);
+        } else {
+          console.log(res);
+          setEmailError("Unknown error occured");
+          setCurrentUser(null);
+        }
       })
       .catch((err) => {
         console.log(err, err.response);

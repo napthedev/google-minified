@@ -44,7 +44,7 @@ function App() {
       .post("auth/sign-in")
       .then((res) => {
         if (res.status === 200) {
-          setCurrentUser(res.data.user);
+          setCurrentUser(res.data);
         } else {
           console.log(res);
           setCurrentUser(null);

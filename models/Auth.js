@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { nanoid } = require("nanoid");
+const bcrypt = require("bcrypt");
 
 const AuthSchema = new mongoose.Schema({
   username: {
@@ -24,6 +25,18 @@ const AuthSchema = new mongoose.Schema({
     required: true,
     default: nanoid,
   },
+});
+
+AuthSchema.pre("save", function (next) {
+  try {
+    const salt = bcrypt.genSaltSync(10);
+    const hashed = bcrypt.hashSync(this.password, salt);
+    this.password = hashed;
+    next();
+  } catch (error) {
+    console.log(error);
+    next();
+  }
 });
 
 module.exports = mongoose.model("Auth", AuthSchema);

@@ -13,7 +13,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv/config");
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }, () => console.log("MongoDB database connected"));
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, () => console.log("MongoDB database connected"));
 
 const AuthRoute = require("./routes/AuthRoute");
 const FormsRoute = require("./routes/FormsRoute");

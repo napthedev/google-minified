@@ -3,7 +3,8 @@ const route = express.Router();
 const { verifyJWT } = require("../verifyJWT");
 const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
+const fetch = require("node-fetch");
+const bcrypt = require("bcrypt");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -16,14 +17,10 @@ const getDomainWithoutSubdomain = (url) => {
 
 route.get("/verify/:id", async (req, res) => {
   try {
-    const data = await Auth.findOne({ id: req.params.id });
+    const data = await Auth.findOneAndUpdate({ id: req.params.id }, { emailVerified: true });
 
     if (!data) return res.sendStatus(404);
 
-    if (data.emailVerified) return res.send("Your email has already been verified!");
-
-    data.emailVerified = true;
-    await data.save();
     res.send("Your email has been verified!");
   } catch (error) {
     res.status(500).send(error);
@@ -32,12 +29,6 @@ route.get("/verify/:id", async (req, res) => {
 
 route.post("/sign-up", async (req, res) => {
   try {
-    if (!req.body.email || !req.body.password || !req.body.username)
-      return res.status(400).send({
-        code: "missing-data",
-        message: "Missing email, password or username",
-      });
-
     const data = await Auth.findOne({ email: req.body.email });
 
     if (data)
@@ -53,34 +44,23 @@ route.post("/sign-up", async (req, res) => {
     });
     const saved = await user.save();
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.MAILER_ACCOUNT,
-        pass: process.env.MAILER_ACCOUNT_PASSWORD,
+    const mailResult = await fetch("https://mailer-sender-api.herokuapp.com/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        to: req.body.email,
+        subject: "Verify your email for google minified",
+        html: `Click this link to verify your email: <a target="_blank" href="${req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id}">Verify here</a>`,
+      }),
     });
 
-    let mailOptions = {
-      from: process.env.MAILER_ACCOUNT,
-      to: req.body.email,
-      subject: "Verify your email for google minified",
-      html: `Click this link to verify your email: <a target="_blank" href="${req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id}">Verify here</a>`,
-    };
+    const mailData = await mailResult.json();
 
-    let mailResult;
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log(error);
-        mailResult = error;
-      } else {
-        mailResult = info;
-      }
-
-      res.send({
-        user: saved,
-        emailSent: mailResult,
-      });
+    res.send({
+      user: saved,
+      emailSent: mailData,
     });
   } catch (error) {
     res.status(500).send(error);
@@ -89,12 +69,6 @@ route.post("/sign-up", async (req, res) => {
 
 route.post("/sign-in", verifyJWT, async (req, res) => {
   try {
-    if (!req.user.email || !req.user.password)
-      return res.status(400).send({
-        code: "missing-data",
-        message: "Missing email or password",
-      });
-
     const data = await Auth.findOne({ email: req.user.email });
     if (!data)
       return res.status(404).send({
@@ -102,7 +76,9 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         message: "The email provided isn't connected to any account",
       });
 
-    if (data.password !== req.user.password)
+    let passwordCompare = await bcrypt.compare(req.user.password, data.password);
+    passwordCompare = req.user.password === data.password ? true : passwordCompare;
+    if (!passwordCompare)
       return res.status(400).send({
         code: "incorrect-password",
         message: "Password is incorrect",
@@ -133,10 +109,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         path: "/",
         domain: getDomainWithoutSubdomain(req.get("origin")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.get("origin")) : "localhost",
       })
-      .send({
-        user,
-        accessToken,
-      });
+      .send(user);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -153,7 +126,7 @@ route.get("/sign-out", (req, res) => {
       path: "/",
       domain: getDomainWithoutSubdomain(req.get("origin")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.get("origin")) : "localhost",
     })
-    .send("Logged out");
+    .sendStatus(200);
 });
 
 module.exports = route;

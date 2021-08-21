@@ -77,7 +77,9 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
       });
 
     let passwordCompare = await bcrypt.compare(req.user.password, data.password);
-    passwordCompare = req.user.password === data.password ? true : passwordCompare;
+    if (req.cookies.token) {
+      passwordCompare = req.user.password === data.password ? true : passwordCompare;
+    }
     if (!passwordCompare)
       return res.status(400).send({
         code: "incorrect-password",

@@ -28,6 +28,8 @@ const AuthSchema = new mongoose.Schema({
 });
 
 AuthSchema.pre("save", function (next) {
+  if (!this.isModified("password")) return next();
+
   try {
     const salt = bcrypt.genSaltSync(10);
     const hashed = bcrypt.hashSync(this.password, salt);

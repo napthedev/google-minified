@@ -4,6 +4,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { Button, Breadcrumbs, IconButton, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Snackbar } from "@material-ui/core";
 import { Delete, CreateNewFolder, InsertDriveFile, FileCopy, InsertLink, Create, GetApp, Folder as FolderIcon, Close } from "@material-ui/icons";
 import axios from "axios";
+import { io } from "socket.io-client";
 import NotFound from "../NotFound";
 import { copyToClipboard } from "../Functions";
 import { anchorDownloadFile } from "../Functions";
@@ -53,6 +54,8 @@ function Folder(props) {
 
   const [currentFileToRename, setCurrentFileToRename] = useState({ id: "", type: "" });
 
+  const [socket, setSocket] = useState();
+
   const fetchFolderData = async () => {
     if (currentFolderIdRef.current !== null) {
       let response;
@@ -98,18 +101,18 @@ function Folder(props) {
     setSelected([]);
   };
 
-  useEffect(() => {
-    try {
-      const bc = new BroadcastChannel("channel");
-      bc.onmessage = (message) => {
-        fetchFolderData();
-      };
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
   useEffect(async () => {
+    socket?.disconnect();
+
+    let mySocket = io((process.env.REACT_APP_SERVER_URL || "http://localhost:5000/") + "drive");
+    mySocket.emit("join-room", currentFolderIdRef.current || currentUser.id);
+
+    mySocket.on("new-data", (data) => {
+      fetchFolderData();
+    });
+
+    setSocket(mySocket);
+
     setNotFound(false);
     setLoading(true);
     await fetchFolderData();
@@ -130,6 +133,8 @@ function Folder(props) {
 
       if (clickedOutside) setSelected([]);
     };
+
+    return () => socket?.disconnect();
   }, [currentFolderId]);
 
   const handleDialogFormSubmit = (e) => {
@@ -151,8 +156,6 @@ function Folder(props) {
       path: path,
       parentId: currentFolderId,
     });
-
-    fetchFolderData();
   };
 
   const handleClicks = (e, id, type) => {
@@ -197,29 +200,23 @@ function Folder(props) {
     download(0);
   };
 
-  const handleRename = async (name) => {
-    await axios
+  const handleRename = (name) => {
+    axios
       .post("drive/rename", {
         _id: currentFileToRename.id,
         type: currentFileToRename.type,
         name,
       })
-      .then((res) => console.log(res.data))
       .catch((err) => console.log(err, err.response));
-
-    fetchFolderData();
   };
 
-  const deleteFileOrFolder = async (type, id) => {
-    await axios
+  const deleteFileOrFolder = (type, id) => {
+    axios
       .post("drive/delete", {
         type,
         _id: id,
       })
-      .then((res) => console.log(res.data))
       .catch((err) => console.log(err, err.response));
-
-    fetchFolderData();
   };
 
   const dragBlur = (e) => {
@@ -290,7 +287,6 @@ function Folder(props) {
                 multiple
                 onChange={(e) => {
                   let files = e.target.files;
-                  console.log(files);
                   Object.keys(files).forEach((e) => {
                     uploadFile(files[e], currentFolderId);
                   });

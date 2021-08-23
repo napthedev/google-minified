@@ -21,6 +21,9 @@ const SubmitsRoute = require("./routes/SubmitsRoute");
 const DriveRoute = require("./routes/DriveRoute");
 const DocumentsRoute = require("./routes/DocumentsRoute");
 
+const Folders = require("./models/Folders");
+const Files = require("./models/Files");
+
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
 
@@ -49,6 +52,36 @@ io.of("/docs").on("connection", (socket) => {
   socket.on("update-data", (data) => {
     socket.broadcast.to(room).emit("new-data", data);
   });
+});
+
+io.of("/drive").on("connection", (socket) => {
+  socket.on("join-room", (roomId) => {
+    socket.join(roomId);
+  });
+});
+
+Folders.watch().on("change", (data) => {
+  try {
+    if (data.operationType === "insert") {
+      io.of("/drive")
+        .to(data.fullDocument.parentId || data.fullDocument.userId)
+        .emit("new-data", "");
+    } else {
+      io.of("/drive").emit("new-data", "");
+    }
+  } catch (error) {}
+});
+
+Files.watch().on("change", (data) => {
+  try {
+    if (data.operationType === "insert") {
+      io.of("/drive")
+        .to(data.fullDocument.parentId || data.fullDocument.userId)
+        .emit("new-data", "");
+    } else {
+      io.of("/drive").emit("new-data", "");
+    }
+  } catch (error) {}
 });
 
 const port = process.env.PORT || 5000;

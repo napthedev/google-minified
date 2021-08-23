@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
-import { IconButton, Typography, Tooltip, FormControl, Select, MenuItem, Snackbar } from "@material-ui/core";
+import { IconButton, FormControl, Select, MenuItem, Snackbar, TextareaAutosize } from "@material-ui/core";
 import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
-
-import ContentEditable from "react-contenteditable";
 
 import { copyToClipboard } from "../Functions";
 
@@ -27,8 +25,6 @@ function TranslateRoute() {
 
   const [snackbarOpened, setSnackbarOpened] = useState(false);
 
-  const inputRef = useRef();
-
   const handleCopy = () => {
     copyToClipboard(data)
       .then((res) => {
@@ -44,7 +40,7 @@ function TranslateRoute() {
     if (valueDidUpdate.current) {
       if (timeOutRef.current) clearTimeout(timeOutRef.current);
 
-      if (!inputRef.current.outerText.trim()) {
+      if (!inputValue.trim()) {
         setData("");
         return;
       }
@@ -52,7 +48,7 @@ function TranslateRoute() {
       setData(null);
 
       timeOutRef.current = setTimeout(() => {
-        if (!inputRef.current.outerText.trim()) {
+        if (!inputValue.trim()) {
           setData("");
           return;
         }
@@ -61,14 +57,14 @@ function TranslateRoute() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            q: inputRef.current.outerText.trim(),
+            q: inputValue.trim(),
             source: languageFrom,
             target: languageTo,
           }),
         })
           .then((res) => res.json())
           .then((data) => {
-            if (inputRef.current.outerText.trim()) setData(data.translatedText);
+            if (inputValue.trim()) setData(data.translatedText);
           })
           .catch((err) => {
             console.log(err);
@@ -137,19 +133,8 @@ function TranslateRoute() {
         </div>
         <div className="translate-flex">
           <div className="translate-box-container">
-            <ContentEditable
-              className="translate-box"
-              html={inputValue}
-              innerRef={inputRef}
-              onChange={(e) => {
-                if (e.target.value === "<div><br></div>") setInputValue("");
-                else setInputValue(e.target.value);
-              }}
-              onBlur={() => {
-                if (!inputRef.current.outerText.trim()) setInputValue("");
-              }}
-            />
-            {inputRef.current?.outerText?.trim() && (
+            <TextareaAutosize className="translate-box" placeholder="Text..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+            {inputValue.trim() && (
               <IconButton className="float-right" onClick={() => setInputValue("")}>
                 <Close />
               </IconButton>

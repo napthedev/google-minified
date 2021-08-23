@@ -63,7 +63,7 @@ function Document() {
 
           updateTimeout.current = setTimeout(() => {
             axios.patch("docs", { _id: id, data: content });
-          }, 1000);
+          }, 400);
         }
       }}
     />

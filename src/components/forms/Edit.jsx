@@ -2,6 +2,7 @@ import { Redirect } from "react-router-dom";
 import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { nanoid } from "nanoid";
+import { io } from "socket.io-client";
 
 import { userContext } from "../../App";
 
@@ -39,7 +40,21 @@ function Edit() {
 
   const [loading, setLoading] = useState(true);
 
+  const [socket, setSocket] = useState();
+
   useEffect(() => (document.title = title + (title ? " - " : "") + "Editing - Google Forms Minified"), [title]);
+
+  useEffect(() => {
+    socket?.disconnect();
+    let mySocket = io((process.env.REACT_APP_SERVER_URL || "http://localhost:5000/") + "submits");
+    mySocket.emit("join-room", _id);
+    mySocket.on("new-data", (data) => {
+      console.log("new-data");
+      getSubmits();
+    });
+
+    setSocket(mySocket);
+  }, []);
 
   const getPreviousFormData = () => {
     axios
@@ -60,7 +75,7 @@ function Edit() {
   };
 
   const getSubmits = () => {
-    axios.post("submits/get", { _id }).then((res) => setAllSubmits(res.data.reverse()));
+    axios.post("submits/get", { id: _id }).then((res) => setAllSubmits(res.data.reverse()));
   };
 
   const formTimeout = useRef(null);
@@ -117,18 +132,8 @@ function Edit() {
   const addOption = (id, type) => {
     let clone = [...data];
     let item = clone.find((e) => e.id === id);
-    if (type === "checkbox") {
-      item.value.options.push({
-        id: nanoid(),
-        name: "Checkbox " + (item.value.options.length + 1),
-        checked: false,
-      });
-    } else if (type === "radio") {
-      item.value.options.push({
-        id: nanoid(),
-        name: "Radio " + (item.value.options.length + 1),
-      });
-    }
+    if (type === "checkbox") item.value.options.push({ id: nanoid(), name: "Checkbox " + (item.value.options.length + 1), checked: false });
+    else if (type === "radio") item.value.options.push({ id: nanoid(), name: "Radio " + (item.value.options.length + 1) });
 
     setData(clone);
   };
@@ -141,14 +146,7 @@ function Edit() {
   const addBox = (type) => {
     let clone = [...data];
     if (type === "text") {
-      clone.push({
-        id: nanoid(),
-        type: "text",
-        value: {
-          title: "Untitled question",
-          answer: "",
-        },
-      });
+      clone.push({ id: nanoid(), type: "text", value: { title: "Untitled question", answer: "" } });
     } else if (type === "checkbox") {
       clone.push({
         id: nanoid(),
@@ -181,23 +179,9 @@ function Edit() {
         },
       });
     } else if (type === "date") {
-      clone.push({
-        id: nanoid(),
-        type: "date",
-        value: {
-          title: "Untitled date",
-          answer: "",
-        },
-      });
+      clone.push({ id: nanoid(), type: "date", value: { title: "Untitled date", answer: "" } });
     } else if (type === "time") {
-      clone.push({
-        id: nanoid(),
-        type: "time",
-        value: {
-          title: "Untitled time",
-          answer: "",
-        },
-      });
+      clone.push({ id: nanoid(), type: "time", value: { title: "Untitled time", answer: "" } });
     }
 
     setData(clone);

@@ -53,7 +53,7 @@ route.patch("/", async (req, res) => {
       // myDocument.name = req.body.name;
       myDocument.data = req.body.data;
       const saved = await myDocument.save();
-      return res.send(saved);
+      return res.sendStatus(200);
     }
 
     res.sendStatus(404);

@@ -91,7 +91,7 @@ function Edit() {
 
       formTimeout.current = setTimeout(() => {
         postFormData(title, description, data);
-      }, 500);
+      }, 400);
     }
   }, [data, title, description]);
 

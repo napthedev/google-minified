@@ -19,6 +19,7 @@ const DocumentsRoute = require("./routes/DocumentsRoute");
 
 const Folders = require("./models/Folders");
 const Files = require("./models/Files");
+const Submits = require("./models/Submits");
 
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
@@ -51,9 +52,7 @@ io.of("/docs").on("connection", (socket) => {
 });
 
 io.of("/drive").on("connection", (socket) => {
-  socket.on("join-room", (roomId) => {
-    socket.join(roomId);
-  });
+  socket.on("join-room", (roomId) => socket.join(roomId));
 });
 
 Folders.watch().on("change", (data) => {
@@ -76,6 +75,20 @@ Files.watch().on("change", (data) => {
         .emit("new-data", "");
     } else {
       io.of("/drive").emit("new-data", "");
+    }
+  } catch (error) {}
+});
+
+io.of("/submits").on("connection", (socket) => {
+  socket.on("join-room", (roomId) => {
+    socket.join(roomId);
+  });
+});
+
+Submits.watch().on("change", (data) => {
+  try {
+    if (data.operationType === "insert") {
+      io.of("/submits").to(data.fullDocument.id).emit("new-data", "");
     }
   } catch (error) {}
 });

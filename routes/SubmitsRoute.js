@@ -5,12 +5,12 @@ const Submits = require("../models/Submits");
 route.post("/create", async (req, res) => {
   try {
     const newSubmit = new Submits({
-      _id: req.body._id,
+      id: req.body.id,
       content: req.body.content,
     });
 
     const saved = await newSubmit.save();
-    res.json(saved);
+    res.send(saved);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -19,7 +19,7 @@ route.post("/create", async (req, res) => {
 route.post("/get", async (req, res) => {
   try {
     const mySubmits = await Submits.find({
-      _id: req.body._id,
+      id: req.body.id,
     });
 
     if (!mySubmits) return res.sendStatus(404);

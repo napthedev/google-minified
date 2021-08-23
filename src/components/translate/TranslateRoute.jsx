@@ -20,10 +20,20 @@ function TranslateRoute() {
   const [inputValue, setInputValue] = useState("");
   const [data, setData] = useState("");
 
+  const [ellipsis, setEllipsis] = useState(0);
+
   const valueDidUpdate = useRef(false);
   const timeOutRef = useRef(null);
 
   const [snackbarOpened, setSnackbarOpened] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setEllipsis((prev) => ++prev % 3);
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleCopy = () => {
     copyToClipboard(data)
@@ -149,7 +159,7 @@ function TranslateRoute() {
             <Typography style={{ position: "absolute", bottom: 5, right: 10 }}>{inputValue.length} / 1000</Typography>
           </div>
           <div className="translate-box-container">
-            <div className="translate-box">{data === null ? "Translating..." : data}</div>
+            <div className="translate-box">{data === null ? "Translating" + ".".repeat(ellipsis + 1) : data}</div>
             {data && (
               <IconButton style={{ position: "absolute", bottom: 7, right: 7 }} onClick={handleCopy}>
                 <FileCopy />

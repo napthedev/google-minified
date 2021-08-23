@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import { IconButton, FormControl, Select, MenuItem, Snackbar, TextareaAutosize } from "@material-ui/core";
+import { IconButton, FormControl, Select, MenuItem, Snackbar, TextareaAutosize, Typography } from "@material-ui/core";
 import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
 
 import { copyToClipboard } from "../Functions";
@@ -133,17 +133,25 @@ function TranslateRoute() {
         </div>
         <div className="translate-flex">
           <div className="translate-box-container">
-            <TextareaAutosize className="translate-box" placeholder="Text..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+            <TextareaAutosize
+              className="translate-box"
+              placeholder="Text..."
+              value={inputValue}
+              onChange={(e) => {
+                if (e.target.value.length <= 1000) setInputValue(e.target.value);
+              }}
+            />
             {inputValue.trim() && (
-              <IconButton className="float-right" onClick={() => setInputValue("")}>
+              <IconButton style={{ position: "absolute", top: 12, right: 7 }} onClick={() => setInputValue("")}>
                 <Close />
               </IconButton>
             )}
+            <Typography style={{ position: "absolute", bottom: 5, right: 10 }}>{inputValue.length} / 1000</Typography>
           </div>
           <div className="translate-box-container">
             <div className="translate-box">{data === null ? "Translating..." : data}</div>
             {data && (
-              <IconButton className="float-right" onClick={handleCopy}>
+              <IconButton style={{ position: "absolute", bottom: 7, right: 7 }} onClick={handleCopy}>
                 <FileCopy />
               </IconButton>
             )}

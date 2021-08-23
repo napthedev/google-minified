@@ -32,10 +32,10 @@
 
 .translate-box {
   min-height: 200px;
+  height: 100%;
   outline: none;
   font-size: 24px;
-  padding: 20px;
-  padding-bottom: 40px;
+  padding: 20px 45px 40px 20px;
   width: 100%;
   resize: none;
   color: var(--translate-box-color);
@@ -51,13 +51,8 @@
   transform: translate(-50%, -50%);
 }
 
-.float-right {
+.float-bottom-right {
   position: absolute !important;
   right: 7px;
   bottom: 3px;
-}
-
-div[contenteditable]:empty::before {
-  content: "Text...";
-  color: var(--translate-box-placeholder);
 }

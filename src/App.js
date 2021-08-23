@@ -6,6 +6,7 @@ import axios from "axios";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import NotFound from "./components/NotFound";
+import Cookie from "./components/Cookie";
 
 import FormsRoute from "./components/forms/FormsRoute";
 import DriveRoute from "./components/drive/DriveRoute";
@@ -38,8 +39,20 @@ function App() {
   );
 
   const [currentUser, setCurrentUser] = useState(undefined);
+  const [cookie, setCookie] = useState(true);
 
   useEffect(() => {
+    let cookieEnabled = navigator.cookieEnabled;
+    if (!cookieEnabled) {
+      document.cookie = "cookieCheck=test;";
+      cookieEnabled = document.cookie.indexOf("test") != -1;
+    }
+
+    if (!cookieEnabled) {
+      setCookie(cookieEnabled);
+      return;
+    }
+
     axios
       .post("auth/sign-in")
       .then((res) => {
@@ -59,37 +72,41 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
-        {typeof currentUser !== "undefined" ? (
-          <Switch>
-            <Route path="/" exact>
-              {allApps.map((e) => (
-                <Link key={e.name} to={e.route}>
-                  {e.name}
-                </Link>
-              ))}
-            </Route>
-            <Route path="/sign-in">
-              <SignIn />
-            </Route>
-            <Route path="/sign-up">
-              <SignUp />
-            </Route>
-            <Route path="/forms" component={FormsRoute}></Route>
-            <Route path="/drive" component={DriveRoute}></Route>
-            <Route path="/translate" component={TranslateRoute}></Route>
-            <Route path="/maps" component={MapsRoute}></Route>
-            <Route path="/docs" component={DocsRoute}></Route>
-            <Route>
-              <NotFound />
-            </Route>
-          </Switch>
-        ) : (
-          <div className="center-container">
-            <CircularProgress />
-          </div>
-        )}
-      </userContext.Provider>
+      {cookie ? (
+        <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
+          {typeof currentUser !== "undefined" ? (
+            <Switch>
+              <Route path="/" exact>
+                {allApps.map((e) => (
+                  <Link key={e.name} to={e.route}>
+                    {e.name}
+                  </Link>
+                ))}
+              </Route>
+              <Route path="/sign-in">
+                <SignIn />
+              </Route>
+              <Route path="/sign-up">
+                <SignUp />
+              </Route>
+              <Route path="/forms" component={FormsRoute}></Route>
+              <Route path="/drive" component={DriveRoute}></Route>
+              <Route path="/translate" component={TranslateRoute}></Route>
+              <Route path="/maps" component={MapsRoute}></Route>
+              <Route path="/docs" component={DocsRoute}></Route>
+              <Route>
+                <NotFound />
+              </Route>
+            </Switch>
+          ) : (
+            <div className="center-container">
+              <CircularProgress />
+            </div>
+          )}
+        </userContext.Provider>
+      ) : (
+        <Cookie />
+      )}
     </ThemeProvider>
   );
 }

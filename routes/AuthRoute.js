@@ -5,6 +5,7 @@ const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");
 const bcrypt = require("bcrypt");
+const path = require("path");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -19,9 +20,9 @@ route.get("/verify/:id", async (req, res) => {
   try {
     const data = await Auth.findOneAndUpdate({ id: req.params.id }, { emailVerified: true });
 
-    if (!data) return res.sendFile(__dirname + "/public/NotFound.html");
+    if (!data) return res.sendFile(path.join(__dirname + "./../public/NotFound.html"));
 
-    res.sendFile(__dirname + "/public/EmailVerified.html");
+    res.sendFile(path.join(__dirname + "./../public/EmailVerified.html"));
   } catch (error) {
     res.status(500).send(error);
   }

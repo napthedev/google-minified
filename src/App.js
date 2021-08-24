@@ -18,7 +18,7 @@ import { allApps } from "./components/Navbar";
 export const userContext = createContext(null);
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL || "http://localhost:5000/";
+axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 
 function App() {
   useEffect(() => {

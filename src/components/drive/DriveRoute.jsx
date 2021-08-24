@@ -69,7 +69,7 @@ function DriveRoute() {
     ]);
 
     axios
-      .post(process.env.REACT_APP_SERVER_URL || "http://localhost:5000/" + "drive/upload", formData, {
+      .post(process.env.REACT_APP_SERVER_URL + "drive/upload", formData, {
         onUploadProgress: (progress) => {
           let percentage = Math.round((progress.loaded / progress.total) * 100);
 

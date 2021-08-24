@@ -67,7 +67,7 @@ function DriveRoute() {
     ]);
 
     axios
-      .post(process.env.REACT_APP_UPLOAD_SERVER + "upload", formData, {
+      .post(process.env.REACT_APP_SERVER_URL || "http://localhost:5000/" + `drive/upload?parentId=${parentId}`, formData, {
         onUploadProgress: (progress) => {
           let percentage = Math.round((progress.loaded / progress.total) * 100);
 
@@ -78,15 +78,6 @@ function DriveRoute() {
             return clone;
           });
         },
-      })
-      .then((res) => {
-        axios.post("drive/create-file", {
-          name: file.name,
-          parentId,
-          userId: currentUser.id,
-          url: res.data.url,
-          type: file.type,
-        });
       })
       .catch((err) => {
         console.log(err);

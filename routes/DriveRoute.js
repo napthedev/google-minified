@@ -39,8 +39,8 @@ route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
     if (!req.body.parentId) {
       if (!req.user?.id) return res.sendStatus(400);
 
-      folderChild = await Folders.find({ parentId: "null", userId: req.user.id });
-      filesChild = await Files.find({ parentId: "null", userId: req.user.id });
+      folderChild = await Folders.find({ parentId: null, userId: req.user.id });
+      filesChild = await Files.find({ parentId: null, userId: req.user.id });
     } else {
       folderChild = await Folders.find({ parentId: req.body.parentId });
       filesChild = await Files.find({ parentId: req.body.parentId });
@@ -111,7 +111,9 @@ route.post("/upload", verifyJWT, async (req, res) => {
 
       const newFile = new Files({
         _id: fileId,
-        parentId: req.query.parentId,
+        name: file.name,
+        parentId: req.body.parentId,
+        path: req.body.path,
         userId: req.user.id,
         type: file.mimetype,
       });
@@ -138,9 +140,11 @@ route.post("/rename", verifyJWT, async (req, res) => {
 
       const fileName = fs.readdirSync(path.join(__dirname, `./../files/${req.body._id}`))[0];
       const filePath = path.join(__dirname, `./../files/${req.body._id}`, fileName);
+      const newName = filePath.replace(fileName, `${req.body.name}.${fileName.split(".").slice(-1)[0]}`);
 
-      fs.renameSync(filePath, filePath.replace(fileName, `${req.body.name}.${fileName.split(".").slice(-1)[0]}`));
+      fs.renameSync(filePath, newName);
 
+      existing.name = newName;
       const saved = await existing.save();
 
       res.send(saved);
@@ -166,19 +170,25 @@ route.post("/delete", verifyJWT, async (req, res) => {
     if (req.body.type === "file") {
       const file = await Files.findOne({ _id: req.body._id });
       if (file.userId !== req.user.id) return res.sendStatus(403);
-      const deleted = await file.delete();
-      return res.send(deleted);
+      fs.rmdirSync(path.join(__dirname, `./../files/${file._id}`), { recursive: true });
+      await file.delete();
+      return res.sendStatus(200);
     }
     if (req.body.type === "folder") {
       const folder = await Folders.findOne({ _id: req.body._id });
       if (folder.userId !== req.user.id) return res.sendStatus(403);
 
-      const deleted = await folder.delete();
+      await folder.delete();
 
-      const deletedFolders = await Folders.deleteMany({ path: req.body._id });
-      const deletedFiles = await Files.deleteMany({ path: req.body._id });
+      await Folders.deleteMany({ path: req.body._id });
+      const files = await Files.find({ path: req.body._id });
 
-      return res.send({ deletedFiles, deletedFolders, deleted });
+      for (let i = 0; i < files.length; i++) {
+        fs.rmdirSync(path.join(__dirname, `./../files/${files[i]._id}`), { recursive: true });
+        await files[i].delete();
+      }
+
+      return res.sendStatus(200);
     }
     res.sendStatus(400);
   } catch (error) {

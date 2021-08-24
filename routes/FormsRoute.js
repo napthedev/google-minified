@@ -3,7 +3,7 @@ const route = express.Router();
 const { verifyJWT } = require("../verifyJWT");
 const Forms = require("../models/Forms");
 const Submits = require("../models/Submits");
-const { nanoid } = require("nanoid");
+const napid = require("napid");
 
 route.get("/create", verifyJWT, async (req, res) => {
   try {
@@ -13,7 +13,7 @@ route.get("/create", verifyJWT, async (req, res) => {
       description: "Form description",
       content: JSON.stringify([
         {
-          id: nanoid(),
+          id: napid(),
           type: "text",
           value: {
             title: "Untitled question",

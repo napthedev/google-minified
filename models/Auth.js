@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { nanoid } = require("nanoid");
+const napid = require("napid");
 const bcrypt = require("bcrypt");
 
 const AuthSchema = new mongoose.Schema({
@@ -23,7 +23,7 @@ const AuthSchema = new mongoose.Schema({
   id: {
     type: String,
     required: true,
-    default: nanoid,
+    default: napid,
   },
 });
 

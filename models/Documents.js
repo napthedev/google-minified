@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const { nanoid } = require("nanoid");
+const napid = require("napid");
 
 const DocumentSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: nanoid,
+    default: napid,
   },
   name: {
     type: String,

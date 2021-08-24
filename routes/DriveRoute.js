@@ -1,5 +1,8 @@
 const express = require("express");
 const route = express.Router();
+const path = require("path");
+const napid = require("napid");
+const fs = require("fs");
 
 const Folders = require("../models/Folders");
 const Files = require("../models/Files");
@@ -36,12 +39,16 @@ route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
     if (!req.body.parentId) {
       if (!req.user?.id) return res.sendStatus(400);
 
-      folderChild = await Folders.find({ parentId: null, userId: req.user.id });
-      filesChild = await Files.find({ parentId: null, userId: req.user.id });
+      folderChild = await Folders.find({ parentId: "null", userId: req.user.id });
+      filesChild = await Files.find({ parentId: "null", userId: req.user.id });
     } else {
       folderChild = await Folders.find({ parentId: req.body.parentId });
       filesChild = await Files.find({ parentId: req.body.parentId });
     }
+    filesChild = filesChild.map((file) => {
+      const fileName = fs.readdirSync(path.join(__dirname, `./../files/${file._id}`))[0];
+      return { ...file.toObject(), name: fileName, url: `${req.protocol}://${req.get("host")}/drive/file/${file._id}` };
+    });
 
     res.send({ folders: folderChild, files: filesChild });
   } catch (error) {
@@ -66,31 +73,53 @@ route.post("/create-folder", verifyJWT, async (req, res) => {
   }
 });
 
+route.get("/file/:id", (req, res) => {
+  try {
+    const fileName = fs.readdirSync(path.join(__dirname, `./../files/${req.params.id}`))[0];
+    const filePath = path.join(__dirname, `./../files/${req.params.id}`, fileName);
+    if (Boolean(Number(req.query.dl))) res.download(filePath);
+    else res.sendFile(filePath);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 route.post("/get-file", verifyJWTNotStrict, async (req, res) => {
   try {
     const file = await Files.findOne({ _id: req.body._id });
 
     if (!file) return res.sendStatus(404);
 
-    res.send(file);
+    const fileName = fs.readdirSync(path.join(__dirname, `./../files/${file._id}`))[0];
+    res.send({ ...file.toObject(), name: fileName, url: `${req.protocol}://${req.get("host")}/drive/file/${file._id}` });
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-route.post("/create-file", verifyJWT, async (req, res) => {
+route.post("/upload", verifyJWT, async (req, res) => {
   try {
-    const newFile = new Files({
-      name: req.body.name,
-      parentId: req.body.parentId,
-      userId: req.user.id,
-      url: req.body.url,
-      type: req.body.type,
+    const file = req.files.file;
+    if (!file) return res.sendStatus(400);
+
+    let fileId = napid();
+
+    let uploadPath = path.join(__dirname, `./../files/${fileId}/${file.name}`);
+
+    file.mv(uploadPath, async (err) => {
+      if (err) return res.status(500).send(err);
+
+      const newFile = new Files({
+        _id: fileId,
+        parentId: req.query.parentId,
+        userId: req.user.id,
+        type: file.mimetype,
+      });
+
+      const saved = await newFile.save();
+
+      res.send(saved);
     });
-
-    const saved = await newFile.save();
-
-    res.send(saved);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -98,27 +127,35 @@ route.post("/create-file", verifyJWT, async (req, res) => {
 
 route.post("/rename", verifyJWT, async (req, res) => {
   try {
-    let existing;
     if (req.body.type === "file") {
-      existing = await Files.findOne({
+      const existing = await Files.findOne({
         _id: req.body._id,
       });
+
+      if (!existing) return res.sendStatus(404);
+
+      if (existing.userId !== req.user.id) return res.sendStatus(403);
+
+      const fileName = fs.readdirSync(path.join(__dirname, `./../files/${req.body._id}`))[0];
+      const filePath = path.join(__dirname, `./../files/${req.body._id}`, fileName);
+
+      fs.renameSync(filePath, filePath.replace(fileName, `${req.body.name}.${fileName.split(".").slice(-1)[0]}`));
+
+      const saved = await existing.save();
+
+      res.send(saved);
     } else if (req.body.type === "folder") {
       existing = await Folders.findOne({
         _id: req.body._id,
       });
+
+      if (!existing) return res.sendStatus(404);
+      if (existing.userId !== req.user.id) return res.sendStatus(403);
+
+      existing.name = req.body.name;
+      const saved = await existing.save();
+      res.send(saved);
     }
-
-    if (!existing) return res.sendStatus(404);
-
-    if (existing.userId !== req.user.id) return res.sendStatus(403);
-
-    if (req.body.type === "file") existing.name = `${req.body.name}.${existing.name.split(".")[existing.name.split(".").length - 1]}`;
-    else if (req.body.type === "folder") existing.name = req.body.name;
-
-    const saved = await existing.save();
-
-    res.send(saved);
   } catch (error) {
     res.status(500).send(error);
   }

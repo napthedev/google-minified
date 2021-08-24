@@ -1,12 +1,7 @@
 const mongoose = require("mongoose");
-const napid = require("napid");
 
 const filesSchema = new mongoose.Schema({
   _id: {
-    type: String,
-    default: napid,
-  },
-  name: {
     type: String,
     required: true,
   },
@@ -14,10 +9,6 @@ const filesSchema = new mongoose.Schema({
     type: String,
   },
   userId: {
-    type: String,
-    required: true,
-  },
-  url: {
     type: String,
     required: true,
   },

@@ -7,6 +7,8 @@ const io = new Server(server, { cors: { origin: "*" } });
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const fileUpload = require("express-fileupload");
+
 require("dotenv/config");
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, () => console.log("MongoDB database connected"));
@@ -23,6 +25,7 @@ const Submits = require("./models/Submits");
 
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
+app.use(fileUpload({ createParentPath: true, useTempFiles: true }));
 
 app.use(cookieParser());
 

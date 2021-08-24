@@ -22,7 +22,7 @@ function Document() {
       sepia: 10,
     });
 
-    const interval = setInterval(() => axios.patch("docs", { _id: id, data: content }), 400);
+    const interval = setInterval(() => axios.patch("docs", { _id: id, data: editorValue }), 400);
 
     return () => {
       disableDarkMode();

@@ -52,10 +52,12 @@ function DriveRoute() {
 
   const [filesUploading, setFilesUploading] = useState([]);
 
-  const uploadFile = async (file, parentId) => {
+  const uploadFile = async (file, parentId, path) => {
     let formData = new FormData();
     let id = napid();
     formData.append("file", file);
+    formData.append("parentId", parentId);
+    formData.append("path", path);
 
     setFilesUploading((prevFilesUploading) => [
       ...prevFilesUploading,
@@ -67,7 +69,7 @@ function DriveRoute() {
     ]);
 
     axios
-      .post(process.env.REACT_APP_SERVER_URL || "http://localhost:5000/" + `drive/upload?parentId=${parentId}`, formData, {
+      .post(process.env.REACT_APP_SERVER_URL || "http://localhost:5000/" + "drive/upload", formData, {
         onUploadProgress: (progress) => {
           let percentage = Math.round((progress.loaded / progress.total) * 100);
 

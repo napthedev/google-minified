@@ -39,7 +39,7 @@ function Document() {
       })
       .catch((err) => console.log(err, err.response));
 
-    const mySocket = io((process.env.REACT_APP_SERVER_URL || "http://localhost:5000/") + "docs");
+    const mySocket = io(process.env.REACT_APP_SERVER_URL + "docs");
     mySocket.emit("join-room", id);
 
     mySocket.on("new-data", (data) => {

@@ -104,7 +104,7 @@ function Folder(props) {
   useEffect(async () => {
     socket?.disconnect();
 
-    let mySocket = io((process.env.REACT_APP_SERVER_URL || "http://localhost:5000/") + "drive");
+    let mySocket = io(process.env.REACT_APP_SERVER_URL + "drive");
     mySocket.emit("join-room", currentFolderIdRef.current || currentUser.id);
 
     mySocket.on("new-data", (data) => {
@@ -241,7 +241,7 @@ function Folder(props) {
       for (let i = 0, item; (item = items[i]); ++i) {
         let entry = item.webkitGetAsEntry();
         if (entry.isFile) {
-          uploadFile(files[i], currentFolderId);
+          uploadFile(files[i], currentFolderId, path);
         }
       }
 
@@ -270,7 +270,7 @@ function Folder(props) {
                   <span>New Folder</span>
                 </Button>
               </div>
-              <input type="file" hidden onChange={(e) => uploadFile(e.target.files[0], currentFolderId)} ref={fileInput} />
+              <input type="file" hidden onChange={(e) => uploadFile(e.target.files[0], currentFolderId, path)} ref={fileInput} />
               <div className="center-div">
                 <Button
                   onClick={() => {
@@ -288,7 +288,7 @@ function Folder(props) {
                 onChange={(e) => {
                   let files = e.target.files;
                   Object.keys(files).forEach((e) => {
-                    uploadFile(files[e], currentFolderId);
+                    uploadFile(files[e], currentFolderId, path);
                   });
                 }}
                 ref={multipleFilesInput}

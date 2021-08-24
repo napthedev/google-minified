@@ -46,10 +46,9 @@ function Edit() {
 
   useEffect(() => {
     socket?.disconnect();
-    let mySocket = io((process.env.REACT_APP_SERVER_URL || "http://localhost:5000/") + "submits");
+    let mySocket = io(process.env.REACT_APP_SERVER_URL + "submits");
     mySocket.emit("join-room", _id);
     mySocket.on("new-data", (data) => {
-      console.log("new-data");
       getSubmits();
     });
 

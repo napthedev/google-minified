@@ -19,9 +19,9 @@ route.get("/verify/:id", async (req, res) => {
   try {
     const data = await Auth.findOneAndUpdate({ id: req.params.id }, { emailVerified: true });
 
-    if (!data) return res.sendStatus(404);
+    if (!data) return res.sendFile(__dirname + "/public/NotFound.html");
 
-    res.send("Your email has been verified!");
+    res.sendFile(__dirname + "/public/EmailVerified.html");
   } catch (error) {
     res.status(500).send(error);
   }

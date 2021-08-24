@@ -11,7 +11,7 @@ import NotFound from "../NotFound";
 import Files from "./Files";
 import Navbar, { allApps } from "../Navbar";
 
-import { nanoid } from "nanoid";
+import napid from "napid";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -54,7 +54,7 @@ function DriveRoute() {
 
   const uploadFile = async (file, parentId) => {
     let formData = new FormData();
-    let id = nanoid();
+    let id = napid();
     formData.append("file", file);
 
     setFilesUploading((prevFilesUploading) => [

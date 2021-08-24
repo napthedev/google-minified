@@ -14,7 +14,7 @@
     "axios": "^0.21.1",
     "darkreader": "^4.9.34",
     "mapbox-gl": "^2.4.0",
-    "nanoid": "^3.1.23",
+    "napid": "^1.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-highlight": "^0.14.0",

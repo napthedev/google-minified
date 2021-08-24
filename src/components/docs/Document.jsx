@@ -15,8 +15,6 @@ function Document() {
 
   const editorRef = useRef();
 
-  const updateTimeout = useRef();
-
   useEffect(() => {
     followSystemColorScheme({
       brightness: 100,
@@ -24,7 +22,12 @@ function Document() {
       sepia: 10,
     });
 
-    return () => disableDarkMode();
+    const interval = setInterval(() => axios.patch("docs", { _id: id, data: content }), 400);
+
+    return () => {
+      disableDarkMode();
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -58,12 +61,6 @@ function Document() {
         if (source === "user") {
           setEditorValue(content);
           socket?.emit("update-data", delta);
-
-          if (updateTimeout.current) clearTimeout(updateTimeout.current);
-
-          updateTimeout.current = setTimeout(() => {
-            axios.patch("docs", { _id: id, data: content });
-          }, 400);
         }
       }}
     />

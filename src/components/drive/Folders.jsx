@@ -402,13 +402,17 @@ function Folder(props) {
                   <div className="main-grid">
                     {allFiles.map((e) => (
                       <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-box square" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
-                        <div className="center-div" style={{ flexGrow: 1 }}>
-                          <div className="center-div" style={{ height: "40%" }}>
-                            <img draggable={false} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}>
+                          <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
+                            <div className="center-div" style={{ flexGrow: 1 }}>
+                              <div className="center-div" style={{ height: "40%" }}>
+                                <img draggable={false} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                              </div>
+                            </div>
+                            <div className="file-box-label">
+                              <Typography>{e.name}</Typography>
+                            </div>
                           </div>
-                        </div>
-                        <div className="file-box-label">
-                          <Typography>{e.name}</Typography>
                         </div>
                       </div>
                     ))}

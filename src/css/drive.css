@@ -45,6 +45,8 @@ body {
 
 .file-box {
   padding-bottom: 100%;
+  width: 0;
+  height: 0;
   position: relative;
   display: flex;
   flex-direction: column;

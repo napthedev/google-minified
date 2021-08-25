@@ -112,7 +112,7 @@ route.post("/upload", verifyJWT, async (req, res) => {
       const newFile = new Files({
         _id: fileId,
         name: file.name,
-        parentId: req.body.parentId,
+        parentId: req.body.parentId === "null" ? null : req.body.parentId,
         path: req.body.path,
         userId: req.user.id,
         type: file.mimetype,

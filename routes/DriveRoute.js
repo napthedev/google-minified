@@ -140,11 +140,11 @@ route.post("/rename", verifyJWT, async (req, res) => {
 
       const fileName = fs.readdirSync(path.join(__dirname, `./../files/${req.body._id}`))[0];
       const filePath = path.join(__dirname, `./../files/${req.body._id}`, fileName);
-      const newName = filePath.replace(fileName, `${req.body.name}.${fileName.split(".").slice(-1)[0]}`);
+      const newPath = path.join(__dirname, `./../files/${req.body._id}`, `${req.body.name}.${fileName.split(".").slice(-1)[0]}`);
 
-      fs.renameSync(filePath, newName);
+      fs.renameSync(filePath, newPath);
 
-      existing.name = newName;
+      existing.name = `${req.body.name}.${fileName.split(".").slice(-1)[0]}`;
       const saved = await existing.save();
 
       res.send(saved);

@@ -64,3 +64,14 @@ body {
 #profile-menu .MuiListItem-root img {
   margin: 0 2px;
 }
+
+.square {
+  aspect-ratio: 1 / 1;
+}
+
+@supports not (aspect-ratio: 1 / 1) {
+  .square::before {
+    content: "";
+    padding-bottom: 100%;
+  }
+}

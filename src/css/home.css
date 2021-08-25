@@ -12,13 +12,3 @@
   overflow: hidden;
   white-space: nowrap;
 }
-
-.square-button {
-  aspect-ratio: 1 / 1;
-}
-
-@supports not (aspect-ratio: 1 / 1) {
-  .square-button {
-    min-height: 300px;
-  }
-}

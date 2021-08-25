@@ -66,7 +66,7 @@ function FormsHome() {
                 <>
                   {allForms.map((e) =>
                     e.deleting ? (
-                      <Button key={e._id} variant="outlined" color="default" className={allForms.length <= 1 ? "square-button" : ""}>
+                      <Button key={e._id} variant="outlined" color="default" className={allForms.length <= 1 ? "square" : ""}>
                         <CircularProgress color="secondary" />
                       </Button>
                     ) : (
@@ -101,7 +101,7 @@ function FormsHome() {
 
               <Tooltip title="Create new form">
                 <Button
-                  className={allForms.length === 0 ? "square-button" : ""}
+                  className={allForms.length === 0 ? "square" : ""}
                   style={{ fontSize: 50 }}
                   variant="outlined"
                   onClick={() => {

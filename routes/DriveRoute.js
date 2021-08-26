@@ -46,9 +46,12 @@ route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
       filesChild = await Files.find({ parentId: req.body.parentId });
     }
     filesChild = filesChild.map((file) => {
+      if (!fs.existsSync(path.join(__dirname, `./../files/${file._id}`))) return false;
       const fileName = fs.readdirSync(path.join(__dirname, `./../files/${file._id}`))[0];
       return { ...file.toObject(), name: fileName, url: `${req.protocol}://${req.get("host")}/drive/file/${file._id}` };
     });
+
+    filesChild = filesChild.filter((e) => e);
 
     res.send({ folders: folderChild, files: filesChild });
   } catch (error) {
@@ -90,6 +93,7 @@ route.post("/get-file", verifyJWTNotStrict, async (req, res) => {
 
     if (!file) return res.sendStatus(404);
 
+    if (!fs.existsSync(path.join(__dirname, `./../files/${file._id}`))) return res.sendStatus(404);
     const fileName = fs.readdirSync(path.join(__dirname, `./../files/${file._id}`))[0];
     res.send({ ...file.toObject(), name: fileName, url: `${req.protocol}://${req.get("host")}/drive/file/${file._id}` });
   } catch (error) {

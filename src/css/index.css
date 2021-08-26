@@ -29,15 +29,9 @@ body {
   padding: 0;
 }
 
-#root {
-  min-height: 100vh;
-}
-
+#root,
 .root {
   min-height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
 }
 
 .center-container {

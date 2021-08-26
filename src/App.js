@@ -1,5 +1,6 @@
 import { useState, useEffect, createContext, useMemo } from "react";
-import { Link, Route, Switch } from "react-router-dom";
+import { Link, Route, Switch, useLocation } from "react-router-dom";
+import { useTransition, animated } from "react-spring";
 import { useMediaQuery, CssBaseline, CircularProgress } from "@material-ui/core";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import axios from "axios";
@@ -69,35 +70,57 @@ function App() {
       });
   }, []);
 
+  const location = useLocation();
+  const transitions = useTransition(location, {
+    from: {
+      position: "absolute",
+      opacity: 0,
+    },
+    enter: {
+      position: "absolute",
+      opacity: 1,
+    },
+    leave: {
+      position: "absolute",
+      opacity: 0,
+    },
+  });
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       {cookie ? (
         <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
           {typeof currentUser !== "undefined" ? (
-            <Switch>
-              <Route path="/" exact>
-                {allApps.map((e) => (
-                  <Link key={e.name} to={e.route}>
-                    {e.name}
-                  </Link>
-                ))}
-              </Route>
-              <Route path="/sign-in">
-                <SignIn />
-              </Route>
-              <Route path="/sign-up">
-                <SignUp />
-              </Route>
-              <Route path="/forms" component={FormsRoute}></Route>
-              <Route path="/drive" component={DriveRoute}></Route>
-              <Route path="/translate" component={TranslateRoute}></Route>
-              <Route path="/maps" component={MapsRoute}></Route>
-              <Route path="/docs" component={DocsRoute}></Route>
-              <Route>
-                <NotFound />
-              </Route>
-            </Switch>
+            <>
+              {transitions((props, item) => (
+                <animated.div style={props} className="root">
+                  <Switch location={item}>
+                    <Route path="/" exact>
+                      {allApps.map((e) => (
+                        <Link key={e.name} to={e.route}>
+                          {e.name}
+                        </Link>
+                      ))}
+                    </Route>
+                    <Route path="/sign-in">
+                      <SignIn />
+                    </Route>
+                    <Route path="/sign-up">
+                      <SignUp />
+                    </Route>
+                    <Route path="/forms" component={FormsRoute}></Route>
+                    <Route path="/drive" component={DriveRoute}></Route>
+                    <Route path="/translate" component={TranslateRoute}></Route>
+                    <Route path="/maps" component={MapsRoute}></Route>
+                    <Route path="/docs" component={DocsRoute}></Route>
+                    <Route>
+                      <NotFound />
+                    </Route>
+                  </Switch>
+                </animated.div>
+              ))}
+            </>
           ) : (
             <div className="center-container">
               <CircularProgress />

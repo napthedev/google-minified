@@ -83,7 +83,7 @@ body {
   top: 0;
   width: 100vw;
   height: 3px;
-  background: linear-gradient(to right, #0d6efd, #5003a7, #03a79f);
+  background: linear-gradient(to right, #0575e6, #00f260);
   background-size: 300% 100%;
   animation: topbar-loading 1s linear 0.3s infinite alternate;
   opacity: 0;

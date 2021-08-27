@@ -77,26 +77,3 @@ body {
     padding-bottom: 100%;
   }
 }
-
-.topbar-loading {
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  height: 3px;
-  background: linear-gradient(to right, #0575e6, #00f260);
-  background-size: 300% 100%;
-  animation: topbar-loading 1s linear 0.3s infinite alternate;
-  opacity: 0;
-}
-
-@keyframes topbar-loading {
-  from {
-    background-position: 0% 0%;
-    opacity: 1;
-  }
-
-  to {
-    background-position: 100% 0%;
-    opacity: 1;
-  }
-}

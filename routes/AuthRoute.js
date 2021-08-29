@@ -3,9 +3,9 @@ const route = express.Router();
 const { verifyJWT } = require("../verifyJWT");
 const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
-const fetch = require("node-fetch");
 const bcrypt = require("bcrypt");
 const path = require("path");
+const nodemailer = require("nodemailer");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -45,23 +45,34 @@ route.post("/sign-up", async (req, res) => {
     });
     const saved = await user.save();
 
-    const mailResult = await fetch("https://mailer-sender-api.herokuapp.com/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "googlminifiedservice@gmail.com",
+        pass: "mern4life",
       },
-      body: JSON.stringify({
-        to: req.body.email,
-        subject: "Verify your email for google minified",
-        html: `Click this link to verify your email: <a target="_blank" href="${req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id}">Verify here</a>`,
-      }),
     });
 
-    const mailData = await mailResult.json();
+    let mailOptions = {
+      from: "googlminifiedservice@gmail.com",
+      to: req.body.email,
+      subject: "Verify your email for google minified",
+      html: `Click this link to verify your email: <a target="_blank" href="${req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id}">Verify here</a>`,
+    };
 
-    res.send({
-      user: saved,
-      emailSent: mailData,
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.send({
+          user: saved,
+          emailSent: { success: false, error },
+        });
+      } else {
+        res.send({
+          user: saved,
+          emailSent: { success: true, info },
+        });
+      }
     });
   } catch (error) {
     res.status(500).send(error);

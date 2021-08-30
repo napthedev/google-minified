@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { useHistory, Redirect } from "react-router-dom";
-import { Button, Card, CardActionArea, CardMedia, CardContent, Typography, Tooltip, CircularProgress, Backdrop } from "@material-ui/core";
-import { Delete } from "@material-ui/icons";
+import { CircularProgress } from "@material-ui/core";
 import { userContext } from "../../App";
 import axios from "axios";
+import HomeGrid from "../HomeGrid";
 
 function FormsHome() {
   useEffect(() => (document.title = "My Forms - Google Forms Minified"), []);
@@ -14,7 +14,6 @@ function FormsHome() {
 
   const [allForms, setAllForms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [backdropOpened, setBackdropOpened] = useState(false);
 
   const fetchAllForms = () => {
     axios
@@ -38,12 +37,6 @@ function FormsHome() {
     fetchAllForms();
   };
 
-  const getThumbnail = (_id) => {
-    let parsed = parseInt(_id, 36);
-    let srcList = ["https://i.imgur.com/MklVMV5.png", "https://i.imgur.com/2gWPRjt.png", "https://i.imgur.com/A38RAbj.png"];
-    return srcList[parsed % srcList.length];
-  };
-
   const createForm = async () => {
     await axios
       .get("forms/create")
@@ -53,7 +46,6 @@ function FormsHome() {
       .catch((err) => {
         console.log(err, err.response);
       });
-    setBackdropOpened(false);
   };
 
   return (
@@ -61,61 +53,7 @@ function FormsHome() {
       {currentUser ? (
         <>
           {!loading ? (
-            <div className="home-grid">
-              {allForms?.length > 0 && (
-                <>
-                  {allForms.map((e) =>
-                    e.deleting ? (
-                      <Button key={e._id} variant="outlined" color="default" className={allForms.length <= 1 ? "square" : ""}>
-                        <CircularProgress color="secondary" />
-                      </Button>
-                    ) : (
-                      <Card className="card" key={e._id}>
-                        <CardActionArea onClick={() => history.push("/forms/edit/" + e._id)}>
-                          <CardMedia draggable="false" component="img" src={getThumbnail(e._id)} />
-                          <CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <div>
-                              <Typography gutterBottom variant="h6" component="h2">
-                                {e.title ? e.title : "Untitled form"}
-                              </Typography>
-                              <Typography variant="body2" color="textSecondary" component="p">
-                                {e.description ? e.description : "No description"}
-                              </Typography>
-                            </div>
-                            <Tooltip title="Delete form">
-                              <Delete
-                                color="secondary"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  deleteForm(e._id);
-                                }}
-                              />
-                            </Tooltip>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
-                    )
-                  )}
-                </>
-              )}
-
-              <Tooltip title="Create new form">
-                <Button
-                  className={allForms.length === 0 ? "square" : ""}
-                  style={{ fontSize: 50 }}
-                  variant="outlined"
-                  onClick={() => {
-                    setBackdropOpened(true);
-                    createForm();
-                  }}
-                >
-                  +
-                </Button>
-              </Tooltip>
-              <Backdrop style={{ zIndex: 1000 }} open={backdropOpened}>
-                <CircularProgress color="primary" />
-              </Backdrop>
-            </div>
+            <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteForm} createItem={createForm} />
           ) : (
             <div className="center-container">
               <CircularProgress />

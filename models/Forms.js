@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 const napid = require("napid");
 
 const FormsSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: napid,
+  },
   userId: {
     type: String,
     required: true,
-  },
-  _id: {
-    type: String,
-    required: true,
-    default: napid,
   },
   title: {
     type: String,
@@ -22,4 +21,4 @@ const FormsSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Forms", FormsSchema);
+module.exports = mongoose.model("forms", FormsSchema);

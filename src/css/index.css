@@ -60,6 +60,7 @@ body {
 
 #profile-menu .MuiListItem-root {
   gap: 10px;
+  padding-right: 20px !important;
 }
 
 #profile-menu .MuiListItem-root img {

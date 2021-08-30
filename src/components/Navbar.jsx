@@ -14,7 +14,7 @@ export const allApps = [
   {
     name: "Forms",
     route: "/forms",
-    icon: "https://i.imgur.com/prj8GAN.png",
+    icon: "https://i.imgur.com/9Tf9BJU.png",
   },
   {
     name: "Translate",

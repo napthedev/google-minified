@@ -36,14 +36,14 @@ route.post("/child", verifyJWTNotStrict, async (req, res) => {
   try {
     let folderChild;
     let filesChild;
-    if (!req.body.parentId) {
+    if (!req.body.path) {
       if (!req.user?.id) return res.sendStatus(400);
 
-      folderChild = await Folders.find({ parentId: null, userId: req.user.id });
-      filesChild = await Files.find({ parentId: null, userId: req.user.id });
+      folderChild = await Folders.find({ path: [], userId: req.user.id });
+      filesChild = await Files.find({ path: [], userId: req.user.id });
     } else {
-      folderChild = await Folders.find({ parentId: req.body.parentId });
-      filesChild = await Files.find({ parentId: req.body.parentId });
+      folderChild = await Folders.find({ path: req.body.path });
+      filesChild = await Files.find({ path: req.body.path });
     }
     filesChild = filesChild.map((file) => {
       if (!fs.existsSync(path.join(__dirname, `./../files/${file._id}`))) return false;
@@ -64,7 +64,6 @@ route.post("/create-folder", verifyJWT, async (req, res) => {
     const newFolder = new Folders({
       name: req.body.name,
       path: req.body.path,
-      parentId: req.body.parentId,
       userId: req.user.id,
     });
 
@@ -116,7 +115,6 @@ route.post("/upload", verifyJWT, async (req, res) => {
       const newFile = new Files({
         _id: fileId,
         name: file.name,
-        parentId: req.body.parentId === "null" ? null : req.body.parentId,
         path: req.body.path,
         userId: req.user.id,
         type: file.mimetype,

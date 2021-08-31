@@ -12,9 +12,6 @@ const filesSchema = new mongoose.Schema({
   path: {
     type: Array,
   },
-  parentId: {
-    type: String,
-  },
   userId: {
     type: String,
     required: true,

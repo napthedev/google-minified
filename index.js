@@ -62,7 +62,7 @@ Folders.watch().on("change", (data) => {
   try {
     if (data.operationType === "insert") {
       io.of("/drive")
-        .to(data.fullDocument.parentId || data.fullDocument.userId)
+        .to(data.fullDocument?.path?.slice(-1)[0] || data.fullDocument.userId)
         .emit("new-data", "");
     } else {
       io.of("/drive").emit("new-data", "");
@@ -74,7 +74,7 @@ Files.watch().on("change", (data) => {
   try {
     if (data.operationType === "insert") {
       io.of("/drive")
-        .to(data.fullDocument.parentId || data.fullDocument.userId)
+        .to(data.fullDocument?.path?.slice(-1)[0] || data.fullDocument.userId)
         .emit("new-data", "");
     } else {
       io.of("/drive").emit("new-data", "");

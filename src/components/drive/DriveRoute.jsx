@@ -44,19 +44,16 @@ function DriveRoute() {
     document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Drive").icon;
   }, []);
 
-  const { currentUser } = useContext(userContext);
-
   const { path } = useRouteMatch();
 
   const location = useLocation();
 
   const [filesUploading, setFilesUploading] = useState([]);
 
-  const uploadFile = async (file, parentId, path) => {
+  const uploadFile = async (file, path) => {
     let formData = new FormData();
     let id = napid();
     formData.append("file", file);
-    formData.append("parentId", parentId);
     formData.append("path", path);
 
     setFilesUploading((prevFilesUploading) => [

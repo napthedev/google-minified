@@ -90,10 +90,11 @@ function Folder(props) {
     } else {
       setBreadcrumb([]);
       setPermission(true);
+      document.title = "My Drive - Google Drive Minified";
     }
 
     const folderChild = await axios.post("drive/child", {
-      parentId: currentFolderIdRef.current,
+      path: currentFolderIdRef.current,
     });
 
     setAllFolder(folderChild.data.folders);
@@ -154,7 +155,6 @@ function Folder(props) {
     await axios.post("drive/create-folder", {
       name,
       path: path,
-      parentId: currentFolderId,
     });
   };
 
@@ -256,10 +256,11 @@ function Folder(props) {
         <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
       ) : (
         <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
-          {permission && !notFound && (
+          {(permission || typeof permission === "undefined") && !notFound && (
             <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
               <div className="center-div">
                 <Button
+                  disabled={!permission}
                   onClick={() => {
                     setCurrentDialog("create-new-folder");
                     setDialogOpened(true);
@@ -272,6 +273,7 @@ function Folder(props) {
               <input type="file" hidden onChange={(e) => uploadFile(e.target.files[0], currentFolderId, path)} ref={fileInput} />
               <div className="center-div">
                 <Button
+                  disabled={!permission}
                   onClick={() => {
                     fileInput.current.click();
                   }}
@@ -294,6 +296,7 @@ function Folder(props) {
               />
               <div className="center-div">
                 <Button
+                  disabled={!permission}
                   onClick={() => {
                     multipleFilesInput.current.click();
                   }}

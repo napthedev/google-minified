@@ -8,7 +8,7 @@ const Folders = require("../models/Folders");
 const Files = require("../models/Files");
 const { verifyJWT, verifyJWTNotStrict } = require("../verifyJWT");
 
-route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
+route.post("/folder", verifyJWTNotStrict, async (req, res) => {
   try {
     const folder = await Folders.findOne({ _id: req.body._id });
 
@@ -32,7 +32,7 @@ route.post("/get-folder", verifyJWTNotStrict, async (req, res) => {
   }
 });
 
-route.post("/folder-child", verifyJWTNotStrict, async (req, res) => {
+route.post("/child", verifyJWTNotStrict, async (req, res) => {
   try {
     let folderChild;
     let filesChild;
@@ -87,7 +87,7 @@ route.get("/file/:id", (req, res) => {
   }
 });
 
-route.post("/get-file", verifyJWTNotStrict, async (req, res) => {
+route.post("/file-info", async (req, res) => {
   try {
     const file = await Files.findOne({ _id: req.body._id });
 
@@ -169,7 +169,7 @@ route.post("/rename", verifyJWT, async (req, res) => {
   }
 });
 
-route.post("/delete", verifyJWT, async (req, res) => {
+route.delete("/", verifyJWT, async (req, res) => {
   try {
     if (req.body.type === "file") {
       const file = await Files.findOne({ _id: req.body._id });

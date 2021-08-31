@@ -60,7 +60,7 @@ function Folder(props) {
     if (currentFolderIdRef.current !== null) {
       let response;
       try {
-        response = await axios.post("drive/get-folder", {
+        response = await axios.post("drive/folder", {
           _id: currentFolderIdRef.current,
         });
       } catch (err) {
@@ -92,7 +92,7 @@ function Folder(props) {
       setPermission(true);
     }
 
-    const folderChild = await axios.post("drive/folder-child", {
+    const folderChild = await axios.post("drive/child", {
       parentId: currentFolderIdRef.current,
     });
 
@@ -212,9 +212,8 @@ function Folder(props) {
 
   const deleteFileOrFolder = (type, id) => {
     axios
-      .post("drive/delete", {
-        type,
-        _id: id,
+      .delete("drive", {
+        data: { _id: id, type },
       })
       .catch((err) => console.log(err, err.response));
   };

@@ -53,7 +53,7 @@ function DriveRoute() {
     let formData = new FormData();
     let id = napid();
     formData.append("file", file);
-    formData.append("path", path);
+    formData.append("path", JSON.stringify(path));
 
     setFilesUploading((prevFilesUploading) => [
       ...prevFilesUploading,

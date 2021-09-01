@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
-import { IconButton, FormControl, Select, MenuItem, Snackbar, TextareaAutosize, Typography, CircularProgress } from "@material-ui/core";
+import { IconButton, FormControl, Select, MenuItem, TextareaAutosize, Typography, CircularProgress } from "@material-ui/core";
 import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
 
-import { copyToClipboard } from "../Functions";
+import ClipboardSnackbar from "../ClipboardSnackbar";
 
 import Navbar, { allApps } from "../Navbar";
 
@@ -23,8 +23,6 @@ function TranslateRoute() {
 
   const valueDidUpdate = useRef(false);
   const timeOutRef = useRef(null);
-
-  const [snackbarOpened, setSnackbarOpened] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,14 +57,6 @@ function TranslateRoute() {
 
     return () => clearInterval(interval);
   }, []);
-
-  const handleCopy = () => {
-    copyToClipboard(data)
-      .then((res) => {
-        setSnackbarOpened(true);
-      })
-      .catch((err) => console.log(err));
-  };
 
   useEffect(async () => {
     localStorage.setItem("languageFrom", languageFrom);
@@ -187,9 +177,11 @@ function TranslateRoute() {
             <div className="translate-box-container">
               <div className="translate-box">{data === null ? "Translating" + ".".repeat(ellipsis + 1) : data}</div>
               {data && (
-                <IconButton style={{ position: "absolute", bottom: 7, right: 7 }} onClick={handleCopy}>
-                  <FileCopy />
-                </IconButton>
+                <ClipboardSnackbar content={data} message="Text copied to clipboard!">
+                  <IconButton style={{ position: "absolute", bottom: 7, right: 7 }}>
+                    <FileCopy />
+                  </IconButton>
+                </ClipboardSnackbar>
               )}
             </div>
           </div>
@@ -199,17 +191,6 @@ function TranslateRoute() {
           <CircularProgress />
         </div>
       )}
-
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        open={snackbarOpened}
-        autoHideDuration={2000}
-        onClose={() => setSnackbarOpened(false)}
-        message="Text copied to clipboard!"
-      />
     </>
   );
 }

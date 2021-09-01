@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import NotFound from "../NotFound";
-import { Button, CircularProgress, IconButton, Tooltip, Snackbar } from "@material-ui/core";
-import { InsertLink, GetApp, ArrowBack, Close } from "@material-ui/icons";
+import { Button, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
+import { InsertLink, GetApp, ArrowBack } from "@material-ui/icons";
 
-import { copyToClipboard } from "../Functions";
+import ClipboardSnackbar from "../ClipboardSnackbar";
 
 import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
@@ -34,8 +34,6 @@ function Files() {
     name: "",
     url: "",
   });
-
-  const [snackbarOpened, setSnackbarOpened] = useState(false);
 
   useEffect(async () => {
     axios
@@ -74,12 +72,6 @@ function Files() {
       });
   }, []);
 
-  const copyLink = () => {
-    copyToClipboard(window.location.origin + window.location.pathname).then(() => {
-      setSnackbarOpened(true);
-    });
-  };
-
   const downloadFile = () => {
     anchorDownloadFile(file.url + "?dl=1");
   };
@@ -101,11 +93,13 @@ function Files() {
               <p style={{ maxWidth: Boolean(Number(back)) ? "calc(100vw - 230px)" : "calc(100vw - 180px)" }}>{file.name}</p>
             </div>
             <div style={{ display: "flex", alignItems: "center", marginRight: 10 }}>
-              <Tooltip title="Copy link" onClick={copyLink}>
-                <IconButton>
-                  <InsertLink />
-                </IconButton>
-              </Tooltip>
+              <ClipboardSnackbar content={window.location.origin + window.location.pathname} message="URL Copied to clipboard">
+                <Tooltip title="Copy link">
+                  <IconButton>
+                    <InsertLink />
+                  </IconButton>
+                </Tooltip>
+              </ClipboardSnackbar>
               <Tooltip title="Download" onClick={downloadFile}>
                 <IconButton color="primary">
                   <GetApp />
@@ -146,22 +140,6 @@ function Files() {
               </div>
             )}
           </div>
-
-          <Snackbar
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            open={snackbarOpened}
-            autoHideDuration={5000}
-            onClose={() => setSnackbarOpened(false)}
-            message="URL Copied to clipboard"
-            action={
-              <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
-                <Close fontSize="small" />
-              </IconButton>
-            }
-          />
         </div>
       ) : view === 404 ? (
         <NotFound />

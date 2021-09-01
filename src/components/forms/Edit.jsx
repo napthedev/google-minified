@@ -6,9 +6,9 @@ import { io } from "socket.io-client";
 
 import { userContext } from "../../App";
 
-import { Container, TextField, Tab, Tabs, Accordion, AccordionSummary, Typography, AccordionDetails, Badge, Checkbox, FormControlLabel, ListItem, List, Radio, RadioGroup, Tooltip, CircularProgress, Snackbar, IconButton } from "@material-ui/core";
+import { Container, TextField, Tab, Tabs, Accordion, AccordionSummary, Typography, AccordionDetails, Badge, Checkbox, FormControlLabel, ListItem, List, Radio, RadioGroup, Tooltip, CircularProgress } from "@material-ui/core";
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from "@material-ui/lab";
-import { CheckBox, RadioButtonChecked, Description, DateRange, Timer, ExpandMore, AllInbox, InsertLink, Close, Edit as EditIcon } from "@material-ui/icons";
+import { CheckBox, RadioButtonChecked, Description, DateRange, Timer, ExpandMore, AllInbox, InsertLink, Edit as EditIcon } from "@material-ui/icons";
 
 import { useParams } from "react-router-dom";
 
@@ -20,7 +20,9 @@ import TimeEdit from "./EditPage/TimeEdit";
 import Forbidden from "../Forbidden";
 import NotFound from "../NotFound";
 
-import { calculateCreatedTime, copyToClipboard } from "../Functions";
+import { calculateCreatedTime } from "../Functions";
+
+import ClipboardSnackbar from "../ClipboardSnackbar";
 
 function Edit() {
   const { currentUser } = useContext(userContext);
@@ -195,14 +197,6 @@ function Edit() {
     setTabValue(newValue);
   };
 
-  const copyResponseUrl = (url) => {
-    copyToClipboard(url).then(() => {
-      setSnackbarOpened(true);
-    });
-  };
-
-  const [snackbarOpened, setSnackbarOpened] = useState(false);
-
   return (
     <>
       {currentUser ? (
@@ -262,12 +256,14 @@ function Edit() {
                             <SpeedDialAction icon={<DateRange />} tooltipTitle="Date picker" onClick={() => addBox("date")} />
                             <SpeedDialAction icon={<Timer />} tooltipTitle="Time picker" onClick={() => addBox("time")} />
                           </SpeedDial>
-                          <Tooltip title="Copy response url">
-                            <SpeedDial open={false} onClick={() => copyResponseUrl(window.location.href.replace("edit", "response"))} className="copy-link-button" ariaLabel="Copy response link" icon={<InsertLink />}></SpeedDial>
-                          </Tooltip>
+
+                          <ClipboardSnackbar content={window.location.href.replace("edit", "response")} message="Response URL copied!" horizontal="left" vertical="top">
+                            <Tooltip title="Copy response url">
+                              <SpeedDial open={false} className="copy-link-button" ariaLabel="Copy response link" icon={<InsertLink />}></SpeedDial>
+                            </Tooltip>
+                          </ClipboardSnackbar>
                         </div>
                       </Container>
-                      <Snackbar anchorOrigin={{ horizontal: "left", vertical: "top" }} open={snackbarOpened} autoHideDuration={2000} onClose={() => setSnackbarOpened(false)} message="Response URL copied!" />
                     </div>
                   ) : (
                     <div className="edit-page">

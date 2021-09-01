@@ -3,8 +3,7 @@ import { Typography, Box, CircularProgress } from "@material-ui/core";
 import { Close, Done } from "@material-ui/icons";
 import axios from "axios";
 
-import { useContext, useEffect, useState } from "react";
-import { userContext } from "../../App";
+import { useEffect, useState } from "react";
 
 import Folders from "./Folders";
 import NotFound from "../NotFound";

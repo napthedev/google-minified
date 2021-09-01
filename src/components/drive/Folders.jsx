@@ -191,7 +191,7 @@ function Folder({ uploadFile }) {
       for (let i = 0, item; (item = items[i]); ++i) {
         let entry = item.webkitGetAsEntry();
         if (entry.isFile) {
-          uploadFile(files[i], currentFolderId, path);
+          uploadFile(files[i], path);
         }
       }
 
@@ -219,7 +219,7 @@ function Folder({ uploadFile }) {
                     <span>Upload a file</span>
                   </>
                 }
-                onChange={(e) => uploadFile(e.target.files[0], currentFolderId, path)}
+                onChange={(e) => uploadFile(e.target.files[0], path)}
               />
               <FileInput
                 multiple
@@ -234,7 +234,7 @@ function Folder({ uploadFile }) {
                 onChange={(e) => {
                   let files = e.target.files;
                   Object.keys(files).forEach((e) => {
-                    uploadFile(files[e], currentFolderId, path);
+                    uploadFile(files[e], path);
                   });
                 }}
               />

@@ -70,7 +70,7 @@ function Navbar(props) {
         {currentUser ? (
           <>
             <IconButton style={{ padding: 0 }} onClick={(e) => setUserMenuOpened(e.currentTarget)}>
-              <img style={{ borderRadius: 50 }} height="40" src={`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(currentUser.username)}`} />
+              <img style={{ borderRadius: 50 }} height="40" src={currentUser.avatar} />
             </IconButton>
             <Menu id="profile-menu" anchorEl={userMenuOpened} keepMounted open={Boolean(userMenuOpened)} onClose={() => setUserMenuOpened(null)}>
               <MenuItem onClick={() => setUserMenuOpened(null)}>

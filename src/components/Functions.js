@@ -43,7 +43,7 @@ export const calculateCreatedTime = (timeCreated) => {
 };
 
 export const anchorDownloadFile = (url) => {
-  var anchor = document.createElement("a");
+  const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download = url;
   anchor.style.display = "none";

@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const path = require("path");
 const nodemailer = require("nodemailer");
+const md5 = require("../md5");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -123,7 +124,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         path: "/",
         domain: getDomainWithoutSubdomain(req.get("origin")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.get("origin")) : "localhost",
       })
-      .send(user);
+      .send({ ...user, avatar: `https://www.gravatar.com/avatar/${md5(user.email)}?d=${encodeURIComponent(`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.username}`)}` });
   } catch (error) {
     res.status(500).send(error);
   }

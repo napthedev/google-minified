@@ -124,7 +124,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         path: "/",
         domain: getDomainWithoutSubdomain(req.get("origin")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.get("origin")) : "localhost",
       })
-      .send({ ...user, avatar: `https://www.gravatar.com/avatar/${md5(user.email)}?d=${encodeURIComponent(`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.username}`)}` });
+      .send({ ...user, avatar: `https://www.gravatar.com/avatar/${md5(user.email)}?d=${encodeURIComponent(`https://ui-avatars.com/api/${user.username}/64/0D8ABC/FFFFFF`)}` });
   } catch (error) {
     res.status(500).send(error);
   }

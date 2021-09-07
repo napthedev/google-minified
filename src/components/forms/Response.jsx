@@ -111,7 +111,7 @@ function Response() {
 
   const postFormData = () => {
     axios
-      .post("submits/create", { id, content: JSON.stringify(data) })
+      .post("forms/create-submit", { id, content: JSON.stringify(data) })
       .then((res) => setView("submitted"))
       .catch((err) => console.log(err, err.response));
   };

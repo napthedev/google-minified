@@ -76,7 +76,7 @@ function Edit() {
   };
 
   const getSubmits = () => {
-    axios.post("submits/get", { id: _id }).then((res) => setAllSubmits(res.data.reverse()));
+    axios.post("forms/get-submits", { id: _id }).then((res) => setAllSubmits(res.data.reverse()));
   };
 
   const formTimeout = useRef(null);

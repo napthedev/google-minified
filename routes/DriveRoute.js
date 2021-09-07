@@ -14,21 +14,17 @@ route.post("/folder", verifyJWTNotStrict, async (req, res) => {
 
     if (!folder) return res.sendStatus(404);
 
-    let pathObj;
-    if (folder.path.length === 1 && folder.path[0] === null) {
-      pathObj = [];
-    } else {
-      pathObj = await Promise.all(
-        folder.path.map(async (e) => {
-          const childFolder = await Folders.findOne({ _id: e });
-          return childFolder;
-        })
-      );
-    }
+    const pathObj = await Promise.all(
+      folder.path.map(async (e) => {
+        const childFolder = await Folders.findOne({ _id: e });
+        return childFolder;
+      })
+    );
 
     res.send({ folder, permission: req.user?.id === folder.userId, pathObj });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -55,7 +51,8 @@ route.post("/child", verifyJWTNotStrict, async (req, res) => {
 
     res.send({ folders: folderChild, files: filesChild });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -69,9 +66,15 @@ route.post("/create-folder", verifyJWT, async (req, res) => {
 
     const saved = await newFolder.save();
 
+    req.io
+      .of("/drive")
+      .to(saved.path.slice(-1)[0] || saved.userId)
+      .emit("new-data", "");
+
     res.send(saved);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -82,7 +85,8 @@ route.get("/file/:id", (req, res) => {
     if (Boolean(Number(req.query.dl))) res.download(filePath);
     else res.sendFile(filePath);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -96,7 +100,8 @@ route.post("/file-info", async (req, res) => {
     const fileName = fs.readdirSync(path.join(__dirname, `./../files/${file._id}`))[0];
     res.send({ ...file.toObject(), name: fileName, url: `${req.protocol}://${req.get("host")}/drive/file/${file._id}` });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -122,10 +127,16 @@ route.post("/upload", verifyJWT, async (req, res) => {
 
       const saved = await newFile.save();
 
+      req.io
+        .of("/drive")
+        .to(saved.path.slice(-1)[0] || saved.userId)
+        .emit("new-data", "");
+
       res.send(saved);
     });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -149,6 +160,11 @@ route.post("/rename", verifyJWT, async (req, res) => {
       existing.name = `${req.body.name}.${fileName.split(".").slice(-1)[0]}`;
       const saved = await existing.save();
 
+      req.io
+        .of("/drive")
+        .to(saved.path.slice(-1)[0] || saved.userId)
+        .emit("new-data", "");
+
       res.send(saved);
     } else if (req.body.type === "folder") {
       existing = await Folders.findOne({
@@ -160,10 +176,17 @@ route.post("/rename", verifyJWT, async (req, res) => {
 
       existing.name = req.body.name;
       const saved = await existing.save();
+
+      req.io
+        .of("/drive")
+        .to(saved.path.slice(-1)[0] || saved.userId)
+        .emit("new-data", "");
+
       res.send(saved);
     }
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -173,12 +196,23 @@ route.delete("/", verifyJWT, async (req, res) => {
       const file = await Files.findOne({ _id: req.body._id });
       if (file.userId !== req.user.id) return res.sendStatus(403);
       fs.rmdirSync(path.join(__dirname, `./../files/${file._id}`), { recursive: true });
+
+      req.io
+        .of("/drive")
+        .to(file.path.slice(-1)[0] || file.userId)
+        .emit("new-data", "");
+
       await file.delete();
       return res.sendStatus(200);
     }
     if (req.body.type === "folder") {
       const folder = await Folders.findOne({ _id: req.body._id });
       if (folder.userId !== req.user.id) return res.sendStatus(403);
+
+      req.io
+        .of("/drive")
+        .to(folder.path.slice(-1)[0] || folder.userId)
+        .emit("new-data", "");
 
       await folder.delete();
 
@@ -194,7 +228,8 @@ route.delete("/", verifyJWT, async (req, res) => {
     }
     res.sendStatus(400);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 

@@ -13,7 +13,8 @@ route.get("/create", verifyJWT, async (req, res) => {
     const saved = await newDocument.save();
     res.json(saved);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -25,7 +26,8 @@ route.get("/", verifyJWT, async (req, res) => {
 
     res.send(myDocuments);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -39,7 +41,8 @@ route.post("/document", async (req, res) => {
 
     res.send(myDocument);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -58,7 +61,8 @@ route.patch("/", async (req, res) => {
 
     res.sendStatus(404);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -78,7 +82,8 @@ route.delete("/", verifyJWT, async (req, res) => {
 
     res.send({ deleted });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 

@@ -25,7 +25,8 @@ route.get("/verify/:id", async (req, res) => {
 
     res.sendFile(path.join(__dirname + "./../public/EmailVerified.html"));
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -76,7 +77,8 @@ route.post("/sign-up", async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -126,7 +128,8 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
       })
       .send({ ...user, avatar: `https://www.gravatar.com/avatar/${md5(user.email)}?d=${encodeURIComponent(`https://ui-avatars.com/api/${user.username}/64/0D8ABC/FFFFFF`)}` });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 

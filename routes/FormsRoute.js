@@ -26,7 +26,8 @@ route.get("/create", verifyJWT, async (req, res) => {
     const saved = await newForm.save();
     res.json(saved);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -38,7 +39,8 @@ route.get("/", verifyJWT, async (req, res) => {
 
     res.send(myForms);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -60,7 +62,8 @@ route.post("/update", verifyJWT, async (req, res) => {
 
     res.status(404).send("Form ID not found");
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -76,7 +79,8 @@ route.post("/form", verifyJWT, async (req, res) => {
 
     res.send({ form: myForm });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -90,7 +94,8 @@ route.post("/form-response", async (req, res) => {
 
     res.send({ form: myForm });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
@@ -114,7 +119,41 @@ route.delete("/", verifyJWT, async (req, res) => {
 
     res.send({ deleted, deletedSubmits });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+route.post("/create-submit", async (req, res) => {
+  try {
+    const newSubmit = new Submits({
+      id: req.body.id,
+      content: req.body.content,
+    });
+
+    const saved = await newSubmit.save();
+
+    req.io.of("/submits").to(saved.id).emit("new-data", "");
+
+    res.send(saved);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+route.post("/get-submits", async (req, res) => {
+  try {
+    const mySubmits = await Submits.find({
+      id: req.body.id,
+    });
+
+    if (!mySubmits) return res.sendStatus(404);
+
+    res.send(mySubmits);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 

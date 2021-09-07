@@ -15,13 +15,8 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 const AuthRoute = require("./routes/AuthRoute");
 const FormsRoute = require("./routes/FormsRoute");
-const SubmitsRoute = require("./routes/SubmitsRoute");
 const DriveRoute = require("./routes/DriveRoute");
 const DocumentsRoute = require("./routes/DocumentsRoute");
-
-const Folders = require("./models/Folders");
-const Files = require("./models/Files");
-const Submits = require("./models/Submits");
 
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
@@ -31,13 +26,17 @@ app.use(cookieParser());
 
 app.enable("trust proxy");
 
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 app.get("/", (req, res) => {
   res.send("Google Minified Server");
 });
 
 app.use("/auth", AuthRoute);
 app.use("/forms", FormsRoute);
-app.use("/submits", SubmitsRoute);
 app.use("/drive", DriveRoute);
 app.use("/docs", DocumentsRoute);
 
@@ -58,42 +57,8 @@ io.of("/drive").on("connection", (socket) => {
   socket.on("join-room", (roomId) => socket.join(roomId));
 });
 
-Folders.watch().on("change", (data) => {
-  try {
-    if (data.operationType === "insert") {
-      io.of("/drive")
-        .to(data.fullDocument?.path?.slice(-1)[0] || data.fullDocument.userId)
-        .emit("new-data", "");
-    } else {
-      io.of("/drive").emit("new-data", "");
-    }
-  } catch (error) {}
-});
-
-Files.watch().on("change", (data) => {
-  try {
-    if (data.operationType === "insert") {
-      io.of("/drive")
-        .to(data.fullDocument?.path?.slice(-1)[0] || data.fullDocument.userId)
-        .emit("new-data", "");
-    } else {
-      io.of("/drive").emit("new-data", "");
-    }
-  } catch (error) {}
-});
-
 io.of("/submits").on("connection", (socket) => {
-  socket.on("join-room", (roomId) => {
-    socket.join(roomId);
-  });
-});
-
-Submits.watch().on("change", (data) => {
-  try {
-    if (data.operationType === "insert") {
-      io.of("/submits").to(data.fullDocument.id).emit("new-data", "");
-    }
-  } catch (error) {}
+  socket.on("join-room", (roomId) => socket.join(roomId));
 });
 
 const port = process.env.PORT || 5000;

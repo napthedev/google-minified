@@ -1,14 +1,11 @@
-import { useState, useEffect, useContext } from "react";
-import { useHistory, Redirect } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
-import { userContext } from "../../App";
 import axios from "axios";
 import HomeGrid from "../HomeGrid";
 
 function FormsHome() {
   useEffect(() => (document.title = "My Forms - Google Forms Minified"), []);
-
-  const { currentUser } = useContext(userContext);
 
   const history = useHistory();
 
@@ -50,18 +47,12 @@ function FormsHome() {
 
   return (
     <>
-      {currentUser ? (
-        <>
-          {!loading ? (
-            <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteForm} createItem={createForm} />
-          ) : (
-            <div className="center-container">
-              <CircularProgress />
-            </div>
-          )}
-        </>
+      {!loading ? (
+        <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteForm} createItem={createForm} />
       ) : (
-        <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
+        <div className="center-container">
+          <CircularProgress />
+        </div>
       )}
     </>
   );

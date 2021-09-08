@@ -9,6 +9,7 @@ import Folders from "./Folders";
 import NotFound from "../NotFound";
 import Files from "./Files";
 import Navbar, { allApps } from "../Navbar";
+import PrivateRoute from "../PrivateRoute";
 
 import napid from "napid";
 
@@ -105,9 +106,9 @@ function DriveRoute() {
 
       <Switch>
         <Route path={`${path}/file/:id`} component={Files}></Route>
-        <Route path={`${path}`} exact>
+        <PrivateRoute path={`${path}`} exact>
           <Folders uploadFile={uploadFile} />
-        </Route>
+        </PrivateRoute>
         <Route path={`${path}/folder/:id`} children={<Folders uploadFile={uploadFile} />}></Route>
         <Route path={`${path}/*`}>
           <NotFound />

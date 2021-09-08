@@ -1,4 +1,4 @@
-import { Redirect, Link, useParams, useHistory } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { userContext } from "../../App";
 import { useState, useContext, useEffect, useRef } from "react";
 import { Breadcrumbs, IconButton, Tooltip, Typography, CircularProgress } from "@material-ui/core";
@@ -202,154 +202,148 @@ function Folder({ uploadFile }) {
   };
 
   return (
-    <>
-      {!currentUser && !currentFolderId ? (
-        <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
-      ) : (
-        <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
-          {(permission || typeof permission === "undefined") && !notFound && (
-            <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
-              <CreateNewFolder path={path} permission={permission} />
-              <FileInput
-                className="center-div"
-                disabled={!permission}
-                label={
-                  <>
-                    <InsertDriveFile style={{ marginRight: 10 }} />
-                    <span>Upload a file</span>
-                  </>
-                }
-                onChange={(e) => uploadFile(e.target.files[0], path)}
-              />
-              <FileInput
-                multiple
-                className="center-div"
-                disabled={!permission}
-                label={
-                  <>
-                    <FileCopy style={{ marginRight: 10 }} />
-                    <span>Upload files</span>
-                  </>
-                }
-                onChange={(e) => {
-                  let files = e.target.files;
-                  Object.keys(files).forEach((e) => {
-                    uploadFile(files[e], path);
-                  });
-                }}
-              />
-            </div>
-          )}
+    <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
+      {(permission || typeof permission === "undefined") && !notFound && (
+        <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
+          <CreateNewFolder path={path} permission={permission} />
+          <FileInput
+            className="center-div"
+            disabled={!permission}
+            label={
+              <>
+                <InsertDriveFile style={{ marginRight: 10 }} />
+                <span>Upload a file</span>
+              </>
+            }
+            onChange={(e) => uploadFile(e.target.files[0], path)}
+          />
+          <FileInput
+            multiple
+            className="center-div"
+            disabled={!permission}
+            label={
+              <>
+                <FileCopy style={{ marginRight: 10 }} />
+                <span>Upload files</span>
+              </>
+            }
+            onChange={(e) => {
+              let files = e.target.files;
+              Object.keys(files).forEach((e) => {
+                uploadFile(files[e], path);
+              });
+            }}
+          />
+        </div>
+      )}
 
-          {!notFound ? (
-            <div className="main">
-              <div className="actions-wrapper">
-                <Breadcrumbs>
-                  {permission !== false ? <Link to="/drive">My Drive</Link> : <a href="#">Shared with me</a>}
+      {!notFound ? (
+        <div className="main">
+          <div className="actions-wrapper">
+            <Breadcrumbs>
+              {permission !== false ? <Link to="/drive">My Drive</Link> : <a href="#">Shared with me</a>}
 
-                  {breadcrumb.map((e, index) => (
-                    <Link key={index} to={e._id}>
-                      {e.name}
-                    </Link>
-                  ))}
-                </Breadcrumbs>
-                <div>
-                  {selected.length === 1 && (
-                    <ClipboardSnackbar content={selected[0].type === "folder" ? `${window.location.origin}/drive/folder/${selected[0].id}` : `${window.location.origin}/drive/file/${selected[0].id}`} message="URL Copied to clipboard">
-                      <Tooltip title="Copy Link">
-                        <IconButton color="default">
-                          <InsertLink />
-                        </IconButton>
-                      </Tooltip>
-                    </ClipboardSnackbar>
-                  )}
+              {breadcrumb.map((e, index) => (
+                <Link key={index} to={e._id}>
+                  {e.name}
+                </Link>
+              ))}
+            </Breadcrumbs>
+            <div>
+              {selected.length === 1 && (
+                <ClipboardSnackbar content={selected[0].type === "folder" ? `${window.location.origin}/drive/folder/${selected[0].id}` : `${window.location.origin}/drive/file/${selected[0].id}`} message="URL Copied to clipboard">
+                  <Tooltip title="Copy Link">
+                    <IconButton color="default">
+                      <InsertLink />
+                    </IconButton>
+                  </Tooltip>
+                </ClipboardSnackbar>
+              )}
 
-                  {selected.length > 0 && selected.every((e) => e.type === "file") && (
-                    <Tooltip title="Download" onClick={downloadFile}>
-                      <IconButton color="primary">
-                        <GetApp />
+              {selected.length > 0 && selected.every((e) => e.type === "file") && (
+                <Tooltip title="Download" onClick={downloadFile}>
+                  <IconButton color="primary">
+                    <GetApp />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {permission && (
+                <>
+                  <RenameDialog selected={selected} />
+
+                  {selected.length > 0 && (
+                    <Tooltip
+                      title="Delete"
+                      onClick={() => {
+                        selected.forEach((e) => {
+                          deleteFileOrFolder(e.type, e.id);
+                        });
+                      }}
+                    >
+                      <IconButton color="secondary">
+                        <Delete />
                       </IconButton>
                     </Tooltip>
                   )}
-                  {permission && (
-                    <>
-                      <RenameDialog selected={selected} />
-
-                      {selected.length > 0 && (
-                        <Tooltip
-                          title="Delete"
-                          onClick={() => {
-                            selected.forEach((e) => {
-                              deleteFileOrFolder(e.type, e.id);
-                            });
-                          }}
-                        >
-                          <IconButton color="secondary">
-                            <Delete />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {loading ? (
-                <div className="center-container">
-                  <CircularProgress />
-                </div>
-              ) : (
-                <>
-                  {allFolder.length === 0 && allFiles.length === 0 && (currentFolderId ? <Typography>This folder is empty</Typography> : <Typography>Your Drive is empty</Typography>)}
-
-                  {allFolder.length > 0 && (
-                    <Typography style={{ margin: 10 }} variant="subtitle2">
-                      Folders
-                    </Typography>
-                  )}
-
-                  <div className="main-grid">
-                    {allFolder.map((e) => (
-                      <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-box" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
-                        <FolderIcon className="dynamic-icon" />
-                        <Typography>{e.name}</Typography>
-                      </div>
-                    ))}
-                  </div>
-
-                  {allFiles.length > 0 && (
-                    <Typography style={{ margin: 10 }} variant="subtitle2">
-                      Files
-                    </Typography>
-                  )}
-
-                  <div className="main-grid">
-                    {allFiles.map((e) => (
-                      <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-box square" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
-                        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}>
-                          <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
-                            <div className="center-div" style={{ flexGrow: 1 }}>
-                              <div className="center-div" style={{ height: "40%" }}>
-                                <img draggable={false} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
-                              </div>
-                            </div>
-                            <div className="file-box-label">
-                              <Typography>{e.name}</Typography>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </>
               )}
             </div>
+          </div>
+
+          {loading ? (
+            <div className="center-container">
+              <CircularProgress />
+            </div>
           ) : (
-            <NotFound />
+            <>
+              {allFolder.length === 0 && allFiles.length === 0 && (currentFolderId ? <Typography>This folder is empty</Typography> : <Typography>Your Drive is empty</Typography>)}
+
+              {allFolder.length > 0 && (
+                <Typography style={{ margin: 10 }} variant="subtitle2">
+                  Folders
+                </Typography>
+              )}
+
+              <div className="main-grid">
+                {allFolder.map((e) => (
+                  <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-box" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
+                    <FolderIcon className="dynamic-icon" />
+                    <Typography>{e.name}</Typography>
+                  </div>
+                ))}
+              </div>
+
+              {allFiles.length > 0 && (
+                <Typography style={{ margin: 10 }} variant="subtitle2">
+                  Files
+                </Typography>
+              )}
+
+              <div className="main-grid">
+                {allFiles.map((e) => (
+                  <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-box square" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
+                    <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}>
+                      <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
+                        <div className="center-div" style={{ flexGrow: 1 }}>
+                          <div className="center-div" style={{ height: "40%" }}>
+                            <img draggable={false} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                          </div>
+                        </div>
+                        <div className="file-box-label">
+                          <Typography>{e.name}</Typography>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
+      ) : (
+        <NotFound />
       )}
-    </>
+    </div>
   );
 }
 

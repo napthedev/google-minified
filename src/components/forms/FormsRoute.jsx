@@ -8,6 +8,7 @@ import Response from "./Response";
 import NotFound from "../NotFound";
 
 import Navbar, { allApps } from "../Navbar";
+import PrivateRoute from "../PrivateRoute";
 
 function FormsRoute() {
   useEffect(() => {
@@ -21,11 +22,9 @@ function FormsRoute() {
       <Navbar name="Forms" />
 
       <Switch>
-        <Route path={`${path}`} exact>
-          <FormsHome />
-        </Route>
-        <Route path={`${path}/edit/:id`} children={<Edit />}></Route>
-        <Route path={`${path}/response/:id`} children={<Response />}></Route>
+        <PrivateRoute path={`${path}`} exact component={FormsHome}></PrivateRoute>
+        <PrivateRoute path={`${path}/edit/:id`} component={Edit}></PrivateRoute>
+        <Route path={`${path}/response/:id`} component={Response}></Route>
         <Route path={`${path}/*`}>
           <NotFound />
         </Route>

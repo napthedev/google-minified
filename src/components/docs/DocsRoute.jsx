@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import DocsHome from "./DocsHome";
 import Document from "./Document";
 import Navbar, { allApps } from "../Navbar";
+import PrivateRoute from "../PrivateRoute";
 
 function FormsRoute() {
   useEffect(() => {
@@ -18,7 +19,7 @@ function FormsRoute() {
       <Navbar name="Docs" />
 
       <Switch>
-        <Route path={`${path}`} exact component={DocsHome}></Route>
+        <PrivateRoute path={`${path}`} exact component={DocsHome}></PrivateRoute>
         <Route path={`${path}/:id`} component={Document}></Route>
       </Switch>
     </>

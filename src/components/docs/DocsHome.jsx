@@ -1,15 +1,11 @@
-import { useState, useEffect, useContext } from "react";
-import { useHistory, Redirect } from "react-router-dom";
-import { Button, Card, CardActionArea, CardMedia, CardContent, Typography, Tooltip, CircularProgress, Backdrop } from "@material-ui/core";
-import { Delete } from "@material-ui/icons";
-import { userContext } from "../../App";
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import HomeGrid from "../HomeGrid";
 
 function DocsHome() {
   useEffect(() => (document.title = "My Documents - Google Docs Minified"), []);
-
-  const { currentUser } = useContext(userContext);
 
   const history = useHistory();
 
@@ -51,18 +47,12 @@ function DocsHome() {
 
   return (
     <>
-      {currentUser ? (
-        <>
-          {!loading ? (
-            <HomeGrid allData={allDocs} pushRoute="/docs/" name="document" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteDocument} createItem={createDocument} />
-          ) : (
-            <div className="center-container">
-              <CircularProgress />
-            </div>
-          )}
-        </>
+      {!loading ? (
+        <HomeGrid allData={allDocs} pushRoute="/docs/" name="document" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteDocument} createItem={createDocument} />
       ) : (
-        <Redirect to={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`} />
+        <div className="center-container">
+          <CircularProgress />
+        </div>
       )}
     </>
   );

@@ -114,7 +114,7 @@ route.delete("/", verifyJWT, async (req, res) => {
     });
 
     const deletedSubmits = await Submits.deleteMany({
-      _id: req.body._id,
+      id: req.body._id,
     });
 
     res.send({ deleted, deletedSubmits });

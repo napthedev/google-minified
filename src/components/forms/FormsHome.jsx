@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import HomeGrid from "../HomeGrid";
 
 function FormsHome() {
   useEffect(() => (document.title = "My Forms - Google Forms Minified"), []);
-
-  const history = useHistory();
 
   const [allForms, setAllForms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,21 +31,10 @@ function FormsHome() {
     fetchAllForms();
   };
 
-  const createForm = async () => {
-    await axios
-      .get("forms/create")
-      .then((res) => {
-        history.push("/forms/edit/" + res.data._id);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-      });
-  };
-
   return (
     <>
       {!loading ? (
-        <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteForm} createItem={createForm} />
+        <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteForm} createRoute="/forms/create" />
       ) : (
         <div className="center-container">
           <CircularProgress />

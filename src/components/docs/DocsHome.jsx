@@ -7,8 +7,6 @@ import HomeGrid from "../HomeGrid";
 function DocsHome() {
   useEffect(() => (document.title = "My Documents - Google Docs Minified"), []);
 
-  const history = useHistory();
-
   const [allDocs, setAllDocs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,21 +32,10 @@ function DocsHome() {
     fetchAllDocuments();
   };
 
-  const createDocument = async () => {
-    await axios
-      .get("docs/create")
-      .then((res) => {
-        history.push("/docs/" + res.data._id);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-      });
-  };
-
   return (
     <>
       {!loading ? (
-        <HomeGrid allData={allDocs} pushRoute="/docs/" name="document" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteDocument} createItem={createDocument} />
+        <HomeGrid allData={allDocs} pushRoute="/docs/" name="document" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteDocument} createRoute="/docs/create" />
       ) : (
         <div className="center-container">
           <CircularProgress />

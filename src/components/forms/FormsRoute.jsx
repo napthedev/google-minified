@@ -6,6 +6,7 @@ import FormsHome from "./FormsHome";
 import Edit from "./Edit";
 import Response from "./Response";
 import NotFound from "../NotFound";
+import CreateForm from "./CreateForm";
 
 import Navbar, { allApps } from "../Navbar";
 import PrivateRoute from "../PrivateRoute";
@@ -23,6 +24,7 @@ function FormsRoute() {
 
       <Switch>
         <PrivateRoute path={`${path}`} exact component={FormsHome}></PrivateRoute>
+        <PrivateRoute path={`${path}/create`} component={CreateForm}></PrivateRoute>
         <PrivateRoute path={`${path}/edit/:id`} component={Edit}></PrivateRoute>
         <Route path={`${path}/response/:id`} component={Response}></Route>
         <Route path={`${path}/*`}>

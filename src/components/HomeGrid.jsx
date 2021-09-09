@@ -3,7 +3,7 @@ import { Delete } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
 function HomeGrid(props) {
-  const { allData, pushRoute, name, thumbnail, deleteItem, createItem } = props;
+  const { allData, pushRoute, name, thumbnail, deleteItem, createRoute } = props;
   const history = useHistory();
 
   return (
@@ -48,7 +48,7 @@ function HomeGrid(props) {
           style={{ fontSize: 50 }}
           variant="outlined"
           onClick={() => {
-            createItem();
+            history.push(createRoute);
           }}
         >
           +

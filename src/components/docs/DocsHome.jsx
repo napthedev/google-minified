@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import HomeGrid from "../HomeGrid";

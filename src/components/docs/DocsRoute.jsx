@@ -21,7 +21,7 @@ function FormsRoute() {
 
       <Switch>
         <PrivateRoute path={`${path}`} exact component={DocsHome}></PrivateRoute>
-        <PrivateRoute path={`${path}/create`} component={DocsHome}></PrivateRoute>
+        <PrivateRoute path={`${path}/create`} component={CreateDocument}></PrivateRoute>
         <Route path={`${path}/:id`} component={Document}></Route>
       </Switch>
     </>

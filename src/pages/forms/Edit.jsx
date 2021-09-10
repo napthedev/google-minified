@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import napid from "napid";
 import { io } from "socket.io-client";
 
-import { Container, TextField, Tab, Tabs, Accordion, AccordionSummary, Typography, AccordionDetails, Badge, Checkbox, FormControlLabel, ListItem, List, Radio, RadioGroup, Tooltip, CircularProgress } from "@material-ui/core";
+import { Container, TextField, Tab, Tabs, Badge, Tooltip, CircularProgress } from "@material-ui/core";
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from "@material-ui/lab";
-import { CheckBox, RadioButtonChecked, Description, DateRange, Timer, ExpandMore, AllInbox, InsertLink, Edit as EditIcon } from "@material-ui/icons";
+import { CheckBox, RadioButtonChecked, Description, DateRange, Timer, AllInbox, InsertLink, Edit as EditIcon } from "@material-ui/icons";
 
 import { useParams } from "react-router-dom";
 
@@ -17,27 +15,20 @@ import TimeEdit from "./EditPage/TimeEdit";
 import Forbidden from "../../components/Forbidden";
 import NotFound from "../../components/NotFound";
 
-import { calculateCreatedTime } from "../../utils";
-
 import ClipboardSnackbar from "../../components/ClipboardSnackbar";
+import SubmitsSummary from "./SubmitsSummary";
+
+import useFormData from "./useFormData";
 
 function Edit() {
-  const [view, setView] = useState("");
-
   const { id: _id } = useParams();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const { data, title, description, setTitle, setDescription, getPreviousFormData, postFormData, updateTextField, updateOptionText, removeOption, addOption, removeBox, addBox, view, loading, allSubmits, getSubmits } = useFormData();
 
-  const [open, setOpen] = useState(false);
-
-  const [data, setData] = useState([]);
-
-  const [allSubmits, setAllSubmits] = useState([]);
-
-  const [loading, setLoading] = useState(true);
+  const [speedDialOpened, setSpeedDialOpened] = useState(false);
 
   const [socket, setSocket] = useState();
+  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => (document.title = title + (title ? " - " : "") + "Editing - Google Forms Minified"), [title]);
 
@@ -52,139 +43,28 @@ function Edit() {
     setSocket(mySocket);
   }, []);
 
-  const getPreviousFormData = () => {
-    axios
-      .post("forms/form", { _id })
-      .then((res) => {
-        setTitle(res.data.form.title);
-        setDescription(res.data.form.description);
-        setData(JSON.parse(res.data.form.content));
-        setView(200);
-        setLoading(false);
-        formDidUpdate.current = true;
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-        setView(err.response.status);
-        setLoading(false);
-      });
-  };
-
-  const getSubmits = () => {
-    axios.post("forms/get-submits", { id: _id }).then((res) => setAllSubmits(res.data.reverse()));
-  };
-
   const formTimeout = useRef(null);
-  const formDidUpdate = useRef(false);
+  const formUpdated = useRef(false);
 
   useEffect(() => {
-    if (!formDidUpdate.current) {
-      getPreviousFormData();
-    } else {
-      if (formTimeout.current) {
-        clearTimeout(formTimeout.current);
-      }
-
-      formTimeout.current = setTimeout(() => {
-        postFormData(title, description, data);
-      }, 400);
+    if (!formUpdated.current) {
+      formUpdated.current = true;
+      return;
     }
+
+    if (formTimeout.current) {
+      clearTimeout(formTimeout.current);
+    }
+
+    formTimeout.current = setTimeout(() => {
+      postFormData(title, description, data);
+    }, 400);
   }, [data, title, description]);
 
-  const postFormData = async (title, description, data) => {
-    await axios
-      .post("forms/update", {
-        _id,
-        title,
-        description,
-        content: JSON.stringify(data),
-      })
-      .catch((err) => console.log(err, err.message));
-  };
-
-  const updateTextField = (id, value) => {
-    let clone = [...data];
-    let item = clone.find((e) => e.id === id);
-    item.value.title = value;
-    setData(clone);
-  };
-
-  const updateOptionText = (id, childId, value) => {
-    let clone = [...data];
-    let item = clone.find((e) => e.id === id);
-    let child = item.value.options.find((e) => e.id === childId);
-    child.name = value;
-    setData(clone);
-  };
-
-  const removeOption = (id, childId) => {
-    let clone = [...data];
-    let item = clone.find((e) => e.id === id);
-    let child = item.value.options.filter((e) => e.id !== childId);
-    item.value.options = child;
-    setData(clone);
-  };
-
-  const addOption = (id, type) => {
-    let clone = [...data];
-    let item = clone.find((e) => e.id === id);
-    if (type === "checkbox") item.value.options.push({ id: napid(), name: "Checkbox " + (item.value.options.length + 1), checked: false });
-    else if (type === "radio") item.value.options.push({ id: napid(), name: "Radio " + (item.value.options.length + 1) });
-
-    setData(clone);
-  };
-
-  const removeBox = (id) => {
-    let clone = [...data];
-    setData(clone.filter((e) => e.id !== id));
-  };
-
-  const addBox = (type) => {
-    let clone = [...data];
-    if (type === "text") {
-      clone.push({ id: napid(), type: "text", value: { title: "Untitled question", answer: "" } });
-    } else if (type === "checkbox") {
-      clone.push({
-        id: napid(),
-        type: "checkbox",
-        value: {
-          title: "Untitled checkbox",
-          options: [
-            { id: napid(), name: "Checkbox 1", checked: false },
-            { id: napid(), name: "Checkbox 2", checked: false },
-          ],
-        },
-      });
-    } else if (type === "radio") {
-      clone.push({
-        id: napid(),
-        type: "radio",
-        value: {
-          title: "Untitled radio",
-          current: "",
-          options: [
-            {
-              id: napid(),
-              name: "Radio 1",
-            },
-            {
-              id: napid(),
-              name: "Radio 2",
-            },
-          ],
-        },
-      });
-    } else if (type === "date") {
-      clone.push({ id: napid(), type: "date", value: { title: "Untitled date", answer: "" } });
-    } else if (type === "time") {
-      clone.push({ id: napid(), type: "time", value: { title: "Untitled time", answer: "" } });
-    }
-
-    setData(clone);
-    setOpen(false);
-  };
-
-  const [tabValue, setTabValue] = useState(0);
+  useEffect(() => {
+    getPreviousFormData();
+    getSubmits();
+  }, []);
 
   return (
     <>
@@ -244,7 +124,7 @@ function Edit() {
                           return <TimeEdit key={e.id} id={e.id} value={e.value} updateTextField={updateTextField} removeBox={removeBox} />;
                         }
                       })}
-                      <SpeedDial className="add-box-button" ariaLabel="Add box" icon={<SpeedDialIcon />} onClose={() => setOpen(false)} onOpen={() => setOpen(true)} open={open}>
+                      <SpeedDial className="add-box-button" ariaLabel="Add box" icon={<SpeedDialIcon />} onClose={() => setSpeedDialOpened(false)} onOpen={() => setSpeedDialOpened(true)} open={speedDialOpened}>
                         <SpeedDialAction icon={<Description />} tooltipTitle="Text input" onClick={() => addBox("text")} />
                         <SpeedDialAction icon={<CheckBox />} tooltipTitle="Checkbox" onClick={() => addBox("checkbox")} />
                         <SpeedDialAction icon={<RadioButtonChecked />} tooltipTitle="Radio button" onClick={() => addBox("radio")} />
@@ -263,69 +143,7 @@ function Edit() {
               ) : (
                 <div className="edit-page">
                   <Container style={{ maxWidth: 700, paddingTop: 20 }}>
-                    {allSubmits.map((e, index) => (
-                      <Accordion key={index}>
-                        <AccordionSummary expandIcon={<ExpandMore />}>
-                          <Typography>
-                            Submit {allSubmits.length - index} ({calculateCreatedTime(new Date(e.time))})
-                          </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <List style={{ width: "100%" }}>
-                            {JSON.parse(e.content).map((el, childIndex) => {
-                              if (el.type === "text" || el.type === "date" || el.type === "time") {
-                                return (
-                                  <ListItem key={el.id} divider={childIndex + 1 < JSON.parse(e.content).length ? true : false}>
-                                    <div>
-                                      <Typography variant="subtitle1">
-                                        {childIndex + 1}
-                                        {". "}
-                                        {el.value.title}
-                                      </Typography>
-                                      <Typography variant="h6">{el.value.answer}</Typography>
-                                    </div>
-                                  </ListItem>
-                                );
-                              } else if (el.type === "checkbox") {
-                                return (
-                                  <ListItem key={el.id} divider={childIndex + 1 < JSON.parse(e.content).length ? true : false}>
-                                    <div>
-                                      <Typography variant="subtitle1">
-                                        {childIndex + 1}
-                                        {". "}
-                                        {el.value.title}
-                                      </Typography>
-                                      {el.value.options.map((check, index) => (
-                                        <div key={check.id}>
-                                          <FormControlLabel control={<Checkbox checked={check.checked} color="primary" />} label={check.name ? check.name : "Untitled checkbox " + (index + 1)} />
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </ListItem>
-                                );
-                              } else if (el.type === "radio") {
-                                return (
-                                  <ListItem key={el.id} divider={childIndex + 1 < JSON.parse(e.content).length ? true : false}>
-                                    <div>
-                                      <Typography variant="subtitle1">
-                                        {childIndex + 1}
-                                        {". "}
-                                        {el.value.title}
-                                      </Typography>
-                                      <RadioGroup value={el.value.current}>
-                                        {el.value.options.map((radio, index) => (
-                                          <FormControlLabel key={radio.id} value={radio.id} control={<Radio color="primary" />} label={radio.name ? radio.name : "Untitled radio " + (index + 1)} />
-                                        ))}
-                                      </RadioGroup>
-                                    </div>
-                                  </ListItem>
-                                );
-                              }
-                            })}
-                          </List>
-                        </AccordionDetails>
-                      </Accordion>
-                    ))}
+                    <SubmitsSummary allSubmits={allSubmits} />
                   </Container>
                 </div>
               )}

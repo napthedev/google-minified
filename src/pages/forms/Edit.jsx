@@ -14,12 +14,12 @@ import CheckboxEdit from "./EditPage/CheckboxEdit";
 import RadioEdit from "./EditPage/RadioEdit";
 import DateEdit from "./EditPage/DateEdit";
 import TimeEdit from "./EditPage/TimeEdit";
-import Forbidden from "../Forbidden";
-import NotFound from "../NotFound";
+import Forbidden from "../../components/Forbidden";
+import NotFound from "../../components/NotFound";
 
-import { calculateCreatedTime } from "../Functions";
+import { calculateCreatedTime } from "../../utils";
 
-import ClipboardSnackbar from "../ClipboardSnackbar";
+import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
 function Edit() {
   const [view, setView] = useState("");
@@ -186,12 +186,6 @@ function Edit() {
 
   const [tabValue, setTabValue] = useState(0);
 
-  useEffect(getSubmits, [tabValue]);
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
   return (
     <>
       {!loading ? (
@@ -202,7 +196,15 @@ function Edit() {
             <Forbidden />
           ) : view === 200 ? (
             <>
-              <Tabs centered value={tabValue} onChange={handleTabChange} indicatorColor="primary" textColor="primary">
+              <Tabs
+                centered
+                value={tabValue}
+                onChange={(event, newValue) => {
+                  setTabValue(newValue);
+                }}
+                indicatorColor="primary"
+                textColor="primary"
+              >
                 <Tab
                   label={
                     <div style={{ display: "flex", gap: 10 }}>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
-import HomeGrid from "../HomeGrid";
+import HomeGrid from "../../components/HomeGrid";
 
 function DocsHome() {
   useEffect(() => (document.title = "My Documents - Google Docs Minified"), []);

@@ -8,7 +8,7 @@ import CheckboxResponse from "./ResponsePage/CheckboxResponse";
 import RadioResponse from "./ResponsePage/RadioResponse";
 import DateResponse from "./ResponsePage/DateResponse";
 import TimeResponse from "./ResponsePage/TimeResponse";
-import NotFound from "../NotFound";
+import NotFound from "../../components/NotFound";
 import FormSubmitted from "./ResponsePage/FormSubmitted";
 
 function Response() {

@@ -1,16 +1,17 @@
 import { Link, useParams, useHistory } from "react-router-dom";
-import { userContext } from "../../App";
 import { useState, useContext, useEffect, useRef } from "react";
 import { Breadcrumbs, IconButton, Tooltip, Typography, CircularProgress } from "@material-ui/core";
 import { Delete, InsertDriveFile, FileCopy, InsertLink, GetApp, Folder as FolderIcon } from "@material-ui/icons";
 import axios from "axios";
 import { io } from "socket.io-client";
-import NotFound from "../NotFound";
-import { anchorDownloadFile } from "../Functions";
-import FileInput from "./components/FileInput";
-import CreateNewFolder from "./components/CreateNewFolder";
-import RenameDialog from "./components/RenameDialog";
-import ClipboardSnackbar from "../ClipboardSnackbar";
+
+import { userContext } from "../../App";
+import NotFound from "../../components/NotFound";
+import { anchorDownloadFile } from "../../utils";
+import FileInput from "./FileInput";
+import CreateNewFolder from "./CreateNewFolder";
+import RenameDialog from "./RenameDialog";
+import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
 function Folder({ uploadFile }) {
   const { currentUser } = useContext(userContext);

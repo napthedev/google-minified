@@ -9,15 +9,17 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import NotFound from "./components/NotFound";
 import Cookie from "./components/Cookie";
 
-import { allApps } from "./components/Navbar";
+import { allApps } from "./utils/allApps";
+
+import { changeFavicon } from "./utils";
 
 const SignUp = lazy(() => import("./components/SignUp"));
 const SignIn = lazy(() => import("./components/SignIn"));
-const FormsRoute = lazy(() => import("./components/forms/FormsRoute"));
-const DriveRoute = lazy(() => import("./components/drive/DriveRoute"));
-const TranslateRoute = lazy(() => import("./components/translate/TranslateRoute"));
-const MapsRoute = lazy(() => import("./components/maps/MapsRoute"));
-const DocsRoute = lazy(() => import("./components/docs/DocsRoute"));
+const Forms = lazy(() => import("./pages/forms"));
+const Drive = lazy(() => import("./pages/drive"));
+const Translate = lazy(() => import("./pages/translate"));
+const Maps = lazy(() => import("./pages/maps"));
+const Docs = lazy(() => import("./pages/docs"));
 
 export const userContext = createContext(null);
 
@@ -33,7 +35,7 @@ TopBarProgress.config({
 
 function App() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/UcOrFtl.png";
+    changeFavicon("https://i.imgur.com/UcOrFtl.png");
     document.title = "Google Minified";
   }, []);
 
@@ -120,11 +122,11 @@ function App() {
                       <Route path="/sign-up">
                         <SignUp />
                       </Route>
-                      <Route path="/forms" component={FormsRoute}></Route>
-                      <Route path="/drive" component={DriveRoute}></Route>
-                      <Route path="/translate" component={TranslateRoute}></Route>
-                      <Route path="/maps" component={MapsRoute}></Route>
-                      <Route path="/docs" component={DocsRoute}></Route>
+                      <Route path="/forms" component={Forms}></Route>
+                      <Route path="/drive" component={Drive}></Route>
+                      <Route path="/translate" component={Translate}></Route>
+                      <Route path="/maps" component={Maps}></Route>
+                      <Route path="/docs" component={Docs}></Route>
                       <Route>
                         <NotFound />
                       </Route>

@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 
 import axios from "axios";
 
-import NotFound from "../NotFound";
+import NotFound from "../../components/NotFound";
 import { Button, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
 import { InsertLink, GetApp, ArrowBack } from "@material-ui/icons";
 
-import ClipboardSnackbar from "../ClipboardSnackbar";
+import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
 import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
 
-import { anchorDownloadFile } from "../Functions";
+import { anchorDownloadFile } from "../../utils";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);

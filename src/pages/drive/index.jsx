@@ -6,12 +6,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 import Folders from "./Folders";
-import NotFound from "../NotFound";
+import NotFound from "../../components/NotFound";
 import Files from "./Files";
-import Navbar, { allApps } from "../Navbar";
-import PrivateRoute from "../PrivateRoute";
+import Navbar from "../../components/Navbar";
+import PrivateRoute from "../../components/PrivateRoute";
+
+import { allApps } from "../../utils/allApps";
 
 import napid from "napid";
+import { changeFavicon } from "../../utils";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -41,7 +44,7 @@ function CloseBtn(props) {
 
 function DriveRoute() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Drive").icon;
+    changeFavicon(allApps.find((e) => e.name === "Drive").icon);
   }, []);
 
   const { path } = useRouteMatch();

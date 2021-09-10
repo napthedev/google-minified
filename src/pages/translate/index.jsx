@@ -3,13 +3,15 @@ import { useState, useEffect, useRef } from "react";
 import { IconButton, FormControl, Select, MenuItem, TextareaAutosize, Typography, CircularProgress } from "@material-ui/core";
 import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
 
-import ClipboardSnackbar from "../ClipboardSnackbar";
+import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
-import Navbar, { allApps } from "../Navbar";
+import Navbar from "../../components/Navbar";
+import { allApps } from "../../utils/allApps";
+import { changeFavicon } from "../../utils";
 
 function TranslateRoute() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Translate").icon;
+    changeFavicon(allApps.find((e) => e.name === "Translate").icon);
     document.title = "Google Translate Minified";
   }, []);
 

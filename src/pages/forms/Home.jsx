@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
-import HomeGrid from "../HomeGrid";
+import HomeGrid from "../../components/HomeGrid";
 
 function FormsHome() {
   useEffect(() => (document.title = "My Forms - Google Forms Minified"), []);

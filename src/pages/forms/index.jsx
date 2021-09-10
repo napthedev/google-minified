@@ -2,18 +2,22 @@ import { useRouteMatch, Route, Switch } from "react-router-dom";
 
 import { useEffect } from "react";
 
-import FormsHome from "./FormsHome";
+import Home from "./Home";
 import Edit from "./Edit";
 import Response from "./Response";
-import NotFound from "../NotFound";
-import CreateForm from "./CreateForm";
+import Create from "./Create";
 
-import Navbar, { allApps } from "../Navbar";
-import PrivateRoute from "../PrivateRoute";
+import NotFound from "../../components/NotFound";
+
+import Navbar from "../../components/Navbar";
+import { allApps } from "../../utils/allApps";
+
+import PrivateRoute from "../../components/PrivateRoute";
+import { changeFavicon } from "../../utils";
 
 function FormsRoute() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = allApps.find((e) => e.name === "Forms").icon;
+    changeFavicon(allApps.find((e) => e.name === "Forms").icon);
   }, []);
 
   const { path } = useRouteMatch();
@@ -23,8 +27,8 @@ function FormsRoute() {
       <Navbar name="Forms" />
 
       <Switch>
-        <PrivateRoute path={`${path}`} exact component={FormsHome}></PrivateRoute>
-        <PrivateRoute path={`${path}/create`} component={CreateForm}></PrivateRoute>
+        <PrivateRoute path={`${path}`} exact component={Home}></PrivateRoute>
+        <PrivateRoute path={`${path}/create`} component={Create}></PrivateRoute>
         <PrivateRoute path={`${path}/edit/:id`} component={Edit}></PrivateRoute>
         <Route path={`${path}/response/:id`} component={Response}></Route>
         <Route path={`${path}/*`}>

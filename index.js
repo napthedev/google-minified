@@ -17,6 +17,7 @@ const AuthRoute = require("./routes/AuthRoute");
 const FormsRoute = require("./routes/FormsRoute");
 const DriveRoute = require("./routes/DriveRoute");
 const DocumentsRoute = require("./routes/DocumentsRoute");
+const SheetsRoute = require("./routes/SheetsRoute");
 
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
@@ -39,8 +40,28 @@ app.use("/auth", AuthRoute);
 app.use("/forms", FormsRoute);
 app.use("/drive", DriveRoute);
 app.use("/docs", DocumentsRoute);
+app.use("/sheets", SheetsRoute);
 
 io.of("/docs").on("connection", (socket) => {
+  let room = "";
+
+  socket.on("join-room", (data) => {
+    socket.join(data);
+    room = data;
+  });
+
+  socket.on("name", (value) => {
+    socket.broadcast.to(room).emit("name", value);
+  });
+  socket.on("editable", (value) => {
+    socket.broadcast.to(room).emit("editable", value);
+  });
+  socket.on("update-data", (data) => {
+    socket.broadcast.to(room).emit("new-data", data);
+  });
+});
+
+io.of("/sheets").on("connection", (socket) => {
   let room = "";
 
   socket.on("join-room", (data) => {

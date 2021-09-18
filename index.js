@@ -48,6 +48,12 @@ io.of("/docs").on("connection", (socket) => {
     room = data;
   });
 
+  socket.on("name", (value) => {
+    socket.broadcast.to(room).emit("name", value);
+  });
+  socket.on("editable", (value) => {
+    socket.broadcast.to(room).emit("editable", value);
+  });
   socket.on("update-data", (data) => {
     socket.broadcast.to(room).emit("new-data", data);
   });

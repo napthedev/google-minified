@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const { verifyJWT } = require("../verifyJWT");
+const { verifyJWT, verifyJWTNotStrict } = require("../verifyJWT");
 const Documents = require("../models/Documents");
 
 route.get("/create", verifyJWT, async (req, res) => {
@@ -31,7 +31,7 @@ route.get("/", verifyJWT, async (req, res) => {
   }
 });
 
-route.post("/document", async (req, res) => {
+route.post("/document", verifyJWTNotStrict, async (req, res) => {
   try {
     const myDocument = await Documents.findOne({
       _id: req.body._id,
@@ -39,7 +39,7 @@ route.post("/document", async (req, res) => {
 
     if (!myDocument) return res.sendStatus(404);
 
-    res.send(myDocument);
+    res.send({ ...myDocument.toObject(), permission: myDocument.userId === req.user?.id });
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -53,9 +53,27 @@ route.patch("/", async (req, res) => {
     });
 
     if (myDocument) {
-      // myDocument.name = req.body.name;
       myDocument.data = req.body.data;
-      const saved = await myDocument.save();
+      await myDocument.save();
+      return res.sendStatus(200);
+    }
+
+    res.sendStatus(404);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+route.patch("/name", async (req, res) => {
+  try {
+    const myDocument = await Documents.findOne({
+      _id: req.body._id,
+    });
+
+    if (myDocument) {
+      myDocument.name = req.body.name;
+      await myDocument.save();
       return res.sendStatus(200);
     }
 

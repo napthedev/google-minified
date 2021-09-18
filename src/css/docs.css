@@ -7,3 +7,20 @@
 .ql-editor {
   flex-grow: 1;
 }
+
+.rename-input {
+  border: 1px solid transparent;
+  outline: none;
+  padding: 4px 10px;
+  font-size: 17px;
+  background: transparent;
+  transition: 0.15s;
+}
+
+.rename-input:hover {
+  border: 1px solid gray;
+}
+.rename-input:focus {
+  border: 1px solid transparent;
+  box-shadow: 0 0 5px royalblue;
+}

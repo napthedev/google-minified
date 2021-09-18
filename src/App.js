@@ -15,11 +15,6 @@ import { changeFavicon } from "./utils";
 
 const SignUp = lazy(() => import("./components/SignUp"));
 const SignIn = lazy(() => import("./components/SignIn"));
-const Forms = lazy(() => import("./pages/forms"));
-const Drive = lazy(() => import("./pages/drive"));
-const Translate = lazy(() => import("./pages/translate"));
-const Maps = lazy(() => import("./pages/maps"));
-const Docs = lazy(() => import("./pages/docs"));
 
 export const userContext = createContext(null);
 
@@ -116,17 +111,11 @@ function App() {
                           </Link>
                         ))}
                       </Route>
-                      <Route path="/sign-in">
-                        <SignIn />
-                      </Route>
-                      <Route path="/sign-up">
-                        <SignUp />
-                      </Route>
-                      <Route path="/forms" component={Forms}></Route>
-                      <Route path="/drive" component={Drive}></Route>
-                      <Route path="/translate" component={Translate}></Route>
-                      <Route path="/maps" component={Maps}></Route>
-                      <Route path="/docs" component={Docs}></Route>
+                      <Route path="/sign-in" component={SignIn}></Route>
+                      <Route path="/sign-up" component={SignUp}></Route>
+                      {allApps.map((e) => (
+                        <Route path={e.route} component={e.component} />
+                      ))}
                       <Route>
                         <NotFound />
                       </Route>

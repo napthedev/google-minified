@@ -1,7 +1,9 @@
 import { useParams, useLocation, useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import axios from "axios";
+
+import { userContext } from "../../App";
 
 import NotFound from "../../components/NotFound";
 import { Button, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
@@ -11,6 +13,7 @@ import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
 import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
+import "../../css/vs.min.css";
 
 import { anchorDownloadFile } from "../../utils";
 
@@ -25,6 +28,8 @@ function Files() {
   const history = useHistory();
 
   const { id } = useParams();
+
+  const { theme } = useContext(userContext);
 
   const [view, setView] = useState(0);
   const [data, setData] = useState("");
@@ -109,7 +114,7 @@ function Files() {
           </div>
           <div style={{ flex: 1, height: "calc(100vh - 50px)" }}>
             {type === "text" ? (
-              <div className="highlight-js-container">
+              <div className={`highlight-js-container ${theme.palette.type}`}>
                 <Highlight className={file.name.split(".")[file.name.split(".").length - 1]}>{data}</Highlight>
               </div>
             ) : type === "video" ? (

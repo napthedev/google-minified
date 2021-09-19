@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+
+import { HotTable } from "@handsontable/react";
+import Handsontable from "handsontable";
+import "handsontable/dist/handsontable.full.min.css";
 
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -13,7 +15,7 @@ import { CircularProgress, Typography, FormControl, Select, MenuItem } from "@ma
 function Sheet() {
   const { id } = useParams();
 
-  const [editorValue, setEditorValue] = useState("");
+  const [hotData, setHotData] = useState(Handsontable.helper.createEmptySpreadsheetData(100, 26));
   const [socket, setSocket] = useState();
   const [status, setStatus] = useState(undefined);
   const [title, setTitle] = useState("");
@@ -23,8 +25,6 @@ function Sheet() {
   const [editable, setEditable] = useState(false);
 
   useEffect(() => setRenameInputValue(title), [title]);
-
-  const editorRef = useRef();
 
   useEffect(() => {
     followSystemColorScheme({
@@ -40,10 +40,12 @@ function Sheet() {
 
   useEffect(() => {
     if (status === 200) {
-      const interval = setInterval(() => axios.patch("sheets", { _id: id, data: editorValue }), 400);
+      const interval = setInterval(() => {
+        if (permission) axios.patch("sheets", { _id: id, data: JSON.stringify(hotData) });
+      }, 400);
       return () => clearInterval(interval);
     }
-  }, [status]);
+  }, [status, permission]);
 
   useEffect(() => {
     axios
@@ -51,7 +53,7 @@ function Sheet() {
       .then((res) => {
         if (res.status === 200) {
           setTitle(res.data.name);
-          setEditorValue(res.data.data);
+          setHotData(JSON.parse(res.data.data));
           setStatus(res.status);
           setPermission(res.data.permission);
           setEditable(res.data.permission);
@@ -66,7 +68,13 @@ function Sheet() {
     mySocket.emit("join-room", id);
 
     mySocket.on("new-data", (data) => {
-      editorRef.current?.getEditor().updateContents(data);
+      setHotData((prev) => {
+        let clone = JSON.parse(JSON.stringify(prev));
+        data.forEach((e) => {
+          clone[e[0]][e[1]] = e[3];
+        });
+        return clone;
+      });
     });
 
     mySocket.on("name", (value) => {
@@ -124,19 +132,17 @@ function Sheet() {
           </>
         )}
       </div>
-      <ReactQuill
-        ref={editorRef}
-        modules={{
-          toolbar: [[{ header: [1, 2, 3, 4, 5, 6, false] }], [{ font: [] }], [{ list: "ordered" }, { list: "bullet" }], ["bold", "italic", "underline"], [{ color: [] }, { background: [] }], [{ script: "sub" }, { script: "super" }], [{ align: [] }], ["blockquote", "code-block"], ["clean"]],
-        }}
-        style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
-        theme="snow"
+      <HotTable
         readOnly={!editable}
-        value={editorValue}
-        onChange={(content, delta, source, editor) => {
-          if (source === "user") {
-            setEditorValue(content);
-            socket?.emit("update-data", delta);
+        data={hotData}
+        colHeaders={true}
+        rowHeaders={true}
+        height="auto"
+        licenseKey="non-commercial-and-evaluation"
+        afterChange={(changes, source) => {
+          if (source !== "loadData") {
+            console.log(changes);
+            socket?.emit("update-data", changes);
           }
         }}
       />

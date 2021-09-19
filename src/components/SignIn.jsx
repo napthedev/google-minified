@@ -37,21 +37,28 @@ function SignIn() {
   const validateEmail = () => {
     if (!/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
       setEmailError("Please enter a valid email");
+      return false;
     } else {
       setEmailError("");
+      return true;
     }
   };
   const validatePassword = () => {
     if (password.length === 0) {
       setPasswordError("Enter your password");
+      return false;
     } else {
       setPasswordError("");
+      return true;
     }
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!emailError && !passwordError) signIn();
+
+    const validation = validateEmail() && validatePassword();
+
+    if (!emailError && !passwordError && validation) signIn();
   };
 
   const signIn = async () => {
@@ -90,8 +97,8 @@ function SignIn() {
           <Particles />
           <div className="auth-form-container">
             <form style={{ padding: "0 20px" }} className="auth-form" onSubmit={handleFormSubmit} noValidate>
-              <TextField type="email" error={emailError ? true : false} label="Email" helperText={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onKeyUp={validateEmail} />
-              <TextField type="password" error={passwordError ? true : false} label="Password" helperText={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onKeyUp={validatePassword} />
+              <TextField type="email" error={emailError ? true : false} label="Email" helperText={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={validateEmail} />
+              <TextField type="password" error={passwordError ? true : false} label="Password" helperText={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} />
               <Link
                 href="#"
                 onClick={(e) => {

@@ -35,28 +35,37 @@ function SignUp() {
   const validateUsername = () => {
     if (!username.trim()) {
       setUsernameError("Please enter your username");
+      return false;
     } else {
       setUsernameError("");
+      return true;
     }
   };
   const validateEmail = () => {
     if (!/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
       setEmailError("Please enter a valid email");
+      return false;
     } else {
       setEmailError("");
+      return true;
     }
   };
   const validatePassword = () => {
     if (password.length < 6 || password.length > 18) {
       setPasswordError("Password must be between 6-18 character");
+      return false;
     } else {
       setPasswordError("");
+      return true;
     }
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!usernameError && !emailError && !passwordError) signUp();
+
+    const validation = validateEmail() && validatePassword() && validateUsername();
+
+    if (!usernameError && !emailError && !passwordError && validation) signUp();
   };
 
   const signUp = async () => {
@@ -95,9 +104,9 @@ function SignUp() {
           <Particles />
           <div className="auth-form-container">
             <form style={{ padding: "0 20px" }} className="auth-form" onSubmit={handleFormSubmit} noValidate>
-              <TextField type="text" error={usernameError ? true : false} label="Username" helperText={usernameError} value={username} onChange={(e) => setUsername(e.target.value)} onKeyUp={validateUsername} />
-              <TextField type="email" error={emailError ? true : false} label="Email" helperText={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onKeyUp={validateEmail} />
-              <TextField type="password" error={passwordError ? true : false} label="Password" helperText={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onKeyUp={validatePassword} />
+              <TextField type="text" error={usernameError ? true : false} label="Username" helperText={usernameError} value={username} onChange={(e) => setUsername(e.target.value)} onBlur={validateUsername} />
+              <TextField type="email" error={emailError ? true : false} label="Email" helperText={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={validateEmail} />
+              <TextField type="password" error={passwordError ? true : false} label="Password" helperText={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} />
               <Link
                 href="#"
                 onClick={(e) => {

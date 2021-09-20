@@ -34,7 +34,7 @@ function SheetsHome() {
   return (
     <>
       {!loading ? (
-        <HomeGrid allData={allSheets} pushRoute="/sheets/" name="sheet" thumbnail="https://i.imgur.com/f8WI9O0.png" deleteItem={deleteSheet} createRoute="/sheets/create" />
+        <HomeGrid allData={allSheets} pushRoute="/sheets/" name="sheet" thumbnail="https://i.imgur.com/CrXn9aU.png" deleteItem={deleteSheet} createRoute="/sheets/create" />
       ) : (
         <div className="center-container">
           <CircularProgress />

@@ -1,11 +1,8 @@
+import { useEffect } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { Typography } from "@material-ui/core";
 
-import { useInnerWidth } from "./useInnerWidth";
-
-function Section({ name, title, animation, reversed = false }) {
-  const { width } = useInnerWidth();
-
+function Section({ width, name, title, animation, reversed = false }) {
   return (
     <div className={`section-container${reversed ? " reversed" : ""}`}>
       <div className="section-title-container">

@@ -102,7 +102,7 @@ function App() {
                       <Route path="/sign-in" component={SignIn}></Route>
                       <Route path="/sign-up" component={SignUp}></Route>
                       {allApps.map((e) => (
-                        <Route path={e.route} component={e.component} />
+                        <Route key={e.route} path={e.route} component={e.component} />
                       ))}
                       <Route>
                         <NotFound />

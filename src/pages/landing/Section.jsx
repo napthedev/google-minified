@@ -10,15 +10,15 @@ function Section({ name, title, animation, reversed = false }) {
     <div className={`section-container${reversed ? " reversed" : ""}`}>
       <div className="section-title-container">
         <div className="section-title">
-          <Typography variant={width > 768 ? "h3" : "h4"} style={{ textOverflow: "initial", whiteSpace: "normal", margin: "20px 0" }}>
+          <Typography data-aos="fade-up" data-aos-delay="400" variant={width > 768 ? "h3" : "h4"} style={{ textOverflow: "initial", whiteSpace: "normal", margin: "20px 0" }}>
             {`Google ${name} Minified`}
           </Typography>
-          <Typography variant={width > 768 ? "h4" : "h5"} style={{ textOverflow: "initial", whiteSpace: "normal" }}>
+          <Typography data-aos="fade-up" data-aos-delay="800" variant={width > 768 ? "h4" : "h5"} style={{ textOverflow: "initial", whiteSpace: "normal" }}>
             {title}
           </Typography>
         </div>
       </div>
-      <div className="section-animation">
+      <div data-aos="zoom-in" data-aos-delay="200" className="section-animation">
         <Player autoplay loop src={animation} style={{ height: "auto", width: "100%" }}></Player>
       </div>
     </div>

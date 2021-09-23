@@ -7,6 +7,8 @@ import Section from "./Section";
 import { changeFavicon } from "../../utils";
 import backgroundDark from "./backgroundDark.svg";
 import backgroundLight from "./backgroundLight.svg";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function Landing() {
   const { theme } = useContext(userContext);
@@ -14,6 +16,7 @@ function Landing() {
   useEffect(() => {
     changeFavicon("https://i.imgur.com/UcOrFtl.png");
     document.title = "Google Minified";
+    AOS.init();
   }, []);
 
   return (

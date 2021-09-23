@@ -42,7 +42,7 @@ export const allApps = [
   {
     name: "Maps",
     route: "/maps",
-    icon: "https://i.imgur.com/7xyU04L.png",
+    icon: "https://i.imgur.com/bAnlNcp.png",
     component: Maps,
     animation: mapsAnimation,
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, voluptas.",

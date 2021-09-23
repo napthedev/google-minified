@@ -42,7 +42,12 @@
 @media (max-width: 768px) {
   .section-container {
     flex-direction: column;
-    height: auto;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .section-title-container {
+    display: block;
   }
 
   .section-animation {

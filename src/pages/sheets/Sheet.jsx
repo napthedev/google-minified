@@ -15,7 +15,7 @@ import { CircularProgress, Typography, FormControl, Select, MenuItem } from "@ma
 function Sheet() {
   const { id } = useParams();
 
-  const [hotData, setHotData] = useState(Handsontable.helper.createEmptySpreadsheetData(100, 26));
+  const [hotData, setHotData] = useState(Handsontable.helper.createEmptySpreadsheetData(100, 52));
   const [socket, setSocket] = useState();
   const [status, setStatus] = useState(undefined);
   const [title, setTitle] = useState("");
@@ -141,7 +141,6 @@ function Sheet() {
         licenseKey="non-commercial-and-evaluation"
         afterChange={(changes, source) => {
           if (source !== "loadData") {
-            console.log(changes);
             socket?.emit("update-data", changes);
           }
         }}

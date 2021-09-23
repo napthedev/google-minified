@@ -1,11 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { userContext } from "../../App";
 import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { allApps } from "../../utils/allApps";
 import Section from "./Section";
 import { changeFavicon } from "../../utils";
+import backgroundDark from "./backgroundDark.svg";
+import backgroundLight from "./backgroundLight.svg";
 
 function Landing() {
+  const { theme } = useContext(userContext);
+
   useEffect(() => {
     changeFavicon("https://i.imgur.com/UcOrFtl.png");
     document.title = "Google Minified";
@@ -13,7 +18,7 @@ function Landing() {
 
   return (
     <>
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+      <div className="first-section" style={{ backgroundImage: `url(${theme.palette.type === "dark" ? backgroundDark : backgroundLight})` }}>
         <Typography variant="h2" style={{ margin: "30px 10px" }}>
           Google Minified
         </Typography>
@@ -26,7 +31,7 @@ function Landing() {
         </div>
       </div>
       {allApps.map((i, index) => (
-        <Section title={i.description} animation={i.animation} reversed={index % 2 === 1} />
+        <Section name={i.name} title={i.description} animation={i.animation} reversed={index % 2 === 1} />
       ))}
     </>
   );

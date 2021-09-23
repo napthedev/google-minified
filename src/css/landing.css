@@ -22,6 +22,17 @@
   align-items: center;
 }
 
+.first-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
 @media (min-width: 768px) {
   .reversed {
     flex-direction: row-reverse;

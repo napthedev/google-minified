@@ -21,7 +21,7 @@ export const allApps = [
     icon: "https://i.imgur.com/Cr3oZGy.png",
     component: Drive,
     animation: driveAnimation,
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, voluptas.",
+    description: "Easy and secure access to all of your content",
   },
   {
     name: "Forms",
@@ -29,7 +29,7 @@ export const allApps = [
     icon: "https://i.imgur.com/9Tf9BJU.png",
     component: Forms,
     animation: formsAnimation,
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, voluptas.",
+    description: "Create beautiful forms for your survey",
   },
   {
     name: "Translate",
@@ -37,7 +37,7 @@ export const allApps = [
     icon: "https://i.imgur.com/PAS1jhL.png",
     component: Translate,
     animation: translateAnimation,
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, voluptas.",
+    description: "Translate your document with auto language detection",
   },
   {
     name: "Maps",
@@ -45,7 +45,7 @@ export const allApps = [
     icon: "https://i.imgur.com/bAnlNcp.png",
     component: Maps,
     animation: mapsAnimation,
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, voluptas.",
+    description: "Explore and navigate your world through the map",
   },
   {
     name: "Docs",
@@ -53,7 +53,7 @@ export const allApps = [
     icon: "https://i.imgur.com/6oRhxKL.png",
     component: Docs,
     animation: docsAnimation,
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, voluptas.",
+    description: "Free online document with realtime update",
   },
   {
     name: "Sheets",
@@ -61,6 +61,6 @@ export const allApps = [
     icon: "https://i.imgur.com/aHZnES8.png",
     component: Sheets,
     animation: sheetsAnimation,
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, voluptas.",
+    description: "Online spreadsheet to store your data",
   },
 ];

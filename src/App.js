@@ -15,6 +15,7 @@ import { changeFavicon } from "./utils";
 
 const SignUp = lazy(() => import("./components/SignUp"));
 const SignIn = lazy(() => import("./components/SignIn"));
+const Landing = lazy(() => import("./pages/landing"));
 
 export const userContext = createContext(null);
 
@@ -104,13 +105,7 @@ function App() {
                 <animated.div style={props} className="root">
                   <Suspense fallback={<TopBarProgress />}>
                     <Switch location={item}>
-                      <Route path="/" exact>
-                        {allApps.map((e) => (
-                          <Link key={e.name} to={e.route}>
-                            {e.name}
-                          </Link>
-                        ))}
-                      </Route>
+                      <Route path="/" exact component={Landing}></Route>
                       <Route path="/sign-in" component={SignIn}></Route>
                       <Route path="/sign-up" component={SignUp}></Route>
                       {allApps.map((e) => (

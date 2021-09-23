@@ -7,7 +7,7 @@ route.get("/create", verifyJWT, async (req, res) => {
   try {
     const newSheet = new Sheets({
       userId: req.user.id,
-      data: JSON.stringify(new Array(100).fill(new Array(26).fill(""))),
+      data: JSON.stringify(new Array(100).fill(new Array(52).fill(""))),
     });
 
     const saved = await newSheet.save();

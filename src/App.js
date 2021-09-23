@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useMemo, lazy, Suspense } from "react";
-import { Link, Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { useTransition, animated } from "react-spring";
 import { useMediaQuery, CssBaseline, CircularProgress } from "@material-ui/core";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
@@ -10,8 +10,6 @@ import NotFound from "./components/NotFound";
 import Cookie from "./components/Cookie";
 
 import { allApps } from "./utils/allApps";
-
-import { changeFavicon } from "./utils";
 
 const SignUp = lazy(() => import("./components/SignUp"));
 const SignIn = lazy(() => import("./components/SignIn"));
@@ -30,11 +28,6 @@ TopBarProgress.config({
 });
 
 function App() {
-  useEffect(() => {
-    changeFavicon("https://i.imgur.com/UcOrFtl.png");
-    document.title = "Google Minified";
-  }, []);
-
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const theme = useMemo(

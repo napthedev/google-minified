@@ -59,3 +59,13 @@
 .invalid-box {
   border: 1px solid red;
 }
+
+@media (max-width: 768px) {
+  .add-box-button {
+    right: 10px;
+  }
+
+  .copy-link-button {
+    left: 10px;
+  }
+}

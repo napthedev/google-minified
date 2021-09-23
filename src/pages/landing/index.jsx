@@ -1,9 +1,16 @@
+import { useEffect } from "react";
 import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { allApps } from "../../utils/allApps";
 import Section from "./Section";
+import { changeFavicon } from "../../utils";
 
 function Landing() {
+  useEffect(() => {
+    changeFavicon("https://i.imgur.com/UcOrFtl.png");
+    document.title = "Google Minified";
+  }, []);
+
   return (
     <>
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>

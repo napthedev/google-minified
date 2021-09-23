@@ -1,11 +1,3 @@
-:root {
-  --background: #f0ebf8;
-  --box: white;
-  --translate-box: white;
-  --translate-box-color: black;
-  --translate-box-placeholder: #d4d4d4;
-}
-
 * {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }

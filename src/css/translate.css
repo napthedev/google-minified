@@ -1,3 +1,11 @@
+:root {
+  --background: #f0ebf8;
+  --box: white;
+  --translate-box: white;
+  --translate-box-color: black;
+  --translate-box-placeholder: #d4d4d4;
+}
+
 .translate-container {
   display: flex;
   flex-direction: column;
@@ -55,4 +63,29 @@
   position: absolute !important;
   right: 7px;
   bottom: 3px;
+}
+
+@media (max-width: 768px) {
+  .responsive-label {
+    display: none;
+  }
+
+  .translate-flex {
+    flex-direction: column;
+  }
+
+  .translate-box-container {
+    width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #303030;
+    --box: #424242;
+    --translate-box: #282829;
+    --translate-box-color: white;
+    --translate-box-border: #3a3a3a;
+    --translate-box-placeholder: #bebebe;
+  }
 }

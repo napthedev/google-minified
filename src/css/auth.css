@@ -24,3 +24,16 @@
   width: 100%;
   max-width: 400px;
 }
+
+@media (max-width: 768px) {
+  .auth-form-container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-form-container {
+    justify-content: center;
+    margin-bottom: 50px !important;
+  }
+}

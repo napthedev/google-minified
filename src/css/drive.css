@@ -137,3 +137,18 @@ body {
   height: 100%;
   margin: 0;
 }
+
+@media (prefers-color-scheme: dark) {
+  .dynamic-icon {
+    color: white;
+  }
+
+  .upload-progress-header {
+    background: #26292a;
+  }
+
+  .upload-progress-row {
+    background: #181a1b;
+    border: thin solid #1c1e1f;
+  }
+}

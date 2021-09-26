@@ -1,19 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import VideoStream from "./VideoStream";
 import Peer from "peerjs";
 import { io } from "socket.io-client";
+import { userContext } from "../../App";
 
 function Room() {
   const { id: roomId } = useParams();
 
+  const { currentUser } = useContext(userContext);
+
   const [videos, setVideos] = useState([]);
   const [socket, setSocket] = useState();
   const [peer, setPeer] = useState();
+  const [metadata, setMetadata] = useState([]);
 
   useEffect(() => {
     const mySocket = io(process.env.REACT_APP_SERVER_URL + "meet");
     const myPeer = new Peer();
+
+    setSocket(mySocket);
+    setPeer(myPeer);
 
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
@@ -71,7 +78,11 @@ function Room() {
     }
 
     myPeer.on("open", (id) => {
-      mySocket.emit("join-room", roomId, id);
+      mySocket.emit("join-room", roomId, id, currentUser.username);
+      mySocket.on("update-metadata", (data) => {
+        console.log(data);
+        setMetadata(data);
+      });
       mySocket.on("user-disconnected", (userId) => {
         setVideos((prev) => prev.filter((e) => e.id !== userId));
       });
@@ -83,7 +94,7 @@ function Room() {
       {videos
         .sort((a, b) => (a.priority === b.priority ? 0 : a.priority ? -1 : 1))
         .map((e) => (
-          <VideoStream key={e.id} source={e.source} muted={e.muted} />
+          <VideoStream key={e.id} source={e.source} muted={e.muted} id={e.id} username={e.id === "self" ? currentUser.username : metadata?.find((i) => i.id === e.id)?.username || "User"} />
         ))}
     </div>
   );

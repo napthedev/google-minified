@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { MicNone, MicOff } from "@material-ui/icons";
 
-function VideoStream({ source, muted }) {
+function VideoStream({ source, muted, id, username }) {
   const videoRef = useRef();
 
   useEffect(() => {
@@ -12,7 +12,10 @@ function VideoStream({ source, muted }) {
   return (
     <div className="video-container">
       <video autoPlay playsInline ref={videoRef} muted={muted}></video>
-      <div className="is-muted">{muted ? <MicOff color="secondary" /> : <MicNone />}</div>
+      <div className="video-info">
+        {id !== "self" && <div className="is-muted">{muted ? <MicOff color="secondary" /> : <MicNone />}</div>}
+        <div>{username}</div>
+      </div>
     </div>
   );
 }

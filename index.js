@@ -88,5 +88,18 @@ io.of("/submits").on("connection", (socket) => {
   socket.on("join-room", (roomId) => socket.join(roomId));
 });
 
+io.of("/meet").on("connection", (socket) => {
+  socket.on("join-room", (roomId, peerId) => {
+    console.log(roomId);
+    socket.join(roomId);
+
+    socket.broadcast.to(roomId).emit("new-connection", peerId);
+
+    socket.on("disconnect", () => {
+      socket.broadcast.to(roomId).emit("user-disconnected", peerId);
+    });
+  });
+});
+
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Listening on port ${port}`));

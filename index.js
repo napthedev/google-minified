@@ -88,10 +88,19 @@ io.of("/submits").on("connection", (socket) => {
   socket.on("join-room", (roomId) => socket.join(roomId));
 });
 
+let meetRooms = {};
 io.of("/meet").on("connection", (socket) => {
-  socket.on("join-room", (roomId, peerId) => {
-    console.log(roomId);
+  socket.on("join-room", (roomId, peerId, username) => {
     socket.join(roomId);
+
+    if (!meetRooms[roomId]) meetRooms[roomId] = [];
+
+    meetRooms[roomId].push({
+      id: peerId,
+      username,
+    });
+
+    io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
 
     socket.broadcast.to(roomId).emit("new-connection", peerId);
 

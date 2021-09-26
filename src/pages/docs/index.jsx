@@ -8,11 +8,11 @@ import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 import Create from "./Create";
 import { changeFavicon } from "../../utils";
-import { allApps } from "../../utils/allApps";
+import { routes } from "../../utils/routes";
 
 function FormsRoute() {
   useEffect(() => {
-    changeFavicon(allApps.find((e) => e.name === "Docs").icon);
+    changeFavicon(routes.find((e) => e.name === "Docs").icon);
   }, []);
 
   const { path } = useRouteMatch();

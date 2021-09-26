@@ -11,7 +11,7 @@ import Files from "./Files";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 
-import { allApps } from "../../utils/allApps";
+import { routes } from "../../utils/routes";
 
 import napid from "napid";
 import { changeFavicon } from "../../utils";
@@ -44,7 +44,7 @@ function CloseBtn(props) {
 
 function DriveRoute() {
   useEffect(() => {
-    changeFavicon(allApps.find((e) => e.name === "Drive").icon);
+    changeFavicon(routes.find((e) => e.name === "Drive").icon);
   }, []);
 
   const { path } = useRouteMatch();

@@ -5,11 +5,11 @@ import Room from "./Room";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 import { changeFavicon } from "../../utils";
-import { allApps } from "../../utils/allApps";
+import { routes } from "../../utils/routes";
 
 function FormsRoute() {
   useEffect(() => {
-    changeFavicon(allApps.find((e) => e.name === "Meet").icon);
+    changeFavicon(routes.find((e) => e.name === "Meet").icon);
   }, []);
 
   const { path } = useRouteMatch();

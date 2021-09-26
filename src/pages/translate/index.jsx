@@ -6,12 +6,12 @@ import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
 import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
 import Navbar from "../../components/Navbar";
-import { allApps } from "../../utils/allApps";
+import { routes } from "../../utils/routes";
 import { changeFavicon } from "../../utils";
 
 function TranslateRoute() {
   useEffect(() => {
-    changeFavicon(allApps.find((e) => e.name === "Translate").icon);
+    changeFavicon(routes.find((e) => e.name === "Translate").icon);
     document.title = "Google Translate Minified";
   }, []);
 

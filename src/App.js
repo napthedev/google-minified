@@ -9,7 +9,7 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import NotFound from "./components/NotFound";
 import Cookie from "./components/Cookie";
 
-import { allApps } from "./utils/allApps";
+import { routes } from "./utils/routes";
 
 const SignUp = lazy(() => import("./components/SignUp"));
 const SignIn = lazy(() => import("./components/SignIn"));
@@ -101,7 +101,7 @@ function App() {
                       <Route path="/" exact component={Landing}></Route>
                       <Route path="/sign-in" component={SignIn}></Route>
                       <Route path="/sign-up" component={SignUp}></Route>
-                      {allApps.map((e) => (
+                      {routes.map((e) => (
                         <Route key={e.route} path={e.route} component={e.component} />
                       ))}
                       <Route>

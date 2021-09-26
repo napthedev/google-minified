@@ -16,7 +16,7 @@ const Docs = lazy(() => import("../pages/docs"));
 const Sheets = lazy(() => import("../pages/sheets"));
 const Meet = lazy(() => import("../pages/meet"));
 
-export const allApps = [
+export const routes = [
   {
     name: "Drive",
     route: "/drive",

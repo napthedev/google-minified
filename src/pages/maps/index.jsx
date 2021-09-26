@@ -8,11 +8,11 @@ import { createTheme } from "@material-ui/core/styles";
 import { ThemeProvider, CssBaseline } from "@material-ui/core";
 
 import { changeFavicon } from "../../utils";
-import { allApps } from "../../utils/allApps";
+import { routes } from "../../utils/routes";
 
 function MapsRoute() {
   useEffect(() => {
-    changeFavicon(allApps.find((e) => e.name === "Maps").icon);
+    changeFavicon(routes.find((e) => e.name === "Maps").icon);
     document.title = "Google Maps Minified";
   }, []);
 

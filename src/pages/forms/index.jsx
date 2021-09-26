@@ -10,14 +10,14 @@ import Create from "./Create";
 import NotFound from "../../components/NotFound";
 
 import Navbar from "../../components/Navbar";
-import { allApps } from "../../utils/allApps";
+import { routes } from "../../utils/routes";
 
 import PrivateRoute from "../../components/PrivateRoute";
 import { changeFavicon } from "../../utils";
 
 function FormsRoute() {
   useEffect(() => {
-    changeFavicon(allApps.find((e) => e.name === "Forms").icon);
+    changeFavicon(routes.find((e) => e.name === "Forms").icon);
   }, []);
 
   const { path } = useRouteMatch();

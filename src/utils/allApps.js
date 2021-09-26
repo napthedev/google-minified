@@ -6,6 +6,7 @@ import translateAnimation from "../lottie/translate.json";
 import mapsAnimation from "../lottie/maps.json";
 import docsAnimation from "../lottie/docs.json";
 import sheetsAnimation from "../lottie/sheets.json";
+import meetAnimation from "../lottie/meet.json";
 
 const Forms = lazy(() => import("../pages/forms"));
 const Drive = lazy(() => import("../pages/drive"));
@@ -13,6 +14,7 @@ const Translate = lazy(() => import("../pages/translate"));
 const Maps = lazy(() => import("../pages/maps"));
 const Docs = lazy(() => import("../pages/docs"));
 const Sheets = lazy(() => import("../pages/sheets"));
+const Meet = lazy(() => import("../pages/meet"));
 
 export const allApps = [
   {
@@ -62,5 +64,13 @@ export const allApps = [
     component: Sheets,
     animation: sheetsAnimation,
     description: "Online spreadsheet to store your data",
+  },
+  {
+    name: "Meet",
+    route: "/meet",
+    icon: "https://i.imgur.com/JmjLQvm.png",
+    component: Meet,
+    animation: meetAnimation,
+    description: "Join your classes, meeting from anywhere",
   },
 ];

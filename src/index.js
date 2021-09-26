@@ -9,6 +9,7 @@ import "./css/docs.css";
 import "./css/auth.css";
 import "./css/drive.css";
 import "./css/translate.css";
+import "./css/meet.css";
 
 ReactDOM.render(
   <BrowserRouter>

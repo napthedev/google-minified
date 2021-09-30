@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const nodemailer = require("nodemailer");
 const md5 = require("../md5");
+const emailVerification = require("../public/EmailVerification");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -59,7 +60,7 @@ route.post("/sign-up", async (req, res) => {
       from: "googlminifiedservice@gmail.com",
       to: req.body.email,
       subject: "Verify your email for google minified",
-      html: `Click this link to verify your email: <a target="_blank" href="${req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id}">Verify here</a>`,
+      html: emailVerification(req.body.username, req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id),
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

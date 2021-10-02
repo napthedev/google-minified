@@ -1,19 +1,12 @@
-import { useRef, useEffect } from "react";
 import { MicNone, MicOff } from "@material-ui/icons";
+import VideoElement from "./VideoElement";
 
-function VideoStream({ source, muted, id, username }) {
-  const videoRef = useRef();
-
-  useEffect(() => {
-    if (!videoRef.current) return;
-    videoRef.current.srcObject = source;
-  }, [source]);
-
+function VideoStream({ source, id, username, camera, microphone }) {
   return (
     <div className="video-container">
-      <video autoPlay playsInline ref={videoRef} muted={muted}></video>
+      {camera && <VideoElement source={source} autoPlay playsInline muted={id === "self" || microphone}></VideoElement>}
       <div className="video-info">
-        {id !== "self" && <div className="is-muted">{muted ? <MicOff color="secondary" /> : <MicNone />}</div>}
+        <div className="is-muted">{microphone ? <MicNone /> : <MicOff color="secondary" />}</div>
         <div>{username}</div>
       </div>
     </div>

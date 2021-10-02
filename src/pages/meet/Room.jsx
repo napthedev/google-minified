@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
+import { Button } from "@material-ui/core";
+import { Mic, MicOff, Videocam, VideocamOff } from "@material-ui/icons";
 import VideoStream from "./VideoStream";
 import Peer from "peerjs";
 import { io } from "socket.io-client";
@@ -14,6 +16,9 @@ function Room() {
   const [socket, setSocket] = useState();
   const [peer, setPeer] = useState();
   const [metadata, setMetadata] = useState([]);
+  const [peerId, setPeerId] = useState("");
+
+  const history = useHistory();
 
   useEffect(() => {
     const mySocket = io(process.env.REACT_APP_SERVER_URL + "meet");
@@ -31,7 +36,6 @@ function Room() {
             {
               id: "self",
               source: stream,
-              muted: true,
               priority: true,
             },
           ]);
@@ -46,7 +50,6 @@ function Room() {
                   {
                     id: call.peer,
                     source: remoteStream,
-                    muted: false,
                     priority: false,
                   },
                 ];
@@ -64,11 +67,23 @@ function Room() {
                   {
                     id: call.peer,
                     source: remoteStream,
-                    muted: false,
                     priority: false,
                   },
                 ];
               });
+            });
+          });
+
+          myPeer.on("open", (id) => {
+            setPeerId(id);
+            mySocket.emit("join-room", roomId, id, currentUser.username, currentUser.id, (response) => {
+              if (!response) history.push("/meet/error");
+            });
+            mySocket.on("update-metadata", (data) => {
+              setMetadata(data);
+            });
+            mySocket.on("user-disconnected", (userId) => {
+              setVideos((prev) => prev.filter((e) => e.id !== userId));
             });
           });
         })
@@ -77,26 +92,30 @@ function Room() {
         });
     }
 
-    myPeer.on("open", (id) => {
-      mySocket.emit("join-room", roomId, id, currentUser.username);
-      mySocket.on("update-metadata", (data) => {
-        console.log(data);
-        setMetadata(data);
-      });
-      mySocket.on("user-disconnected", (userId) => {
-        setVideos((prev) => prev.filter((e) => e.id !== userId));
-      });
-    });
+    return () => {
+      mySocket.disconnect();
+      myPeer.disconnect();
+    };
   }, []);
 
   return (
-    <div className="video-grid">
-      {videos
-        .sort((a, b) => (a.priority === b.priority ? 0 : a.priority ? -1 : 1))
-        .map((e) => (
-          <VideoStream key={e.id} source={e.source} muted={e.muted} id={e.id} username={e.id === "self" ? currentUser.username : metadata?.find((i) => i.id === e.id)?.username || "User"} />
-        ))}
-    </div>
+    <>
+      <div className="video-grid">
+        {videos
+          .sort((a, b) => (a.priority === b.priority ? 0 : a.priority ? -1 : 1))
+          .map((e) => (
+            <VideoStream key={e.id} source={e.source} id={e.id} camera={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.camera} microphone={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.microphone} username={e.id === "self" ? currentUser.username : metadata?.find((i) => i.id === e.id)?.username || "User"} />
+          ))}
+      </div>
+      <div className="room-control">
+        <Button onClick={() => socket?.emit("toggle-microphone")} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color={metadata?.find((i) => i.id === peerId)?.microphone ? "primary" : "secondary"}>
+          {metadata?.find((i) => i.id === peerId)?.microphone ? <Mic /> : <MicOff />}
+        </Button>
+        <Button onClick={() => socket?.emit("toggle-camera")} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color={metadata?.find((i) => i.id === peerId)?.camera ? "primary" : "secondary"}>
+          {metadata?.find((i) => i.id === peerId)?.camera ? <Videocam /> : <VideocamOff />}
+        </Button>
+      </div>
+    </>
   );
 }
 

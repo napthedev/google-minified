@@ -5,7 +5,7 @@ function NotFound() {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexGrow: 1 }}>
       <Player autoplay loop src={data} style={{ height: "300px", width: "300px" }}></Player>
-      <h1 style={{ textAlign: "center" }}>Not Found</h1>
+      <h1 style={{ textAlign: "center", maxWidth: "100%" }}>Not Found</h1>
     </div>
   );
 }

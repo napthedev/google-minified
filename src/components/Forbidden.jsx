@@ -5,7 +5,7 @@ function Forbidden() {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexGrow: 1 }}>
       <Player autoplay loop src={data} style={{ height: "300px", width: "300px" }}></Player>
-      <h1 style={{ textAlign: "center" }}>You don't have access to this form</h1>
+      <h1 style={{ textAlign: "center", maxWidth: "100%" }}>You don't have access to this form</h1>
     </div>
   );
 }

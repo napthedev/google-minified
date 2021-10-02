@@ -2,6 +2,7 @@ import { useRouteMatch, Route, Switch } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "./Home";
 import Room from "./Room";
+import SomethingWentWrong from "./SomethingWentWrong";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 import { changeFavicon } from "../../utils";
@@ -20,6 +21,7 @@ function FormsRoute() {
 
       <Switch>
         <PrivateRoute path={`${path}`} exact component={Home}></PrivateRoute>
+        <Route path={`${path}/error`} component={SomethingWentWrong}></Route>
         <PrivateRoute path={`${path}/:id`} component={Room}></PrivateRoute>
       </Switch>
     </>

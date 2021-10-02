@@ -90,7 +90,14 @@ io.of("/submits").on("connection", (socket) => {
 
 let meetRooms = {};
 io.of("/meet").on("connection", (socket) => {
-  socket.on("join-room", (roomId, peerId, username) => {
+  socket.on("join-room", (roomId, peerId, username, userId, sendResponse) => {
+    if (meetRooms[roomId] && meetRooms[roomId].find((e) => e.userId === userId)) {
+      sendResponse(false);
+      return;
+    } else {
+      sendResponse(true);
+    }
+
     socket.join(roomId);
 
     if (!meetRooms[roomId]) meetRooms[roomId] = [];
@@ -98,13 +105,35 @@ io.of("/meet").on("connection", (socket) => {
     meetRooms[roomId].push({
       id: peerId,
       username,
+      userId,
+      camera: true,
+      microphone: true,
     });
 
     io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
 
     socket.broadcast.to(roomId).emit("new-connection", peerId);
 
+    socket.on("toggle-camera", () => {
+      if (meetRooms[roomId]) {
+        meetRooms[roomId].find((i) => i.id === peerId).camera = !meetRooms[roomId].find((i) => i.id === peerId).camera;
+        io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
+      }
+    });
+    socket.on("toggle-microphone", () => {
+      if (meetRooms[roomId]) {
+        meetRooms[roomId].find((i) => i.id === peerId).microphone = !meetRooms[roomId].find((i) => i.id === peerId).microphone;
+        io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
+      }
+    });
+
     socket.on("disconnect", () => {
+      if (meetRooms[roomId]) {
+        meetRooms[roomId] = meetRooms[roomId].filter((e) => e.id !== peerId);
+      }
+      if (roomId === userId) {
+        delete meetRooms[roomId];
+      }
       socket.broadcast.to(roomId).emit("user-disconnected", peerId);
     });
   });

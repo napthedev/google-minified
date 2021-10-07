@@ -91,6 +91,10 @@ io.of("/submits").on("connection", (socket) => {
 let meetRooms = {};
 io.of("/meet").on("connection", (socket) => {
   socket.on("join-room", (roomId, peerId, username, userId, sendResponse) => {
+    if (!meetRooms[roomId] && roomId !== userId) {
+      sendResponse(false);
+      return;
+    }
     if (meetRooms[roomId] && meetRooms[roomId].find((e) => e.userId === userId)) {
       sendResponse(false);
       return;

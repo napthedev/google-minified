@@ -121,7 +121,7 @@ module.exports = (username, url) => `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.
                                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                   <tr>
                                     <td style="padding-right: 0px; padding-left: 0px" align="center">
-                                      <img align="center" border="0" src="https://i.imgur.com/UcOrFtl.png" alt="" title="" style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 64px" width="64" />
+                                      <img align="center" border="0" src="https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png" alt="" title="" style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; display: inline-block !important; border: none; height: auto; float: none; width: 100%; max-width: 64px" width="64" />
                                     </td>
                                   </tr>
                                 </table>

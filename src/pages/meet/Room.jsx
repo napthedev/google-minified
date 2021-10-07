@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { Button } from "@material-ui/core";
-import { Mic, MicOff, Videocam, VideocamOff } from "@material-ui/icons";
+import { Button, Dialog, TextField, Tooltip } from "@material-ui/core";
+import { Mic, MicOff, Videocam, VideocamOff, Share } from "@material-ui/icons";
 import VideoStream from "./VideoStream";
 import Peer from "peerjs";
 import { io } from "socket.io-client";
@@ -17,6 +17,7 @@ function Room() {
   const [peer, setPeer] = useState();
   const [metadata, setMetadata] = useState([]);
   const [peerId, setPeerId] = useState("");
+  const [dialogOpened, setDialogOpened] = useState(false);
 
   const history = useHistory();
 
@@ -108,13 +109,35 @@ function Room() {
           ))}
       </div>
       <div className="room-control">
-        <Button onClick={() => socket?.emit("toggle-microphone")} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color={metadata?.find((i) => i.id === peerId)?.microphone ? "primary" : "secondary"}>
-          {metadata?.find((i) => i.id === peerId)?.microphone ? <Mic /> : <MicOff />}
-        </Button>
-        <Button onClick={() => socket?.emit("toggle-camera")} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color={metadata?.find((i) => i.id === peerId)?.camera ? "primary" : "secondary"}>
-          {metadata?.find((i) => i.id === peerId)?.camera ? <Videocam /> : <VideocamOff />}
-        </Button>
+        <Tooltip title="Toggle Microphone" placement="top">
+          <Button onClick={() => socket?.emit("toggle-microphone")} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color={metadata?.find((i) => i.id === peerId)?.microphone ? "primary" : "secondary"}>
+            {metadata?.find((i) => i.id === peerId)?.microphone ? <Mic /> : <MicOff />}
+          </Button>
+        </Tooltip>
+        <Tooltip title="Toggle Camera" placement="top">
+          <Button onClick={() => socket?.emit("toggle-camera")} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color={metadata?.find((i) => i.id === peerId)?.camera ? "primary" : "secondary"}>
+            {metadata?.find((i) => i.id === peerId)?.camera ? <Videocam /> : <VideocamOff />}
+          </Button>
+        </Tooltip>
+        <Tooltip title="Invite people" placement="top">
+          <Button onClick={() => setDialogOpened(true)} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color="primary">
+            <Share />
+          </Button>
+        </Tooltip>
       </div>
+      <Dialog open={dialogOpened} onClose={() => setDialogOpened(false)}>
+        <div style={{ width: "100vw", maxWidth: 350, padding: 30 }}>
+          <div style={{ width: "100%", paddingBottom: 30 }}>
+            <TextField style={{ width: "100%" }} label="Room ID" value={roomId} onFocus={(e) => e.target.select()} />
+          </div>
+          <div style={{ width: "100%", paddingBottom: 30 }}>
+            <TextField style={{ width: "100%" }} label="URL" value={window.location.href} onFocus={(e) => e.target.select()} />
+          </div>
+          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <img style={{ maxWidth: "100%", height: "auto" }} src={`https://qrtag.net/api/qr_5.png?url=${encodeURIComponent(window.location.href)}`} alt="QR Code" />
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }

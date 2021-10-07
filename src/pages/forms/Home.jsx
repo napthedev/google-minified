@@ -34,7 +34,7 @@ function FormsHome() {
   return (
     <>
       {!loading ? (
-        <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://i.imgur.com/2gWPRjt.png" deleteItem={deleteForm} createRoute="/forms/create" />
+        <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://ik.imagekit.io/nap/google-minified/formThumbnail_fZuXg65OK2t.png" deleteItem={deleteForm} createRoute="/forms/create" />
       ) : (
         <div className="center-container">
           <CircularProgress />

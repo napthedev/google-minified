@@ -17,7 +17,7 @@ function Landing() {
   const { width } = useInnerWidth();
 
   useEffect(() => {
-    changeFavicon("https://i.imgur.com/UcOrFtl.png");
+    changeFavicon("https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png");
     document.title = "Google Minified";
     AOS.init();
   }, []);

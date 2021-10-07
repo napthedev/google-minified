@@ -34,7 +34,7 @@ function DocsHome() {
   return (
     <>
       {!loading ? (
-        <HomeGrid allData={allDocs} pushRoute="/docs/" name="document" thumbnail="https://i.imgur.com/sWtk35J.png" deleteItem={deleteDocument} createRoute="/docs/create" />
+        <HomeGrid allData={allDocs} pushRoute="/docs/" name="document" thumbnail="https://ik.imagekit.io/nap/google-minified/docsThumbnail_OnDoMkkHm.png" deleteItem={deleteDocument} createRoute="/docs/create" />
       ) : (
         <div className="center-container">
           <CircularProgress />

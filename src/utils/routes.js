@@ -20,7 +20,7 @@ export const routes = [
   {
     name: "Drive",
     route: "/drive",
-    icon: "https://i.imgur.com/Cr3oZGy.png",
+    icon: "https://ik.imagekit.io/nap/google-minified/drive_xRQi3Hx-g.png",
     component: Drive,
     animation: driveAnimation,
     description: "Easy and secure access to all of your content",
@@ -28,7 +28,7 @@ export const routes = [
   {
     name: "Forms",
     route: "/forms",
-    icon: "https://i.imgur.com/9Tf9BJU.png",
+    icon: "https://ik.imagekit.io/nap/google-minified/formIcon_NSFb0C99B.png",
     component: Forms,
     animation: formsAnimation,
     description: "Create beautiful forms for your survey",
@@ -36,7 +36,7 @@ export const routes = [
   {
     name: "Translate",
     route: "/translate",
-    icon: "https://i.imgur.com/PAS1jhL.png",
+    icon: "https://ik.imagekit.io/nap/google-minified/translate_S5bjpn-iI.png",
     component: Translate,
     animation: translateAnimation,
     description: "Translate your document with auto language detection",
@@ -44,7 +44,7 @@ export const routes = [
   {
     name: "Maps",
     route: "/maps",
-    icon: "https://i.imgur.com/bAnlNcp.png",
+    icon: "https://ik.imagekit.io/nap/google-minified/maps_FMlsCpLMOFQ.png",
     component: Maps,
     animation: mapsAnimation,
     description: "Explore and navigate your world through the map",
@@ -52,7 +52,7 @@ export const routes = [
   {
     name: "Docs",
     route: "/docs",
-    icon: "https://i.imgur.com/6oRhxKL.png",
+    icon: "https://ik.imagekit.io/nap/google-minified/docs_2v0Q7HcoG.png",
     component: Docs,
     animation: docsAnimation,
     description: "Free online document with realtime update",
@@ -60,7 +60,7 @@ export const routes = [
   {
     name: "Sheets",
     route: "/sheets",
-    icon: "https://i.imgur.com/aHZnES8.png",
+    icon: "https://ik.imagekit.io/nap/google-minified/sheets_njzi7c6AW.png",
     component: Sheets,
     animation: sheetsAnimation,
     description: "Online spreadsheet to store your data",
@@ -68,7 +68,7 @@ export const routes = [
   {
     name: "Meet",
     route: "/meet",
-    icon: "https://i.imgur.com/JmjLQvm.png",
+    icon: "https://ik.imagekit.io/nap/google-minified/meet_OQJV-JkCW.png",
     component: Meet,
     animation: meetAnimation,
     description: "Join your classes, meeting from anywhere",

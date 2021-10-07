@@ -14,7 +14,7 @@ function useQuery() {
 
 function SignIn() {
   useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://i.imgur.com/UcOrFtl.png";
+    document.querySelector("link[rel='shortcut icon']").href = "https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png";
     document.title = "Sign In - Google Minified";
   }, []);
 

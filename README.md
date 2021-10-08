@@ -1,6 +1,12 @@
 # Google Minified by NAPTheDev
 ### Visit at: [https://googlemin.tk/](https://googlemin.tk/)
 
+## Screenshot
+<p align="center">
+
+![Screenshot](https://screenshotapi-dot-net.storage.googleapis.com/googlemin_tk_d9036204f5da.png)
+</p>
+
 ### 7 Google Apps in one place
 - Google Drive Minified
 - Google Forms Minified

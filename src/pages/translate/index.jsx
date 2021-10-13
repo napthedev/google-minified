@@ -60,46 +60,48 @@ function TranslateRoute() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(async () => {
-    localStorage.setItem("languageFrom", languageFrom);
-    localStorage.setItem("languageTo", languageTo);
+  useEffect(() => {
+    (async () => {
+      localStorage.setItem("languageFrom", languageFrom);
+      localStorage.setItem("languageTo", languageTo);
 
-    if (valueDidUpdate.current) {
-      if (timeOutRef.current) clearTimeout(timeOutRef.current);
+      if (valueDidUpdate.current) {
+        if (timeOutRef.current) clearTimeout(timeOutRef.current);
 
-      if (!inputValue.trim()) {
-        setData("");
-        return;
-      }
-
-      setData(null);
-
-      timeOutRef.current = setTimeout(() => {
         if (!inputValue.trim()) {
           setData("");
           return;
         }
 
-        fetch("https://libretranslate.de/translate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            q: inputValue.trim(),
-            source: languageFrom,
-            target: languageTo,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (inputValue.trim()) setData(data.translatedText);
-          })
-          .catch((err) => {
-            console.log(err);
+        setData(null);
+
+        timeOutRef.current = setTimeout(() => {
+          if (!inputValue.trim()) {
             setData("");
-          });
-      }, 500);
-    }
-    valueDidUpdate.current = true;
+            return;
+          }
+
+          fetch("https://libretranslate.de/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              q: inputValue.trim(),
+              source: languageFrom,
+              target: languageTo,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (inputValue.trim()) setData(data.translatedText);
+            })
+            .catch((err) => {
+              console.log(err);
+              setData("");
+            });
+        }, 500);
+      }
+      valueDidUpdate.current = true;
+    })();
   }, [languageFrom, languageTo, inputValue]);
 
   return (

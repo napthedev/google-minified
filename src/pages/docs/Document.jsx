@@ -39,11 +39,8 @@ function Document() {
   }, []);
 
   useEffect(() => {
-    if (status === 200) {
-      const interval = setInterval(() => axios.patch("docs", { _id: id, data: editorValue }), 400);
-      return () => clearInterval(interval);
-    }
-  }, [status]);
+    if (permission) axios.patch("docs", { _id: id, data: editorValue });
+  }, [editorValue, id, permission]);
 
   useEffect(() => {
     axios

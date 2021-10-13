@@ -40,42 +40,44 @@ function Files() {
     url: "",
   });
 
-  useEffect(async () => {
-    axios
-      .post("drive/file-info", { _id: id })
-      .then(async (res) => {
-        document.title = res.data.name + " - File - Google Drive Minified";
+  useEffect(() => {
+    (async () => {
+      axios
+        .post("drive/file-info", { _id: id })
+        .then(async (res) => {
+          document.title = res.data.name + " - File - Google Drive Minified";
 
-        if (res.data.type.startsWith("text")) {
-          const textData = await axios.get(res.data.url);
-          setData(textData.data);
-          setType("text");
-        } else if (res.data.type.startsWith("audio")) {
-          setType("audio");
-          setData(res.data.url);
-        } else if (res.data.type.startsWith("video")) {
-          setData(res.data.url);
-          setType("video");
-        } else if (res.data.type.startsWith("image")) {
-          setData(res.data.url);
-          setType("image");
-        } else if (res.data.type === "application/pdf") {
-          setData(res.data.url);
-          setType("pdf");
-        } else {
-          setType("unknown");
-        }
-        setFile({
-          name: res.data.name,
-          url: res.data.url,
+          if (res.data.type.startsWith("text")) {
+            const textData = await axios.get(res.data.url);
+            setData(textData.data);
+            setType("text");
+          } else if (res.data.type.startsWith("audio")) {
+            setType("audio");
+            setData(res.data.url);
+          } else if (res.data.type.startsWith("video")) {
+            setData(res.data.url);
+            setType("video");
+          } else if (res.data.type.startsWith("image")) {
+            setData(res.data.url);
+            setType("image");
+          } else if (res.data.type === "application/pdf") {
+            setData(res.data.url);
+            setType("pdf");
+          } else {
+            setType("unknown");
+          }
+          setFile({
+            name: res.data.name,
+            url: res.data.url,
+          });
+          setView(200);
+        })
+        .catch((err) => {
+          console.log(err, err.response);
+          setView(err.response?.status ? err.response?.status : false);
         });
-        setView(200);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-        setView(err.response?.status ? err.response?.status : false);
-      });
-  }, []);
+    })();
+  }, [id]);
 
   const downloadFile = () => {
     anchorDownloadFile(file.url + "?dl=1");
@@ -94,7 +96,7 @@ function Files() {
                   </IconButton>
                 </Tooltip>
               )}
-              <img style={{ height: 30, width: "auto", padding: "0 20px 0 10px" }} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${file.name.split(".")[file.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+              <img style={{ height: 30, width: "auto", padding: "0 20px 0 10px" }} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${file.name.split(".")[file.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" alt="" />
               <p style={{ maxWidth: Boolean(Number(back)) ? "calc(100vw - 230px)" : "calc(100vw - 180px)" }}>{file.name}</p>
             </div>
             <div style={{ display: "flex", alignItems: "center", marginRight: 10 }}>
@@ -127,11 +129,11 @@ function Files() {
               </div>
             ) : type === "image" ? (
               <div className="center-container" style={{ flex: "1" }}>
-                <img className="responsive-image" src={data} />
+                <img className="responsive-image" src={data} alt="" />
               </div>
             ) : type === "pdf" ? (
               <div style={{ display: "flex", flexDirection: "column", height: "100%", alignItems: "center" }}>
-                <iframe frameBorder={0} style={{ maxWidth: 600, width: "100%", height: "100%", flexGrow: 1 }} src={data + "#toolbar=0"} />
+                <iframe frameBorder={0} title="PDF File" style={{ maxWidth: 600, width: "100%", height: "100%", flexGrow: 1 }} src={data + "#toolbar=0"} />
               </div>
             ) : (
               <div className="center-container">

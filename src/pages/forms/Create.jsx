@@ -6,20 +6,18 @@ import { useHistory } from "react-router-dom";
 function CreateForm() {
   const history = useHistory();
 
-  const createForm = async () => {
-    await axios
-      .get("forms/create")
-      .then((res) => {
-        history.push("/forms/edit/" + res.data._id);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-      });
-  };
-
   useEffect(() => {
-    createForm();
-  }, []);
+    (async () => {
+      await axios
+        .get("forms/create")
+        .then((res) => {
+          history.push("/forms/edit/" + res.data._id);
+        })
+        .catch((err) => {
+          console.log(err, err.response);
+        });
+    })();
+  }, [history]);
 
   return (
     <div className="center-container">

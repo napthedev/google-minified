@@ -23,12 +23,6 @@ function Response() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getFormData();
-  }, []);
-
-  useEffect(() => (document.title = title + (title ? " - " : "") + "Response - Google Forms Minified"), [title]);
-
-  const getFormData = () => {
     axios
       .post("forms/form-response", { _id: id })
       .then((res) => {
@@ -43,7 +37,9 @@ function Response() {
         setView("404");
         setLoading(false);
       });
-  };
+  }, [id]);
+
+  useEffect(() => (document.title = title + (title ? " - " : "") + "Response - Google Forms Minified"), [title]);
 
   const updateTextField = (id, value) => {
     let clone = [...data];
@@ -88,7 +84,7 @@ function Response() {
   const validateForm = () => {
     var valid = true;
 
-    data.map((e) => {
+    data.forEach((e) => {
       if (e.type === "text" || e.type === "date" || e.type === "time") {
         if (!e.value.answer) {
           valid = false;
@@ -153,6 +149,7 @@ function Response() {
                     } else if (e.type === "time") {
                       return <TimeResponse classes={e.classes} key={e.id} id={e.id} value={e.value} handleDateTimeChange={handleDateTimeChange} />;
                     }
+                    return <></>;
                   })}
                   <div className="submit-button-container">
                     <Button type="submit" variant="contained" color="primary" disabled={data.length === 0}>

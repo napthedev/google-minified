@@ -1,4 +1,4 @@
-import { Button, Card, CardActionArea, CardMedia, CardContent, Typography, Tooltip, CircularProgress, Backdrop } from "@material-ui/core";
+import { Button, Card, CardActionArea, CardMedia, CardContent, Typography, Tooltip, CircularProgress } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 

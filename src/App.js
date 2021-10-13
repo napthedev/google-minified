@@ -47,7 +47,7 @@ function App() {
     let cookieEnabled = navigator.cookieEnabled;
     if (!cookieEnabled) {
       document.cookie = "cookieCheck=test;";
-      cookieEnabled = document.cookie.indexOf("test") != -1;
+      cookieEnabled = document.cookie.indexOf("test") !== -1;
     }
 
     if (!cookieEnabled) {

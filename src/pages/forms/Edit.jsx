@@ -27,21 +27,22 @@ function Edit() {
 
   const [speedDialOpened, setSpeedDialOpened] = useState(false);
 
-  const [socket, setSocket] = useState();
   const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => (document.title = title + (title ? " - " : "") + "Editing - Google Forms Minified"), [title]);
 
   useEffect(() => {
-    socket?.disconnect();
-    let mySocket = io(process.env.REACT_APP_SERVER_URL + "submits");
-    mySocket.emit("join-room", _id);
-    mySocket.on("new-data", (data) => {
+    getPreviousFormData();
+    getSubmits();
+
+    const socket = io(process.env.REACT_APP_SERVER_URL + "submits");
+    socket.emit("join-room", _id);
+    socket.on("new-data", () => {
       getSubmits();
     });
 
-    setSocket(mySocket);
-  }, []);
+    return () => socket.disconnect();
+  }, [_id]);
 
   const formTimeout = useRef(null);
   const formUpdated = useRef(false);
@@ -60,11 +61,6 @@ function Edit() {
       postFormData(title, description, data);
     }, 400);
   }, [data, title, description]);
-
-  useEffect(() => {
-    getPreviousFormData();
-    getSubmits();
-  }, []);
 
   return (
     <>
@@ -123,6 +119,7 @@ function Edit() {
                         } else if (e.type === "time") {
                           return <TimeEdit key={e.id} id={e.id} value={e.value} updateTextField={updateTextField} removeBox={removeBox} />;
                         }
+                        return <></>;
                       })}
                       <SpeedDial className="add-box-button" ariaLabel="Add box" icon={<SpeedDialIcon />} onClose={() => setSpeedDialOpened(false)} onOpen={() => setSpeedDialOpened(true)} open={speedDialOpened}>
                         <SpeedDialAction icon={<Description />} tooltipTitle="Text input" onClick={() => addBox("text")} />

@@ -34,7 +34,7 @@ function Navbar(props) {
     <AppBar position="static" color="transparent" elevation={location.pathname.startsWith("/forms/edit") ? 0 : 1}>
       <Toolbar>
         <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => history.push(routes.find((e) => e.name === name).route)}>
-          <img height={30} src={routes.find((e) => e.name === name).icon} />
+          <img height={30} src={routes.find((e) => e.name === name).icon} alt="" />
         </IconButton>
         <div style={{ flexGrow: 1 }}>
           <Typography variant="h6" style={{ cursor: "pointer", display: "inline" }} onClick={() => history.push(routes.find((e) => e.name === name).route)}>
@@ -44,7 +44,7 @@ function Navbar(props) {
         {currentUser ? (
           <>
             <IconButton style={{ padding: 0 }} onClick={(e) => setUserMenuOpened(e.currentTarget)}>
-              <img style={{ borderRadius: 50 }} height="40" src={currentUser.avatar} />
+              <img style={{ borderRadius: 50 }} height="40" src={currentUser.avatar} alt="" />
             </IconButton>
             <Menu id="profile-menu" anchorEl={userMenuOpened} keepMounted open={Boolean(userMenuOpened)} onClose={() => setUserMenuOpened(null)}>
               <MenuItem onClick={() => setUserMenuOpened(null)}>
@@ -81,7 +81,7 @@ function Navbar(props) {
                         history.push(e.route);
                       }}
                     >
-                      <img height="17" src={e.icon} />
+                      <img height="17" src={e.icon} alt="" />
                       {e.name}
                     </MenuItem>
                   )

@@ -18,44 +18,42 @@ function Folder({ uploadFile }) {
   let { id: currentFolderId } = useParams();
   currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
 
-  useEffect(async () => {
-    currentFolderIdRef.current = currentFolderId;
-    if (!currentFolderId) document.title = "My Drive - Google Drive Minified";
+  useEffect(() => {
+    (async () => {
+      currentFolderIdRef.current = currentFolderId;
+      if (!currentFolderId) document.title = "My Drive - Google Drive Minified";
 
-    socket?.disconnect();
+      let socket = io(process.env.REACT_APP_SERVER_URL + "drive");
+      socket.emit("join-room", currentFolderIdRef.current || currentUser.id);
 
-    let mySocket = io(process.env.REACT_APP_SERVER_URL + "drive");
-    mySocket.emit("join-room", currentFolderIdRef.current || currentUser.id);
+      socket.on("new-data", (data) => {
+        fetchFolderData();
+      });
 
-    mySocket.on("new-data", (data) => {
-      fetchFolderData();
-    });
+      setNotFound(false);
+      setLoading(true);
+      await fetchFolderData();
+      setLoading(false);
 
-    setSocket(mySocket);
+      document.onclick = (e) => {
+        let clickedOutside = true;
 
-    setNotFound(false);
-    setLoading(true);
-    await fetchFolderData();
-    setLoading(false);
+        let foldersEl = Array.prototype.slice.call(document.getElementsByClassName("folder-box"));
+        let filesEl = Array.prototype.slice.call(document.getElementsByClassName("file-box"));
+        let allEl = foldersEl.concat(filesEl);
 
-    document.onclick = (e) => {
-      let clickedOutside = true;
-
-      let foldersEl = Array.prototype.slice.call(document.getElementsByClassName("folder-box"));
-      let filesEl = Array.prototype.slice.call(document.getElementsByClassName("file-box"));
-      let allEl = foldersEl.concat(filesEl);
-
-      for (const el of allEl) {
-        if (el.contains(e.target)) {
-          clickedOutside = false;
+        for (const el of allEl) {
+          if (el.contains(e.target)) {
+            clickedOutside = false;
+          }
         }
-      }
 
-      if (clickedOutside) setSelected([]);
-    };
+        if (clickedOutside) setSelected([]);
+      };
 
-    return () => socket?.disconnect();
-  }, [currentFolderId]);
+      return () => socket.disconnect();
+    })();
+  }, [currentFolderId, currentUser]);
 
   const currentFolderIdRef = useRef();
 
@@ -77,8 +75,6 @@ function Folder({ uploadFile }) {
   const [notFound, setNotFound] = useState(false);
 
   const [fileDragging, setFileDragging] = useState(false);
-
-  const [socket, setSocket] = useState();
 
   const fetchFolderData = async () => {
     if (currentFolderIdRef.current !== null) {
@@ -242,7 +238,7 @@ function Folder({ uploadFile }) {
         <div className="main">
           <div className="actions-wrapper">
             <Breadcrumbs>
-              {permission !== false ? <Link to="/drive">My Drive</Link> : <a href="#">Shared with me</a>}
+              {permission !== false ? <Link to="/drive">My Drive</Link> : <span>Shared with me</span>}
 
               {breadcrumb.map((e, index) => (
                 <Link key={index} to={e._id}>
@@ -327,7 +323,7 @@ function Folder({ uploadFile }) {
                       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
                         <div className="center-div" style={{ flexGrow: 1 }}>
                           <div className="center-div" style={{ height: "40%" }}>
-                            <img draggable={false} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                            <img draggable={false} alt="" onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
                           </div>
                         </div>
                         <div className="file-box-label">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { HotTable } from "@handsontable/react";
@@ -39,13 +39,8 @@ function Sheet() {
   }, []);
 
   useEffect(() => {
-    if (status === 200) {
-      const interval = setInterval(() => {
-        if (permission) axios.patch("sheets", { _id: id, data: JSON.stringify(hotData) });
-      }, 400);
-      return () => clearInterval(interval);
-    }
-  }, [status, permission]);
+    if (permission) axios.patch("sheets", { _id: id, data: JSON.stringify(hotData) });
+  }, [hotData, permission, id]);
 
   useEffect(() => {
     axios

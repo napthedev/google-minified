@@ -64,6 +64,8 @@ function SubmitsSummary({ allSubmits }) {
                     </ListItem>
                   );
                 }
+
+                return <></>;
               })}
             </List>
           </AccordionDetails>

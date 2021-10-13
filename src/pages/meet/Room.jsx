@@ -14,7 +14,6 @@ function Room() {
 
   const [videos, setVideos] = useState([]);
   const [socket, setSocket] = useState();
-  const [peer, setPeer] = useState();
   const [metadata, setMetadata] = useState([]);
   const [peerId, setPeerId] = useState("");
   const [dialogOpened, setDialogOpened] = useState(false);
@@ -23,10 +22,9 @@ function Room() {
 
   useEffect(() => {
     const mySocket = io(process.env.REACT_APP_SERVER_URL + "meet");
-    const myPeer = new Peer();
+    const peer = new Peer();
 
     setSocket(mySocket);
-    setPeer(myPeer);
 
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
@@ -42,7 +40,7 @@ function Room() {
           ]);
 
           mySocket.on("new-connection", (data) => {
-            let call = myPeer.call(data, stream);
+            let call = peer.call(data, stream);
             call.on("stream", (remoteStream) => {
               setVideos((prev) => {
                 if (prev.find((e) => e.id === call.peer)) return prev;
@@ -58,7 +56,7 @@ function Room() {
             });
           });
 
-          myPeer.on("call", (call) => {
+          peer.on("call", (call) => {
             call.answer(stream);
             call.on("stream", (remoteStream) => {
               setVideos((prev) => {
@@ -75,7 +73,7 @@ function Room() {
             });
           });
 
-          myPeer.on("open", (id) => {
+          peer.on("open", (id) => {
             setPeerId(id);
             mySocket.emit("join-room", roomId, id, currentUser.username, currentUser.id, (response) => {
               if (!response) history.push("/meet/error");
@@ -95,9 +93,9 @@ function Room() {
 
     return () => {
       mySocket.disconnect();
-      myPeer.disconnect();
+      peer.disconnect();
     };
-  }, []);
+  }, [currentUser, history, roomId]);
 
   return (
     <>

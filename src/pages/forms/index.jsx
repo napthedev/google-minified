@@ -1,7 +1,5 @@
 import { useRouteMatch, Route, Switch } from "react-router-dom";
 
-import { useEffect } from "react";
-
 import Home from "./Home";
 import Edit from "./Edit";
 import Response from "./Response";

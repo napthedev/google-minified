@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { TextField, Link } from "@material-ui/core";
 import { userContext } from "../App";

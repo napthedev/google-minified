@@ -1,5 +1,4 @@
 import { useRouteMatch, Route, Switch } from "react-router-dom";
-import { useEffect } from "react";
 import Home from "./Home";
 import Room from "./Room";
 import SomethingWentWrong from "./SomethingWentWrong";

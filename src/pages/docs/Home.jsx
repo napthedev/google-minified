@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import HomeGrid from "../../components/HomeGrid";

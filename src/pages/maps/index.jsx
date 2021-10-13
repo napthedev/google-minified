@@ -7,7 +7,7 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { createTheme } from "@material-ui/core/styles";
 import { ThemeProvider, CssBaseline } from "@material-ui/core";
 
-import { routes } from "../../utils/routes";
+import { routes } from "../../shared/routes";
 
 import Title from "../../components/Title";
 import Favicon from "../../components/Favicon";

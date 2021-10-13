@@ -6,7 +6,7 @@ import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
 import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
 import Navbar from "../../components/Navbar";
-import { routes } from "../../utils/routes";
+import { routes } from "../../shared/routes";
 
 import Title from "../../components/Title";
 import Favicon from "../../components/Favicon";

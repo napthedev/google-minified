@@ -5,7 +5,7 @@ import { IconButton, Menu, MenuItem, Divider, AppBar, Toolbar, Typography } from
 import { Person, ExitToApp, Home, AccountCircle, VpnKey, AssignmentReturn } from "@material-ui/icons";
 import axios from "axios";
 
-import { routes } from "../utils/routes";
+import { routes } from "../shared/routes";
 
 function Navbar(props) {
   const { name } = props;

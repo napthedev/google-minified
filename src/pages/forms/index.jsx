@@ -8,7 +8,7 @@ import Create from "./Create";
 import NotFound from "../../components/NotFound";
 
 import Navbar from "../../components/Navbar";
-import { routes } from "../../utils/routes";
+import { routes } from "../../shared/routes";
 
 import PrivateRoute from "../../components/PrivateRoute";
 import Favicon from "../../components/Favicon";

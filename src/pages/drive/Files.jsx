@@ -15,7 +15,7 @@ import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
 import "../../css/vs.min.css";
 
-import { anchorDownloadFile } from "../../utils";
+import { anchorDownloadFile } from "../../shared/utils";
 
 import Title from "../../components/Title";
 

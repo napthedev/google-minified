@@ -5,7 +5,7 @@ import Document from "./Document";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 import Create from "./Create";
-import { routes } from "../../utils/routes";
+import { routes } from "../../shared/routes";
 import Favicon from "../../components/Favicon";
 
 function FormsRoute() {

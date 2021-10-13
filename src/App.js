@@ -9,7 +9,7 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import NotFound from "./components/NotFound";
 import Cookie from "./components/Cookie";
 
-import { routes } from "./utils/routes";
+import { routes } from "./shared/routes";
 
 const SignUp = lazy(() => import("./components/SignUp"));
 const SignIn = lazy(() => import("./components/SignIn"));

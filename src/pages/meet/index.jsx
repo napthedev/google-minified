@@ -4,7 +4,7 @@ import Room from "./Room";
 import SomethingWentWrong from "./SomethingWentWrong";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
-import { routes } from "../../utils/routes";
+import { routes } from "../../shared/routes";
 import Favicon from "../../components/Favicon";
 
 function MeetRoute() {

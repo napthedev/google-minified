@@ -11,7 +11,7 @@ import Files from "./Files";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 
-import { routes } from "../../utils/routes";
+import { routes } from "../../shared/routes";
 
 import napid from "napid";
 import Favicon from "../../components/Favicon";

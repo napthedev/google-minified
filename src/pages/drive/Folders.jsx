@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 
 import { userContext } from "../../App";
 import NotFound from "../../components/NotFound";
-import { anchorDownloadFile } from "../../utils";
+import { anchorDownloadFile } from "../../shared/utils";
 import FileInput from "./FileInput";
 import CreateNewFolder from "./CreateNewFolder";
 import RenameDialog from "./RenameDialog";

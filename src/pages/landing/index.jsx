@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { userContext } from "../../App";
 import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { routes } from "../../utils/routes";
+import { routes } from "../../shared/routes";
 import Section from "./Section";
 import backgroundDark from "./backgroundDark.svg";
 import backgroundLight from "./backgroundLight.svg";

@@ -19,6 +19,10 @@ const filesSchema = new mongoose.Schema({
   type: {
     type: String,
   },
+  url: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("files", filesSchema);

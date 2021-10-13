@@ -26,7 +26,7 @@ function Folder({ uploadFile }) {
       let socket = io(process.env.REACT_APP_SERVER_URL + "drive");
       socket.emit("join-room", currentFolderIdRef.current || currentUser.id);
 
-      socket.on("new-data", (data) => {
+      socket.on("new-data", () => {
         fetchFolderData();
       });
 
@@ -35,7 +35,7 @@ function Folder({ uploadFile }) {
       await fetchFolderData();
       setLoading(false);
 
-      document.onclick = (e) => {
+      const clickHandler = (e) => {
         let clickedOutside = true;
 
         let foldersEl = Array.prototype.slice.call(document.getElementsByClassName("folder-box"));
@@ -50,8 +50,12 @@ function Folder({ uploadFile }) {
 
         if (clickedOutside) setSelected([]);
       };
+      window.addEventListener("click", clickHandler);
 
-      return () => socket.disconnect();
+      return () => {
+        socket.disconnect();
+        window.removeEventListener("click", clickHandler);
+      };
     })();
   }, [currentFolderId, currentUser]);
 
@@ -197,7 +201,7 @@ function Folder({ uploadFile }) {
 
   return (
     <>
-      <Title title={currentFolderId ? `${breadcrumb.slice(-1)[0].name} - Folder - Google Drive Minified` : "My Drive - Google Drive Minified"} />
+      <Title title={currentFolderId ? `${breadcrumb.length > 0 ? breadcrumb.slice(-1)[0].name : ""} - Folder - Google Drive Minified` : "My Drive - Google Drive Minified"} />
       <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
         {(permission || typeof permission === "undefined") && !notFound && (
           <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>

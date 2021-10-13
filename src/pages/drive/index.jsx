@@ -1,6 +1,6 @@
 import { useLocation, useRouteMatch, Route, Switch } from "react-router-dom";
 import { Typography, Box, CircularProgress } from "@material-ui/core";
-import { Close, Done } from "@material-ui/icons";
+import { Close, Done, Error as ErrorIcon } from "@material-ui/icons";
 import axios from "axios";
 
 import { useEffect, useState } from "react";
@@ -53,7 +53,6 @@ function DriveRoute() {
     let formData = new FormData();
     let id = napid();
     formData.append("file", file);
-    formData.append("path", JSON.stringify(path));
 
     setFilesUploading((prevFilesUploading) => [
       ...prevFilesUploading,
@@ -61,11 +60,12 @@ function DriveRoute() {
         id,
         name: file.name,
         percentage: 0,
+        isError: false,
       },
     ]);
 
     axios
-      .post(process.env.REACT_APP_SERVER_URL + "drive/upload", formData, {
+      .post(process.env.REACT_APP_UPLOAD_SERVER + "upload", formData, {
         onUploadProgress: (progress) => {
           let percentage = Math.round((progress.loaded / progress.total) * 100);
 
@@ -77,8 +77,24 @@ function DriveRoute() {
           });
         },
       })
+      .then(async (res) => {
+        console.log(file);
+        console.log(res);
+        await axios.post("/drive/upload", {
+          name: file.name,
+          path: JSON.stringify(path),
+          type: file.type,
+          url: res.data.url,
+        });
+      })
       .catch((err) => {
         console.log(err);
+        setFilesUploading((prevFilesUploading) => {
+          let clone = [...prevFilesUploading];
+          let child = clone.find((e) => e.id === id);
+          child.isError = true;
+          return clone;
+        });
       });
   };
 
@@ -97,7 +113,7 @@ function DriveRoute() {
             {filesUploading.map((e) => (
               <div className="upload-progress-row" key={e.id}>
                 <p>{e.name}</p>
-                <CircularProgressWithLabel value={e.percentage} />
+                {e.isError ? <ErrorIcon color="secondary" /> : <CircularProgressWithLabel value={e.percentage} />}
               </div>
             ))}
           </div>

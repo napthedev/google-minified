@@ -47,9 +47,9 @@ function Files() {
       axios
         .post("drive/file-info", { _id: id })
         .then(async (res) => {
-          if (res.data.type.startsWith("text")) {
-            const textData = await axios.get(res.data.url);
-            setData(textData.data);
+          if (res.data.type.startsWith("text") || res.data.type === "application/json") {
+            const textData = (await axios.get(res.data.url)).data;
+            setData(typeof textData === "string" ? textData : JSON.stringify(textData, null, 4));
             setType("text");
           } else if (res.data.type.startsWith("audio")) {
             setType("audio");

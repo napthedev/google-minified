@@ -7,16 +7,14 @@ import axios from "axios";
 import Particles from "./Particles";
 import CircularIntegration from "./CircularIntegration";
 
+import Title from "../components/Title";
+import Favicon from "../components/Favicon";
+
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 function SignUp() {
-  useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png";
-    document.title = "Sign Up - Google Minified";
-  }, []);
-
   const query = useQuery();
   const redirect = query.get("redirect");
 
@@ -99,6 +97,8 @@ function SignUp() {
 
   return (
     <>
+      <Favicon icon="https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png" />
+      <Title title="Sign Up - Google Minified" />
       {!currentUser ? (
         <>
           <Particles />

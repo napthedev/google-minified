@@ -7,14 +7,11 @@ import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 
 import Navbar from "../../components/Navbar";
 import { routes } from "../../utils/routes";
-import { changeFavicon } from "../../utils";
+
+import Title from "../../components/Title";
+import Favicon from "../../components/Favicon";
 
 function TranslateRoute() {
-  useEffect(() => {
-    changeFavicon(routes.find((e) => e.name === "Translate").icon);
-    document.title = "Google Translate Minified";
-  }, []);
-
   const [languageFrom, setLanguageFrom] = useState(localStorage.getItem("languageFrom") ? localStorage.getItem("languageFrom") : "en");
   const [languageTo, setLanguageTo] = useState(localStorage.getItem("languageTo") ? localStorage.getItem("languageTo") : "vi");
   const [inputValue, setInputValue] = useState("");
@@ -106,6 +103,8 @@ function TranslateRoute() {
 
   return (
     <>
+      <Title title="Google Translate Minified" />
+      <Favicon icon={routes.find((e) => e.name === "Translate").icon} />
       <Navbar name="Translate" />
 
       {languages.length > 0 ? (

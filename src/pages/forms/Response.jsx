@@ -10,6 +10,7 @@ import DateResponse from "./ResponsePage/DateResponse";
 import TimeResponse from "./ResponsePage/TimeResponse";
 import NotFound from "../../components/NotFound";
 import FormSubmitted from "./ResponsePage/FormSubmitted";
+import Title from "../../components/Title";
 
 function Response() {
   const [view, setView] = useState("");
@@ -38,8 +39,6 @@ function Response() {
         setLoading(false);
       });
   }, [id]);
-
-  useEffect(() => (document.title = title + (title ? " - " : "") + "Response - Google Forms Minified"), [title]);
 
   const updateTextField = (id, value) => {
     let clone = [...data];
@@ -122,6 +121,7 @@ function Response() {
 
   return (
     <>
+      <Title title={title + (title ? " - " : "") + "Editing - Google Forms Minified"} />
       {!loading ? (
         <>
           {view === "404" ? (

@@ -19,6 +19,7 @@ import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 import SubmitsSummary from "./SubmitsSummary";
 
 import useFormData from "./useFormData";
+import Title from "../../components/Title";
 
 function Edit() {
   const { id: _id } = useParams();
@@ -28,8 +29,6 @@ function Edit() {
   const [speedDialOpened, setSpeedDialOpened] = useState(false);
 
   const [tabValue, setTabValue] = useState(0);
-
-  useEffect(() => (document.title = title + (title ? " - " : "") + "Editing - Google Forms Minified"), [title]);
 
   useEffect(() => {
     getPreviousFormData();
@@ -64,6 +63,7 @@ function Edit() {
 
   return (
     <>
+      <Title title={`${title}${title ? " - " : ""}Editing - Google Forms Minified`} />
       {!loading ? (
         <>
           {view === 404 ? (

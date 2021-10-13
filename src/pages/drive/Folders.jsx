@@ -12,6 +12,7 @@ import FileInput from "./FileInput";
 import CreateNewFolder from "./CreateNewFolder";
 import RenameDialog from "./RenameDialog";
 import ClipboardSnackbar from "../../components/ClipboardSnackbar";
+import Title from "../../components/Title";
 
 function Folder({ uploadFile }) {
   const { currentUser } = useContext(userContext);
@@ -21,7 +22,6 @@ function Folder({ uploadFile }) {
   useEffect(() => {
     (async () => {
       currentFolderIdRef.current = currentFolderId;
-      if (!currentFolderId) document.title = "My Drive - Google Drive Minified";
 
       let socket = io(process.env.REACT_APP_SERVER_URL + "drive");
       socket.emit("join-room", currentFolderIdRef.current || currentUser.id);
@@ -90,8 +90,6 @@ function Folder({ uploadFile }) {
 
       let data = response.data.folder;
 
-      document.title = data.name + " - Folder - Google Drive Minified";
-
       setPath([...data.path, data._id]);
 
       setPermission(response.data.permission);
@@ -110,7 +108,6 @@ function Folder({ uploadFile }) {
     } else {
       setBreadcrumb([]);
       setPermission(true);
-      document.title = "My Drive - Google Drive Minified";
     }
 
     const folderChild = await axios.post("drive/child", {
@@ -199,148 +196,151 @@ function Folder({ uploadFile }) {
   };
 
   return (
-    <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
-      {(permission || typeof permission === "undefined") && !notFound && (
-        <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
-          <CreateNewFolder path={path} permission={permission} />
-          <FileInput
-            className="center-div"
-            disabled={!permission}
-            label={
-              <>
-                <InsertDriveFile style={{ marginRight: 10 }} />
-                <span>Upload a file</span>
-              </>
-            }
-            onChange={(e) => uploadFile(e.target.files[0], path)}
-          />
-          <FileInput
-            multiple
-            className="center-div"
-            disabled={!permission}
-            label={
-              <>
-                <FileCopy style={{ marginRight: 10 }} />
-                <span>Upload files</span>
-              </>
-            }
-            onChange={(e) => {
-              let files = e.target.files;
-              Object.keys(files).forEach((e) => {
-                uploadFile(files[e], path);
-              });
-            }}
-          />
-        </div>
-      )}
-
-      {!notFound ? (
-        <div className="main">
-          <div className="actions-wrapper">
-            <Breadcrumbs>
-              {permission !== false ? <Link to="/drive">My Drive</Link> : <span>Shared with me</span>}
-
-              {breadcrumb.map((e, index) => (
-                <Link key={index} to={e._id}>
-                  {e.name}
-                </Link>
-              ))}
-            </Breadcrumbs>
-            <div>
-              {selected.length === 1 && (
-                <ClipboardSnackbar content={selected[0].type === "folder" ? `${window.location.origin}/drive/folder/${selected[0].id}` : `${window.location.origin}/drive/file/${selected[0].id}`} message="URL Copied to clipboard">
-                  <Tooltip title="Copy Link">
-                    <IconButton color="default">
-                      <InsertLink />
-                    </IconButton>
-                  </Tooltip>
-                </ClipboardSnackbar>
-              )}
-
-              {selected.length > 0 && selected.every((e) => e.type === "file") && (
-                <Tooltip title="Download" onClick={downloadFile}>
-                  <IconButton color="primary">
-                    <GetApp />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {permission && (
+    <>
+      <Title title={currentFolderId ? `${breadcrumb.slice(-1)[0].name} - Folder - Google Drive Minified` : "My Drive - Google Drive Minified"} />
+      <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
+        {(permission || typeof permission === "undefined") && !notFound && (
+          <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
+            <CreateNewFolder path={path} permission={permission} />
+            <FileInput
+              className="center-div"
+              disabled={!permission}
+              label={
                 <>
-                  <RenameDialog selected={selected} />
+                  <InsertDriveFile style={{ marginRight: 10 }} />
+                  <span>Upload a file</span>
+                </>
+              }
+              onChange={(e) => uploadFile(e.target.files[0], path)}
+            />
+            <FileInput
+              multiple
+              className="center-div"
+              disabled={!permission}
+              label={
+                <>
+                  <FileCopy style={{ marginRight: 10 }} />
+                  <span>Upload files</span>
+                </>
+              }
+              onChange={(e) => {
+                let files = e.target.files;
+                Object.keys(files).forEach((e) => {
+                  uploadFile(files[e], path);
+                });
+              }}
+            />
+          </div>
+        )}
 
-                  {selected.length > 0 && (
-                    <Tooltip
-                      title="Delete"
-                      onClick={() => {
-                        selected.forEach((e) => {
-                          deleteFileOrFolder(e.type, e.id);
-                        });
-                      }}
-                    >
-                      <IconButton color="secondary">
-                        <Delete />
+        {!notFound ? (
+          <div className="main">
+            <div className="actions-wrapper">
+              <Breadcrumbs>
+                {permission !== false ? <Link to="/drive">My Drive</Link> : <span>Shared with me</span>}
+
+                {breadcrumb.map((e, index) => (
+                  <Link key={index} to={e._id}>
+                    {e.name}
+                  </Link>
+                ))}
+              </Breadcrumbs>
+              <div>
+                {selected.length === 1 && (
+                  <ClipboardSnackbar content={selected[0].type === "folder" ? `${window.location.origin}/drive/folder/${selected[0].id}` : `${window.location.origin}/drive/file/${selected[0].id}`} message="URL Copied to clipboard">
+                    <Tooltip title="Copy Link">
+                      <IconButton color="default">
+                        <InsertLink />
                       </IconButton>
                     </Tooltip>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
+                  </ClipboardSnackbar>
+                )}
 
-          {loading ? (
-            <div className="center-container">
-              <CircularProgress />
-            </div>
-          ) : (
-            <>
-              {allFolder.length === 0 && allFiles.length === 0 && (currentFolderId ? <Typography>This folder is empty</Typography> : <Typography>Your Drive is empty</Typography>)}
+                {selected.length > 0 && selected.every((e) => e.type === "file") && (
+                  <Tooltip title="Download" onClick={downloadFile}>
+                    <IconButton color="primary">
+                      <GetApp />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {permission && (
+                  <>
+                    <RenameDialog selected={selected} />
 
-              {allFolder.length > 0 && (
-                <Typography style={{ margin: 10 }} variant="subtitle2">
-                  Folders
-                </Typography>
-              )}
-
-              <div className="main-grid">
-                {allFolder.map((e) => (
-                  <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-box" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
-                    <FolderIcon className="dynamic-icon" />
-                    <Typography>{e.name}</Typography>
-                  </div>
-                ))}
+                    {selected.length > 0 && (
+                      <Tooltip
+                        title="Delete"
+                        onClick={() => {
+                          selected.forEach((e) => {
+                            deleteFileOrFolder(e.type, e.id);
+                          });
+                        }}
+                      >
+                        <IconButton color="secondary">
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </>
+                )}
               </div>
+            </div>
 
-              {allFiles.length > 0 && (
-                <Typography style={{ margin: 10 }} variant="subtitle2">
-                  Files
-                </Typography>
-              )}
+            {loading ? (
+              <div className="center-container">
+                <CircularProgress />
+              </div>
+            ) : (
+              <>
+                {allFolder.length === 0 && allFiles.length === 0 && (currentFolderId ? <Typography>This folder is empty</Typography> : <Typography>Your Drive is empty</Typography>)}
 
-              <div className="main-grid">
-                {allFiles.map((e) => (
-                  <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-box square" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
-                    <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}>
-                      <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
-                        <div className="center-div" style={{ flexGrow: 1 }}>
-                          <div className="center-div" style={{ height: "40%" }}>
-                            <img draggable={false} alt="" onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                {allFolder.length > 0 && (
+                  <Typography style={{ margin: 10 }} variant="subtitle2">
+                    Folders
+                  </Typography>
+                )}
+
+                <div className="main-grid">
+                  {allFolder.map((e) => (
+                    <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-box" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
+                      <FolderIcon className="dynamic-icon" />
+                      <Typography>{e.name}</Typography>
+                    </div>
+                  ))}
+                </div>
+
+                {allFiles.length > 0 && (
+                  <Typography style={{ margin: 10 }} variant="subtitle2">
+                    Files
+                  </Typography>
+                )}
+
+                <div className="main-grid">
+                  {allFiles.map((e) => (
+                    <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-box square" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
+                      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}>
+                        <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
+                          <div className="center-div" style={{ flexGrow: 1 }}>
+                            <div className="center-div" style={{ height: "40%" }}>
+                              <img draggable={false} alt="" onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                            </div>
                           </div>
-                        </div>
-                        <div className="file-box-label">
-                          <Typography>{e.name}</Typography>
+                          <div className="file-box-label">
+                            <Typography>{e.name}</Typography>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      ) : (
-        <NotFound />
-      )}
-    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <NotFound />
+        )}
+      </div>
+    </>
   );
 }
 

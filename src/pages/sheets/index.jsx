@@ -7,18 +7,15 @@ import Sheet from "./Sheet";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 import Create from "./Create";
-import { changeFavicon } from "../../utils";
 import { routes } from "../../utils/routes";
+import Favicon from "../../components/Favicon";
 
-function FormsRoute() {
-  useEffect(() => {
-    changeFavicon(routes.find((e) => e.name === "Sheets").icon);
-  }, []);
-
+function SheetsRoute() {
   const { path } = useRouteMatch();
 
   return (
     <>
+      <Favicon icon={routes.find((e) => e.name === "Sheets").icon} />
       <Navbar name="Sheets" />
 
       <Switch>
@@ -30,4 +27,4 @@ function FormsRoute() {
   );
 }
 
-export default FormsRoute;
+export default SheetsRoute;

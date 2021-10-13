@@ -51,7 +51,3 @@ export const anchorDownloadFile = (url) => {
   anchor.click();
   document.body.removeChild(anchor);
 };
-
-export const changeFavicon = (url) => {
-  document.querySelector("link[rel='shortcut icon']").href = url;
-};

@@ -5,18 +5,15 @@ import Room from "./Room";
 import SomethingWentWrong from "./SomethingWentWrong";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
-import { changeFavicon } from "../../utils";
 import { routes } from "../../utils/routes";
+import Favicon from "../../components/Favicon";
 
-function FormsRoute() {
-  useEffect(() => {
-    changeFavicon(routes.find((e) => e.name === "Meet").icon);
-  }, []);
-
+function MeetRoute() {
   const { path } = useRouteMatch();
 
   return (
     <>
+      <Favicon icon={routes.find((e) => e.name === "Meet").icon} />
       <Navbar name="Meet" />
 
       <Switch>
@@ -28,4 +25,4 @@ function FormsRoute() {
   );
 }
 
-export default FormsRoute;
+export default MeetRoute;

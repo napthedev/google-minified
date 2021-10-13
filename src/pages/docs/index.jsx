@@ -7,18 +7,15 @@ import Document from "./Document";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
 import Create from "./Create";
-import { changeFavicon } from "../../utils";
 import { routes } from "../../utils/routes";
+import Favicon from "../../components/Favicon";
 
 function FormsRoute() {
-  useEffect(() => {
-    changeFavicon(routes.find((e) => e.name === "Docs").icon);
-  }, []);
-
   const { path } = useRouteMatch();
 
   return (
     <>
+      <Favicon icon={routes.find((e) => e.name === "Docs").icon} />
       <Navbar name="Docs" />
 
       <Switch>

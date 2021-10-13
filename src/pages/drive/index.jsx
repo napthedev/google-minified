@@ -14,7 +14,7 @@ import PrivateRoute from "../../components/PrivateRoute";
 import { routes } from "../../utils/routes";
 
 import napid from "napid";
-import { changeFavicon } from "../../utils";
+import Favicon from "../../components/Favicon";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -43,10 +43,6 @@ function CloseBtn(props) {
 }
 
 function DriveRoute() {
-  useEffect(() => {
-    changeFavicon(routes.find((e) => e.name === "Drive").icon);
-  }, []);
-
   const { path } = useRouteMatch();
 
   const location = useLocation();
@@ -88,6 +84,7 @@ function DriveRoute() {
 
   return (
     <>
+      <Favicon icon={routes.find((e) => e.name === "Drive").icon} />
       {!location.pathname.startsWith("/drive/file") && <Navbar name="Drive" />}
       {filesUploading.length > 0 && (
         <div className="upload-progress-box">

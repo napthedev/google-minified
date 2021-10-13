@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import HomeGrid from "../../components/HomeGrid";
+import Title from "../../components/Title";
 
 function FormsHome() {
-  useEffect(() => (document.title = "My Forms - Google Forms Minified"), []);
-
   const [allForms, setAllForms] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +32,7 @@ function FormsHome() {
 
   return (
     <>
+      <Title title="My Forms - Google Forms Minified" />
       {!loading ? (
         <HomeGrid allData={allForms} pushRoute="/forms/edit/" name="form" thumbnail="https://ik.imagekit.io/nap/google-minified/formThumbnail_fZuXg65OK2t.png" deleteItem={deleteForm} createRoute="/forms/create" />
       ) : (

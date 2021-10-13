@@ -7,15 +7,12 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { createTheme } from "@material-ui/core/styles";
 import { ThemeProvider, CssBaseline } from "@material-ui/core";
 
-import { changeFavicon } from "../../utils";
 import { routes } from "../../utils/routes";
 
-function MapsRoute() {
-  useEffect(() => {
-    changeFavicon(routes.find((e) => e.name === "Maps").icon);
-    document.title = "Google Maps Minified";
-  }, []);
+import Title from "../../components/Title";
+import Favicon from "../../components/Favicon";
 
+function MapsRoute() {
   const mapContainer = useRef(null);
   const map = useRef(null);
 
@@ -65,10 +62,14 @@ function MapsRoute() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <div ref={mapContainer} style={{ width: "100vw", height: "100vh" }} />
-    </ThemeProvider>
+    <>
+      <Title title="Google Maps Minified" />
+      <Favicon icon={routes.find((e) => e.name === "Maps").icon} />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div ref={mapContainer} style={{ width: "100vw", height: "100vh" }} />
+      </ThemeProvider>
+    </>
   );
 }
 

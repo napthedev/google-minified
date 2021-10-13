@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { TextField, Link, Snackbar, IconButton } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
@@ -7,17 +7,14 @@ import axios from "axios";
 
 import Particles from "./Particles";
 import CircularIntegration from "./CircularIntegration";
+import Title from "../components/Title";
+import Favicon from "../components/Favicon";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 function SignIn() {
-  useEffect(() => {
-    document.querySelector("link[rel='shortcut icon']").href = "https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png";
-    document.title = "Sign In - Google Minified";
-  }, []);
-
   const query = useQuery();
   const redirect = query.get("redirect");
 
@@ -92,6 +89,8 @@ function SignIn() {
 
   return (
     <>
+      <Favicon icon="https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png" />
+      <Title title="Sign In - Google Minified" />
       {!currentUser ? (
         <>
           <Particles />

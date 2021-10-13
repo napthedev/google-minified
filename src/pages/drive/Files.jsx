@@ -17,6 +17,8 @@ import "../../css/vs.min.css";
 
 import { anchorDownloadFile } from "../../utils";
 
+import Title from "../../components/Title";
+
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -45,8 +47,6 @@ function Files() {
       axios
         .post("drive/file-info", { _id: id })
         .then(async (res) => {
-          document.title = res.data.name + " - File - Google Drive Minified";
-
           if (res.data.type.startsWith("text")) {
             const textData = await axios.get(res.data.url);
             setData(textData.data);
@@ -85,6 +85,7 @@ function Files() {
 
   return (
     <>
+      <Title title={`${file.name} - File - Google Drive Minified"`} />
       {view === 200 ? (
         <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 50, paddingLeft: 10, width: "100%" }}>

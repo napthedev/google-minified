@@ -4,21 +4,20 @@ import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { routes } from "../../utils/routes";
 import Section from "./Section";
-import { changeFavicon } from "../../utils";
 import backgroundDark from "./backgroundDark.svg";
 import backgroundLight from "./backgroundLight.svg";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Typewriter from "typewriter-effect";
 import { useInnerWidth } from "./useInnerWidth";
+import Title from "../../components/Title";
+import Favicon from "../../components/Favicon";
 
 function Landing() {
   const { theme } = useContext(userContext);
   const { width } = useInnerWidth();
 
   useEffect(() => {
-    changeFavicon("https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png");
-    document.title = "Google Minified";
     AOS.init();
   }, []);
 
@@ -28,6 +27,8 @@ function Landing() {
 
   return (
     <>
+      <Title title="Google Minified" />
+      <Favicon icon="https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png" />
       <div className="first-section" style={{ backgroundImage: `url(${theme.palette.type === "dark" ? backgroundDark : backgroundLight})` }}>
         <Typography variant={width > 768 ? "h2" : "h3"}>{routes.length} Google apps, in one place</Typography>
         <Typewriter

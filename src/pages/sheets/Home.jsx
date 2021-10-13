@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import HomeGrid from "../../components/HomeGrid";
+import Title from "../../components/Title";
 
 function SheetsHome() {
-  useEffect(() => (document.title = "My Sheets - Google Sheets Minified"), []);
-
   const [allSheets, setAllSheets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +32,7 @@ function SheetsHome() {
 
   return (
     <>
+      <Title title="My Sheets - Google Sheets Minified" />
       {!loading ? (
         <HomeGrid allData={allSheets} pushRoute="/sheets/" name="sheet" thumbnail="https://ik.imagekit.io/nap/google-minified/sheetsThumbnail_Paqk0hhry.png" deleteItem={deleteSheet} createRoute="/sheets/create" />
       ) : (

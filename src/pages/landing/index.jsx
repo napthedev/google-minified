@@ -4,8 +4,6 @@ import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { routes } from "../../shared/routes";
 import Section from "./Section";
-import backgroundDark from "./backgroundDark.svg";
-import backgroundLight from "./backgroundLight.svg";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Typewriter from "typewriter-effect";
@@ -29,7 +27,7 @@ function Landing() {
     <>
       <Title title="Google Minified" />
       <Favicon icon="https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png" />
-      <div className="first-section" style={{ backgroundImage: `url(${theme.palette.type === "dark" ? backgroundDark : backgroundLight})` }}>
+      <div className="first-section" style={{ backgroundImage: `url(${theme.palette.type === "dark" ? "https://ik.imagekit.io/nap/google-minified/backgroundDark_CeamoQy6CTA.svg" : "https://ik.imagekit.io/nap/google-minified/backgroundLight_JEXxOPVa9.svg"})` }}>
         <Typography variant={width > 768 ? "h2" : "h3"}>{routes.length} Google apps, in one place</Typography>
         <Typewriter
           options={{

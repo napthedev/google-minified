@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const path = require("path");
 const nodemailer = require("nodemailer");
-const md5 = require("../md5");
+const md5 = require("md5");
 const emailVerification = require("../public/EmailVerification");
 
 const getDomainWithoutSubdomain = (url) => {

@@ -61,6 +61,8 @@
 .first-section-link-container {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap;
+  padding: 0 20px;
 }
 
 @media (min-width: 768px) {
@@ -91,10 +93,5 @@
 
   .section-title-container {
     width: 100%;
-  }
-
-  .first-section-link-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
   }
 }

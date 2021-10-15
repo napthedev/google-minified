@@ -1,9 +1,10 @@
-import { useEffect, useState, useContext } from "react";
-import { useParams, useHistory } from "react-router-dom";
 import { Button, Dialog, TextField, Tooltip } from "@material-ui/core";
-import { Mic, MicOff, Videocam, VideocamOff, Share } from "@material-ui/icons";
-import VideoStream from "./VideoStream";
+import { Mic, MicOff, Share, Videocam, VideocamOff } from "@material-ui/icons";
+import { useContext, useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+
 import Peer from "peerjs";
+import VideoStream from "./VideoStream";
 import { io } from "socket.io-client";
 import { userContext } from "../../App";
 

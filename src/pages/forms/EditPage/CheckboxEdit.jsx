@@ -1,5 +1,5 @@
-import { TextField, Checkbox } from "@material-ui/core";
-import { Delete, AddCircle } from "@material-ui/icons";
+import { AddCircle, Delete } from "@material-ui/icons";
+import { Checkbox, TextField } from "@material-ui/core";
 
 function CheckboxEdit(props) {
   const { id, value, updateTextField, updateOptionText, addOption, removeBox, removeOption } = props;

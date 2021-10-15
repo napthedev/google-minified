@@ -1,23 +1,18 @@
-import { useParams, useLocation, useHistory } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
-
-import axios from "axios";
-
-import { userContext } from "../../App";
-
-import NotFound from "../../components/NotFound";
-import { Button, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
-import { InsertLink, GetApp, ArrowBack } from "@material-ui/icons";
-
-import ClipboardSnackbar from "../../components/ClipboardSnackbar";
-
-import Highlight from "react-highlight";
 import "../../css/railscasts.min.css";
 import "../../css/vs.min.css";
 
-import { anchorDownloadFile } from "../../shared/utils";
+import { ArrowBack, GetApp, InsertLink } from "@material-ui/icons";
+import { Button, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
+import { useContext, useEffect, useState } from "react";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
+import ClipboardSnackbar from "../../components/ClipboardSnackbar";
+import Highlight from "react-highlight";
+import NotFound from "../../components/NotFound";
 import Title from "../../components/Title";
+import { anchorDownloadFile } from "../../shared/utils";
+import axios from "axios";
+import { userContext } from "../../App";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);

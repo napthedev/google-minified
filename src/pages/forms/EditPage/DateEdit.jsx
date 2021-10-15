@@ -1,5 +1,5 @@
-import { TextField } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
+import { TextField } from "@material-ui/core";
 
 function DateEdit(props) {
   const { id, value, updateTextField, removeBox } = props;

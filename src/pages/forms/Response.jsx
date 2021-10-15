@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { Container, Typography, Button, CircularProgress } from "@material-ui/core";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { Button, CircularProgress, Container, Typography } from "@material-ui/core";
+import { useEffect, useState } from "react";
 
-import TextResponse from "./ResponsePage/TestResponse";
 import CheckboxResponse from "./ResponsePage/CheckboxResponse";
-import RadioResponse from "./ResponsePage/RadioResponse";
 import DateResponse from "./ResponsePage/DateResponse";
-import TimeResponse from "./ResponsePage/TimeResponse";
-import NotFound from "../../components/NotFound";
 import FormSubmitted from "./ResponsePage/FormSubmitted";
+import NotFound from "../../components/NotFound";
+import RadioResponse from "./ResponsePage/RadioResponse";
+import TextResponse from "./ResponsePage/TestResponse";
+import TimeResponse from "./ResponsePage/TimeResponse";
 import Title from "../../components/Title";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 function Response() {
   const [view, setView] = useState("");

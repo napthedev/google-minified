@@ -1,6 +1,6 @@
-import { Player } from "@lottiefiles/react-lottie-player";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { Player } from "@lottiefiles/react-lottie-player";
 import data from "../../lottie/error.json";
 
 function SomethingWentWrong() {

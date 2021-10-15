@@ -1,11 +1,12 @@
-import { useRouteMatch, Route, Switch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
+
+import Favicon from "../../components/Favicon";
 import Home from "./Home";
-import Room from "./Room";
-import SomethingWentWrong from "./SomethingWentWrong";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
+import Room from "./Room";
+import SomethingWentWrong from "./SomethingWentWrong";
 import { routes } from "../../shared/routes";
-import Favicon from "../../components/Favicon";
 
 function MeetRoute() {
   const { path } = useRouteMatch();

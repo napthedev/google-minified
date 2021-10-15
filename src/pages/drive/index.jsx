@@ -1,20 +1,17 @@
-import { useLocation, useRouteMatch, Route, Switch } from "react-router-dom";
-import { Typography, Box, CircularProgress } from "@material-ui/core";
+import { Box, CircularProgress, Typography } from "@material-ui/core";
 import { Close, Done, Error as ErrorIcon } from "@material-ui/icons";
-import axios from "axios";
-
+import { Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import Folders from "./Folders";
-import NotFound from "../../components/NotFound";
-import Files from "./Files";
-import Navbar from "../../components/Navbar";
-import PrivateRoute from "../../components/PrivateRoute";
-
-import { routes } from "../../shared/routes";
-
-import napid from "napid";
 import Favicon from "../../components/Favicon";
+import Files from "./Files";
+import Folders from "./Folders";
+import Navbar from "../../components/Navbar";
+import NotFound from "../../components/NotFound";
+import PrivateRoute from "../../components/PrivateRoute";
+import axios from "axios";
+import napid from "napid";
+import { routes } from "../../shared/routes";
 
 function CircularProgressWithLabel(props) {
   return (

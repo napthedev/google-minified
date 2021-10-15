@@ -1,15 +1,12 @@
-import { useState, useEffect, useRef } from "react";
-
-import { IconButton, FormControl, Select, MenuItem, TextareaAutosize, Typography, CircularProgress } from "@material-ui/core";
-import { SwapHoriz, FileCopy, Close } from "@material-ui/icons";
+import { CircularProgress, FormControl, IconButton, MenuItem, Select, TextareaAutosize, Typography } from "@material-ui/core";
+import { Close, FileCopy, SwapHoriz } from "@material-ui/icons";
+import { useEffect, useRef, useState } from "react";
 
 import ClipboardSnackbar from "../../components/ClipboardSnackbar";
-
-import Navbar from "../../components/Navbar";
-import { routes } from "../../shared/routes";
-
-import Title from "../../components/Title";
 import Favicon from "../../components/Favicon";
+import Navbar from "../../components/Navbar";
+import Title from "../../components/Title";
+import { routes } from "../../shared/routes";
 
 function TranslateRoute() {
   const [languageFrom, setLanguageFrom] = useState(localStorage.getItem("languageFrom") ? localStorage.getItem("languageFrom") : "en");

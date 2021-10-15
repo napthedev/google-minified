@@ -1,14 +1,13 @@
-import { useState, useEffect, createContext, useMemo, lazy, Suspense } from "react";
+import { CircularProgress, CssBaseline, useMediaQuery } from "@material-ui/core";
 import { Route, Switch, useLocation } from "react-router-dom";
-import { useTransition, animated } from "react-spring";
-import { useMediaQuery, CssBaseline, CircularProgress } from "@material-ui/core";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import axios from "axios";
-import TopBarProgress from "react-topbar-progress-indicator";
+import { Suspense, createContext, lazy, useEffect, useMemo, useState } from "react";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import { animated, useTransition } from "react-spring";
 
-import NotFound from "./components/NotFound";
 import Cookie from "./components/Cookie";
-
+import NotFound from "./components/NotFound";
+import TopBarProgress from "react-topbar-progress-indicator";
+import axios from "axios";
 import { routes } from "./shared/routes";
 
 const SignUp = lazy(() => import("./components/SignUp"));

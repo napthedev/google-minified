@@ -1,12 +1,11 @@
-import { lazy } from "react";
-
+import docsAnimation from "../lottie/docs.json";
 import driveAnimation from "../lottie/drive.json";
 import formsAnimation from "../lottie/forms.json";
-import translateAnimation from "../lottie/translate.json";
+import { lazy } from "react";
 import mapsAnimation from "../lottie/maps.json";
-import docsAnimation from "../lottie/docs.json";
-import sheetsAnimation from "../lottie/sheets.json";
 import meetAnimation from "../lottie/meet.json";
+import sheetsAnimation from "../lottie/sheets.json";
+import translateAnimation from "../lottie/translate.json";
 
 const Forms = lazy(() => import("../pages/forms"));
 const Drive = lazy(() => import("../pages/drive"));

@@ -1,11 +1,11 @@
+import { AccountCircle, AssignmentReturn, ExitToApp, Home, Person, VpnKey } from "@material-ui/icons";
+import { AppBar, Divider, IconButton, Menu, MenuItem, Toolbar, Typography } from "@material-ui/core";
 import { useContext, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { userContext } from "../App";
-import { IconButton, Menu, MenuItem, Divider, AppBar, Toolbar, Typography } from "@material-ui/core";
-import { Person, ExitToApp, Home, AccountCircle, VpnKey, AssignmentReturn } from "@material-ui/icons";
-import axios from "axios";
 
+import axios from "axios";
 import { routes } from "../shared/routes";
+import { userContext } from "../App";
 
 function Navbar(props) {
   const { name } = props;

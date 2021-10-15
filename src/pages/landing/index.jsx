@@ -1,15 +1,17 @@
-import { useEffect, useContext } from "react";
-import { userContext } from "../../App";
-import { Typography } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import { routes } from "../../shared/routes";
-import Section from "./Section";
-import AOS from "aos";
 import "aos/dist/aos.css";
-import Typewriter from "typewriter-effect";
-import { useInnerWidth } from "./useInnerWidth";
-import Title from "../../components/Title";
+
+import { useContext, useEffect } from "react";
+
+import AOS from "aos";
 import Favicon from "../../components/Favicon";
+import { Link } from "react-router-dom";
+import Section from "./Section";
+import Title from "../../components/Title";
+import Typewriter from "typewriter-effect";
+import { Typography } from "@material-ui/core";
+import { routes } from "../../shared/routes";
+import { useInnerWidth } from "./useInnerWidth";
+import { userContext } from "../../App";
 
 function Landing() {
   const { theme } = useContext(userContext);

@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormControl, FormLabel } from "@material-ui/core";
+import { Checkbox, FormControl, FormControlLabel, FormLabel } from "@material-ui/core";
 
 function CheckboxResponse(props) {
   const { id, value, handleCheckboxChange, classes } = props;

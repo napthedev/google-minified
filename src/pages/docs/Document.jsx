@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-import { io } from "socket.io-client";
-import axios from "axios";
+import { CircularProgress, FormControl, MenuItem, Select, Typography } from "@material-ui/core";
 import { disable as disableDarkMode, auto as followSystemColorScheme } from "darkreader";
+import { useEffect, useRef, useState } from "react";
 
 import NotFound from "../../components/NotFound";
-import { CircularProgress, Typography, FormControl, Select, MenuItem } from "@material-ui/core";
+import ReactQuill from "react-quill";
+import axios from "axios";
+import { io } from "socket.io-client";
+import { useParams } from "react-router-dom";
 
 function Document() {
   const { id } = useParams();

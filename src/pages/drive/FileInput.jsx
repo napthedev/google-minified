@@ -1,5 +1,5 @@
-import { useRef } from "react";
 import { Button } from "@material-ui/core";
+import { useRef } from "react";
 
 function FileInput({ className, onChange, multiple = false, disabled = false, label }) {
   const fileInput = useRef();

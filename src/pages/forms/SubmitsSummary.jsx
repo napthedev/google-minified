@@ -1,6 +1,6 @@
-import { Accordion, AccordionSummary, Typography, AccordionDetails, List, ListItem, FormControlLabel, Checkbox, Radio, RadioGroup } from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, List, ListItem, Radio, RadioGroup, Typography } from "@material-ui/core";
 
+import { ExpandMore } from "@material-ui/icons";
 import { calculateCreatedTime } from "../../shared/utils";
 
 function SubmitsSummary({ allSubmits }) {

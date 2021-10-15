@@ -1,16 +1,15 @@
-import { useRef, useEffect } from "react";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
-import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 
-import { createTheme } from "@material-ui/core/styles";
-import { ThemeProvider, CssBaseline } from "@material-ui/core";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { useEffect, useRef } from "react";
 
-import { routes } from "../../shared/routes";
-
-import Title from "../../components/Title";
 import Favicon from "../../components/Favicon";
+import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
+import Title from "../../components/Title";
+import { createTheme } from "@material-ui/core/styles";
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import { routes } from "../../shared/routes";
 
 function MapsRoute() {
   const mapContainer = useRef(null);

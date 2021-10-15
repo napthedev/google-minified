@@ -1,12 +1,12 @@
-import { useRouteMatch, Route, Switch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 
+import Create from "./Create";
+import Favicon from "../../components/Favicon";
 import Home from "./Home";
-import Sheet from "./Sheet";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
-import Create from "./Create";
+import Sheet from "./Sheet";
 import { routes } from "../../shared/routes";
-import Favicon from "../../components/Favicon";
 
 function SheetsRoute() {
   const { path } = useRouteMatch();

@@ -1,5 +1,5 @@
-import { TextField, Radio } from "@material-ui/core";
-import { Delete, AddCircle } from "@material-ui/icons";
+import { AddCircle, Delete } from "@material-ui/icons";
+import { Radio, TextField } from "@material-ui/core";
 
 function RadioEdit(props) {
   const { id, value, updateTextField, updateOptionText, addOption, removeBox, removeOption } = props;

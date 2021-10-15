@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@material-ui/core";
+
 import { CreateNewFolder as CreateNewFolderIcon } from "@material-ui/icons";
 import axios from "axios";
+import { useState } from "react";
 
 function CreateNewFolder({ path, permission }) {
   const [dialogOpened, setDialogOpened] = useState(false);

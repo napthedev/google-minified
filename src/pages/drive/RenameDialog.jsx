@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, IconButton, Tooltip } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Tooltip } from "@material-ui/core";
+
 import { Create } from "@material-ui/icons";
 import axios from "axios";
+import { useState } from "react";
 
 function RenameDialog({ selected }) {
   const [currentFileToRename, setCurrentFileToRename] = useState({ id: "", type: "" });

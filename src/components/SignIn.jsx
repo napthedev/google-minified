@@ -1,14 +1,14 @@
-import { useState, useContext } from "react";
+import { IconButton, Link, Snackbar, TextField } from "@material-ui/core";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
-import { TextField, Link, Snackbar, IconButton } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
-import { userContext } from "../App";
-import axios from "axios";
+import { useContext, useState } from "react";
 
-import Particles from "./Particles";
 import CircularIntegration from "./CircularIntegration";
-import Title from "../components/Title";
+import { Close } from "@material-ui/icons";
 import Favicon from "../components/Favicon";
+import Particles from "./Particles";
+import Title from "../components/Title";
+import axios from "axios";
+import { userContext } from "../App";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);

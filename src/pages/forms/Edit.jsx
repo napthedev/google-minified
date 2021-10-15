@@ -1,25 +1,21 @@
-import { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
+import { AllInbox, CheckBox, DateRange, Description, Edit as EditIcon, InsertLink, RadioButtonChecked, Timer } from "@material-ui/icons";
+import { Badge, CircularProgress, Container, Tab, Tabs, TextField, Tooltip } from "@material-ui/core";
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
+import { useEffect, useRef, useState } from "react";
 
-import { Container, TextField, Tab, Tabs, Badge, Tooltip, CircularProgress } from "@material-ui/core";
-import { SpeedDial, SpeedDialIcon, SpeedDialAction } from "@material-ui/lab";
-import { CheckBox, RadioButtonChecked, Description, DateRange, Timer, AllInbox, InsertLink, Edit as EditIcon } from "@material-ui/icons";
-
-import { useParams } from "react-router-dom";
-
-import TextEdit from "./EditPage/TextEdit";
 import CheckboxEdit from "./EditPage/CheckboxEdit";
-import RadioEdit from "./EditPage/RadioEdit";
+import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 import DateEdit from "./EditPage/DateEdit";
-import TimeEdit from "./EditPage/TimeEdit";
 import Forbidden from "../../components/Forbidden";
 import NotFound from "../../components/NotFound";
-
-import ClipboardSnackbar from "../../components/ClipboardSnackbar";
+import RadioEdit from "./EditPage/RadioEdit";
 import SubmitsSummary from "./SubmitsSummary";
-
-import useFormData from "./useFormData";
+import TextEdit from "./EditPage/TextEdit";
+import TimeEdit from "./EditPage/TimeEdit";
 import Title from "../../components/Title";
+import { io } from "socket.io-client";
+import useFormData from "./useFormData";
+import { useParams } from "react-router-dom";
 
 function Edit() {
   const { id: _id } = useParams();

@@ -1,4 +1,5 @@
 import { MicNone, MicOff } from "@material-ui/icons";
+
 import VideoElement from "./VideoElement";
 
 function VideoStream({ source, id, username, camera, microphone }) {

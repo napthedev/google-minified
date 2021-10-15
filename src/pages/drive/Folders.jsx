@@ -1,18 +1,18 @@
-import { Link, useParams, useHistory } from "react-router-dom";
-import { useState, useContext, useEffect, useRef } from "react";
-import { Breadcrumbs, IconButton, Tooltip, Typography, CircularProgress } from "@material-ui/core";
-import { Delete, InsertDriveFile, FileCopy, InsertLink, GetApp, Folder as FolderIcon } from "@material-ui/icons";
+import { Breadcrumbs, CircularProgress, IconButton, Tooltip, Typography } from "@material-ui/core";
+import { Delete, FileCopy, Folder as FolderIcon, GetApp, InsertDriveFile, InsertLink } from "@material-ui/icons";
+import { Link, useHistory, useParams } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
+
+import ClipboardSnackbar from "../../components/ClipboardSnackbar";
+import CreateNewFolder from "./CreateNewFolder";
+import FileInput from "./FileInput";
+import NotFound from "../../components/NotFound";
+import RenameDialog from "./RenameDialog";
+import Title from "../../components/Title";
+import { anchorDownloadFile } from "../../shared/utils";
 import axios from "axios";
 import { io } from "socket.io-client";
-
 import { userContext } from "../../App";
-import NotFound from "../../components/NotFound";
-import { anchorDownloadFile } from "../../shared/utils";
-import FileInput from "./FileInput";
-import CreateNewFolder from "./CreateNewFolder";
-import RenameDialog from "./RenameDialog";
-import ClipboardSnackbar from "../../components/ClipboardSnackbar";
-import Title from "../../components/Title";
 
 function Folder({ uploadFile }) {
   const { currentUser } = useContext(userContext);

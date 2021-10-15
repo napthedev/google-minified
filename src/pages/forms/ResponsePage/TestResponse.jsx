@@ -1,4 +1,4 @@
-import { TextField, FormControl, FormLabel } from "@material-ui/core";
+import { FormControl, FormLabel, TextField } from "@material-ui/core";
 
 function TextResponse(props) {
   const { id, updateTextField, value, classes } = props;

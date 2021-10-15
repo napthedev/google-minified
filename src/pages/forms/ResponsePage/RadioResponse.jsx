@@ -1,4 +1,4 @@
-import { FormControlLabel, FormControl, FormLabel, Radio, RadioGroup } from "@material-ui/core";
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@material-ui/core";
 
 function RadioResponse(props) {
   const { id, value, handleRadioChange, classes } = props;

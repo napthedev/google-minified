@@ -1,6 +1,7 @@
-import { useState, cloneElement } from "react";
-import { copyToClipboard } from "../shared/utils";
+import { cloneElement, useState } from "react";
+
 import { Snackbar } from "@material-ui/core";
+import { copyToClipboard } from "../shared/utils";
 
 function ClipboardSnackbar({ content, message, vertical = "bottom", horizontal = "right", children, duration = 3000 }) {
   const [snackbarOpened, setSnackbarOpened] = useState(false);

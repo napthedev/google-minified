@@ -1,12 +1,12 @@
-import { useRouteMatch, Route, Switch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 
-import Home from "./Home";
+import Create from "./Create";
 import Document from "./Document";
+import Favicon from "../../components/Favicon";
+import Home from "./Home";
 import Navbar from "../../components/Navbar";
 import PrivateRoute from "../../components/PrivateRoute";
-import Create from "./Create";
 import { routes } from "../../shared/routes";
-import Favicon from "../../components/Favicon";
 
 function FormsRoute() {
   const { path } = useRouteMatch();

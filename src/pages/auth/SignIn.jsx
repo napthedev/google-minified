@@ -1,43 +1,36 @@
-import { Link, TextField } from "@material-ui/core";
+import { IconButton, Link, Snackbar, TextField } from "@material-ui/core";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 
-import CircularIntegration from "./CircularIntegration";
-import Favicon from "../components/Favicon";
-import Particles from "./Particles";
-import Title from "../components/Title";
+import CircularIntegration from "../../components/CircularIntegration";
+import { Close } from "@material-ui/icons";
+import Favicon from "../../components/Favicon";
+import Particles from "../../components/Particles";
+import Title from "../../components/Title";
 import axios from "axios";
-import { userContext } from "../App";
+import { userContext } from "../../App";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-function SignUp() {
+function SignIn() {
   const query = useQuery();
   const redirect = query.get("redirect");
 
-  const { currentUser } = useContext(userContext);
+  const { currentUser, setCurrentUser } = useContext(userContext);
+
   const history = useHistory();
 
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
   const [loading, setLoading] = useState(false);
 
-  const validateUsername = () => {
-    if (!username.trim()) {
-      setUsernameError("Please enter your username");
-      return false;
-    } else {
-      setUsernameError("");
-      return true;
-    }
-  };
+  const [snackbarOpened, setSnackbarOpened] = useState(Boolean(Number(query.get("alert"))));
+
   const validateEmail = () => {
     if (!/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
       setEmailError("Please enter a valid email");
@@ -48,8 +41,8 @@ function SignUp() {
     }
   };
   const validatePassword = () => {
-    if (password.length < 6 || password.length > 18) {
-      setPasswordError("Password must be between 6-18 character");
+    if (password.length === 0) {
+      setPasswordError("Enter your password");
       return false;
     } else {
       setPasswordError("");
@@ -60,34 +53,34 @@ function SignUp() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    const validation = validateEmail() && validatePassword() && validateUsername();
+    const validation = validateEmail() && validatePassword();
 
-    if (!usernameError && !emailError && !passwordError && validation) signUp();
+    if (!emailError && !passwordError && validation) signIn();
   };
 
-  const signUp = async () => {
+  const signIn = async () => {
     setLoading(true);
 
     await axios
-      .post("auth/sign-up", { username, email, password })
+      .post("auth/sign-in", { email, password })
       .then((res) => {
-        let url = new URL(window.location.href);
-        let params = new URLSearchParams(url.search);
-
-        if (redirect) params.set("redirect", redirect);
-        params.set("alert", 1);
-        history.push(`/sign-in?${params.toString()}`);
+        if (res.status === 200) {
+          setCurrentUser(res.data);
+        } else {
+          console.log(res);
+          setEmailError("Unknown error occured");
+          setCurrentUser(null);
+        }
       })
       .catch((err) => {
         console.log(err, err.response);
-        if (err.response) {
-          if (err.response.data.code === "email-in-use") {
-            setEmailError(err.response.data.message);
-          } else {
-            setEmailError("Account creation failed! Please try again later");
-          }
+        if (err.response.data.code === "email-not-found" || err.response.data.code === "email-not-verified") {
+          setEmailError(err.response.data.message);
+        } else if (err.response.data.code === "incorrect-password") {
+          setPasswordError(err.response.data.message);
         } else {
-          alert(err);
+          setEmailError("Unknown error occured");
+          setLoading(false);
         }
       });
 
@@ -97,35 +90,47 @@ function SignUp() {
   return (
     <>
       <Favicon icon="https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png" />
-      <Title title="Sign Up - Google Minified" />
+      <Title title="Sign In - Google Minified" />
       {!currentUser ? (
         <>
           <Particles />
           <div className="auth-form-container">
             <form style={{ padding: "0 20px" }} className="auth-form" onSubmit={handleFormSubmit} noValidate>
-              <TextField type="text" error={usernameError ? true : false} label="Username" helperText={usernameError} value={username} onChange={(e) => setUsername(e.target.value)} onBlur={validateUsername} />
               <TextField type="email" error={emailError ? true : false} label="Email" helperText={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={validateEmail} />
               <TextField type="password" error={passwordError ? true : false} label="Password" helperText={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} />
               <Link
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push(`/sign-in${redirect ? "?redirect=" + encodeURIComponent(redirect) : ""}`);
+                  history.push(`/sign-up${redirect ? "?redirect=" + encodeURIComponent(redirect) : ""}`);
                 }}
               >
-                Already have an account? Sign in
+                Don't have an account? Sign up
               </Link>
               <CircularIntegration
                 onClick={() => {
-                  validateUsername();
                   validateEmail();
                   validatePassword();
                 }}
-                text="Sign up"
+                text="Sign in"
                 loading={loading}
               />
             </form>
           </div>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={snackbarOpened}
+            onClose={() => setSnackbarOpened(false)}
+            message="Please verify your email address. You may check your spam folder!"
+            action={
+              <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
+                <Close fontSize="small" />
+              </IconButton>
+            }
+          />
         </>
       ) : (
         <Redirect to={redirect ? redirect : "/"} />
@@ -134,4 +139,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignIn;

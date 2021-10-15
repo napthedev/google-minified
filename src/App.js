@@ -10,8 +10,8 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import axios from "axios";
 import { routes } from "./shared/routes";
 
-const SignUp = lazy(() => import("./components/SignUp"));
-const SignIn = lazy(() => import("./components/SignIn"));
+const SignUp = lazy(() => import("./pages/auth/SignUp"));
+const SignIn = lazy(() => import("./pages/auth/SignIn"));
 const Landing = lazy(() => import("./pages/landing"));
 
 export const userContext = createContext(null);

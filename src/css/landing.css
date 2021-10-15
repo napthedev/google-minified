@@ -66,6 +66,18 @@
   padding: 0 20px;
 }
 
+.svg-fill {
+  fill: black !important;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10vw;
+  background: #eee;
+}
+
 @media (min-width: 768px) {
   .reversed {
     flex-direction: row-reverse;
@@ -94,5 +106,14 @@
 
   .section-title-container {
     width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .svg-fill {
+    fill: #e8e6e3 !important;
+  }
+  .footer {
+    background: #2a2a2a;
   }
 }

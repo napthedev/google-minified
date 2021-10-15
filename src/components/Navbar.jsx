@@ -7,9 +7,7 @@ import { routes } from "../shared/routes";
 import { useState } from "react";
 import { useStore } from "../shared/store";
 
-function Navbar(props) {
-  const { name } = props;
-
+function Navbar({ name }) {
   const { currentUser, setCurrentUser } = useStore();
   const history = useHistory();
   const location = useLocation();
@@ -26,7 +24,7 @@ function Navbar(props) {
       })
       .catch((err) => {
         console.log(err, err.response);
-        alert("Failed to sign out, try to delete the cookie");
+        alert("Failed to sign out, try to clear the browser history");
       });
   };
 
@@ -47,9 +45,14 @@ function Navbar(props) {
               <img style={{ borderRadius: 50 }} height="40" src={currentUser.avatar} alt="" />
             </IconButton>
             <Menu id="profile-menu" anchorEl={userMenuOpened} keepMounted open={Boolean(userMenuOpened)} onClose={() => setUserMenuOpened(null)}>
-              <MenuItem onClick={() => setUserMenuOpened(null)}>
-                <Person />
-                My Profile
+              <MenuItem
+                onClick={() => {
+                  setUserMenuOpened(null);
+                  history.push("/");
+                }}
+              >
+                <Home color="primary" />
+                Homepage
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -59,15 +62,6 @@ function Navbar(props) {
               >
                 <ExitToApp color="secondary" />
                 Logout
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setUserMenuOpened(null);
-                  history.push("/");
-                }}
-              >
-                <Home color="primary" />
-                Homepage
               </MenuItem>
               <Divider />
 

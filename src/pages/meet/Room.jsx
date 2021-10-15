@@ -1,17 +1,17 @@
 import { Button, Dialog, TextField, Tooltip } from "@material-ui/core";
 import { Mic, MicOff, Share, Videocam, VideocamOff } from "@material-ui/icons";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import Peer from "peerjs";
 import VideoStream from "./VideoStream";
 import { io } from "socket.io-client";
-import { userContext } from "../../App";
+import { useStore } from "../../shared/store";
 
 function Room() {
   const { id: roomId } = useParams();
 
-  const { currentUser } = useContext(userContext);
+  const currentUser = useStore((state) => state.currentUser);
 
   const [videos, setVideos] = useState([]);
   const [socket, setSocket] = useState();

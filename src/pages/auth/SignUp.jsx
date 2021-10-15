@@ -1,13 +1,13 @@
 import { Link, TextField } from "@material-ui/core";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
 
 import CircularIntegration from "../../components/CircularIntegration";
 import Favicon from "../../components/Favicon";
 import Particles from "../../components/Particles";
 import Title from "../../components/Title";
 import axios from "axios";
-import { userContext } from "../../App";
+import { useState } from "react";
+import { useStore } from "../../shared/store";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -17,7 +17,7 @@ function SignUp() {
   const query = useQuery();
   const redirect = query.get("redirect");
 
-  const { currentUser } = useContext(userContext);
+  const currentUser = useStore((state) => state.currentUser);
   const history = useHistory();
 
   const [username, setUsername] = useState("");

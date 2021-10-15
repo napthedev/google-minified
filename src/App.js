@@ -1,6 +1,6 @@
 import { CircularProgress, CssBaseline, useMediaQuery } from "@material-ui/core";
 import { Route, Switch, useLocation } from "react-router-dom";
-import { Suspense, createContext, lazy, useEffect, useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import { animated, useTransition } from "react-spring";
 
@@ -9,12 +9,11 @@ import NotFound from "./components/NotFound";
 import TopBarProgress from "react-topbar-progress-indicator";
 import axios from "axios";
 import { routes } from "./shared/routes";
+import { useStore } from "./shared/store";
 
 const SignUp = lazy(() => import("./pages/auth/SignUp"));
 const SignIn = lazy(() => import("./pages/auth/SignIn"));
 const Landing = lazy(() => import("./pages/landing"));
-
-export const userContext = createContext(null);
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
@@ -27,9 +26,11 @@ TopBarProgress.config({
 });
 
 function App() {
+  const { currentUser, setCurrentUser, setTheme } = useStore();
+
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
-  const theme = useMemo(
+  const muiTheme = useMemo(
     () =>
       createTheme({
         palette: {
@@ -39,7 +40,10 @@ function App() {
     [prefersDarkMode]
   );
 
-  const [currentUser, setCurrentUser] = useState(undefined);
+  useEffect(() => {
+    setTheme(prefersDarkMode ? "dark" : "light");
+  }, [prefersDarkMode]);
+
   const [cookie, setCookie] = useState(true);
 
   useEffect(() => {
@@ -87,10 +91,10 @@ function App() {
   });
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       {cookie ? (
-        <userContext.Provider value={{ currentUser, setCurrentUser, theme }}>
+        <>
           {typeof currentUser !== "undefined" ? (
             <>
               {transitions((props, item) => (
@@ -116,7 +120,7 @@ function App() {
               <CircularProgress />
             </div>
           )}
-        </userContext.Provider>
+        </>
       ) : (
         <Cookie />
       )}

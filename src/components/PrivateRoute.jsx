@@ -1,10 +1,9 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
 
-import { useContext } from "react";
-import { userContext } from "../App";
+import { useStore } from "../shared/store";
 
 function PrivateRoute({ component: Component, children, ...others }) {
-  const { currentUser } = useContext(userContext);
+  const currentUser = useStore((state) => state.currentUser);
   const location = useLocation();
 
   return (

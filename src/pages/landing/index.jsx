@@ -1,7 +1,6 @@
 import "aos/dist/aos.css";
 
 import { Facebook, GitHub } from "@material-ui/icons";
-import { useContext, useEffect } from "react";
 
 import AOS from "aos";
 import Favicon from "../../components/Favicon";
@@ -11,11 +10,12 @@ import Title from "../../components/Title";
 import Typewriter from "typewriter-effect";
 import { Typography } from "@material-ui/core";
 import { routes } from "../../shared/routes";
+import { useEffect } from "react";
 import { useInnerWidth } from "./useInnerWidth";
-import { userContext } from "../../App";
+import { useStore } from "../../shared/store";
 
 function Landing() {
-  const { theme } = useContext(userContext);
+  const theme = useStore((state) => state.theme);
   const { width } = useInnerWidth();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function Landing() {
     <>
       <Title title="Google Minified" />
       <Favicon icon="https://ik.imagekit.io/nap/google-minified/google__RkZUHwQQ.png" />
-      <div className="first-section" style={{ backgroundImage: `url(${theme.palette.type === "dark" ? "https://ik.imagekit.io/nap/google-minified/backgroundDark_CeamoQy6CTA.svg" : "https://ik.imagekit.io/nap/google-minified/backgroundLight_JEXxOPVa9.svg"})` }}>
+      <div className="first-section" style={{ backgroundImage: `url(${theme === "dark" ? "https://ik.imagekit.io/nap/google-minified/backgroundDark_CeamoQy6CTA.svg" : "https://ik.imagekit.io/nap/google-minified/backgroundLight_JEXxOPVa9.svg"})` }}>
         <Typography variant={width > 768 ? "h2" : "h3"}>{routes.length} Google apps, in one place</Typography>
         <Typewriter
           options={{

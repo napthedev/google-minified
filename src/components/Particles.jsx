@@ -1,9 +1,8 @@
 import Particles from "react-particles-js";
-import { useContext } from "react";
-import { userContext } from "../App";
+import { useStore } from "../shared/store";
 
 function Canvas() {
-  const { theme } = useContext(userContext);
+  const theme = useStore((state) => state.theme);
 
   return (
     <Particles
@@ -13,11 +12,11 @@ function Canvas() {
       params={{
         particles: {
           color: {
-            value: theme.palette.type === "dark" ? "#FFFFFF" : "#000000",
+            value: theme === "dark" ? "#FFFFFF" : "#000000",
           },
           line_linked: {
             enable: true,
-            color: theme.palette.type === "dark" ? "#FFFFFF" : "#000000",
+            color: theme === "dark" ? "#FFFFFF" : "#000000",
             opacity: 0.4,
             width: 1,
           },

@@ -1,6 +1,5 @@
 import { IconButton, Link, Snackbar, TextField } from "@material-ui/core";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
 
 import CircularIntegration from "../../components/CircularIntegration";
 import { Close } from "@material-ui/icons";
@@ -8,7 +7,8 @@ import Favicon from "../../components/Favicon";
 import Particles from "../../components/Particles";
 import Title from "../../components/Title";
 import axios from "axios";
-import { userContext } from "../../App";
+import { useState } from "react";
+import { useStore } from "../../shared/store";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -18,7 +18,7 @@ function SignIn() {
   const query = useQuery();
   const redirect = query.get("redirect");
 
-  const { currentUser, setCurrentUser } = useContext(userContext);
+  const { currentUser, setCurrentUser } = useStore();
 
   const history = useHistory();
 

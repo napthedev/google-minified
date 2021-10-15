@@ -1,16 +1,16 @@
 import { AccountCircle, AssignmentReturn, ExitToApp, Home, Person, VpnKey } from "@material-ui/icons";
 import { AppBar, Divider, IconButton, Menu, MenuItem, Toolbar, Typography } from "@material-ui/core";
-import { useContext, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 import axios from "axios";
 import { routes } from "../shared/routes";
-import { userContext } from "../App";
+import { useState } from "react";
+import { useStore } from "../shared/store";
 
 function Navbar(props) {
   const { name } = props;
 
-  const { currentUser, setCurrentUser } = useContext(userContext);
+  const { currentUser, setCurrentUser } = useStore();
   const history = useHistory();
   const location = useLocation();
 

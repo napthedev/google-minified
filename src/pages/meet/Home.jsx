@@ -1,11 +1,12 @@
 import { Button, TextField } from "@material-ui/core";
 import { Link, useHistory } from "react-router-dom";
-import { useContext, useState } from "react";
 
+import { useState } from "react";
+import { useStore } from "../../shared/store";
 import { userContext } from "../../App";
 
 function Home() {
-  const { currentUser } = useContext(userContext);
+  const currentUser = useStore((state) => state.currentUser);
   const history = useHistory();
   const [inputValue, setInputValue] = useState("");
 

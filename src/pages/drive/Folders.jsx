@@ -1,7 +1,7 @@
 import { Breadcrumbs, CircularProgress, IconButton, Tooltip, Typography } from "@material-ui/core";
 import { Delete, FileCopy, Folder as FolderIcon, GetApp, InsertDriveFile, InsertLink } from "@material-ui/icons";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ClipboardSnackbar from "../../components/ClipboardSnackbar";
 import CreateNewFolder from "./CreateNewFolder";
@@ -12,10 +12,10 @@ import Title from "../../components/Title";
 import { anchorDownloadFile } from "../../shared/utils";
 import axios from "axios";
 import { io } from "socket.io-client";
-import { userContext } from "../../App";
+import { useStore } from "../../shared/store";
 
 function Folder({ uploadFile }) {
-  const { currentUser } = useContext(userContext);
+  const currentUser = useStore((state) => state.currentUser);
   let { id: currentFolderId } = useParams();
   currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
 

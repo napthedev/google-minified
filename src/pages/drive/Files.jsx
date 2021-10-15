@@ -3,7 +3,7 @@ import "../../css/vs.min.css";
 
 import { ArrowBack, GetApp, InsertLink } from "@material-ui/icons";
 import { Button, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import ClipboardSnackbar from "../../components/ClipboardSnackbar";
@@ -12,7 +12,7 @@ import NotFound from "../../components/NotFound";
 import Title from "../../components/Title";
 import { anchorDownloadFile } from "../../shared/utils";
 import axios from "axios";
-import { userContext } from "../../App";
+import { useStore } from "../../shared/store";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -26,7 +26,7 @@ function Files() {
 
   const { id } = useParams();
 
-  const { theme } = useContext(userContext);
+  const theme = useStore((state) => state.theme);
 
   const [view, setView] = useState(0);
   const [data, setData] = useState("");
@@ -112,7 +112,7 @@ function Files() {
           </div>
           <div style={{ flex: 1, height: "calc(100vh - 50px)" }}>
             {type === "text" ? (
-              <div className={`highlight-js-container ${theme.palette.type}`}>
+              <div className={`highlight-js-container ${theme}`}>
                 <Highlight className={file.name.split(".")[file.name.split(".").length - 1]}>{data}</Highlight>
               </div>
             ) : type === "video" ? (

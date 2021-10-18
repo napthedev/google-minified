@@ -1,4 +1,4 @@
-import { AccountCircle, AssignmentReturn, ExitToApp, Home, Person, VpnKey } from "@material-ui/icons";
+import { AccountCircle, AssignmentReturn, ExitToApp, Home, VpnKey } from "@material-ui/icons";
 import { AppBar, Divider, IconButton, Menu, MenuItem, Toolbar, Typography } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 

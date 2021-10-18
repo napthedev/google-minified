@@ -37,6 +37,7 @@ function Edit() {
     });
 
     return () => socket.disconnect();
+    // eslint-disable-next-line
   }, [_id]);
 
   const formTimeout = useRef(null);
@@ -55,6 +56,7 @@ function Edit() {
     formTimeout.current = setTimeout(() => {
       postFormData(title, description, data);
     }, 400);
+    // eslint-disable-next-line
   }, [data, title, description]);
 
   return (

@@ -42,7 +42,7 @@ function App() {
 
   useEffect(() => {
     setTheme(prefersDarkMode ? "dark" : "light");
-  }, [prefersDarkMode]);
+  }, [prefersDarkMode, setTheme]);
 
   const [cookie, setCookie] = useState(true);
 
@@ -72,7 +72,7 @@ function App() {
         console.log(err, err.response);
         setCurrentUser(null);
       });
-  }, []);
+  }, [setCurrentUser]);
 
   const location = useLocation();
   const transitions = useTransition(location, {

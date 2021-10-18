@@ -100,7 +100,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
     if (!data.emailVerified)
       return res.status(400).send({
         code: "email-not-verified",
-        message: "Your email hasn't been verified, try to check the spam folder",
+        message: "Your email hasn't been verified",
       });
 
     const user = {

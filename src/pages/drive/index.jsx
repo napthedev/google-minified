@@ -10,7 +10,7 @@ import Navbar from "../../components/Navbar";
 import NotFound from "../../components/NotFound";
 import PrivateRoute from "../../components/PrivateRoute";
 import axios from "axios";
-import napid from "napid";
+import { generate } from "shortid";
 import { routes } from "../../shared/routes";
 
 function CircularProgressWithLabel(props) {
@@ -48,7 +48,7 @@ function DriveRoute() {
 
   const uploadFile = async (file, path) => {
     let formData = new FormData();
-    let id = napid();
+    let id = generate();
     formData.append("file", file);
 
     setFilesUploading((prevFilesUploading) => [

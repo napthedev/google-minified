@@ -1,5 +1,5 @@
 import axios from "axios";
-import napid from "napid";
+import { generate } from "shortid";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 
@@ -71,8 +71,8 @@ function useFormData() {
   const addOption = (id, type) => {
     let clone = [...data];
     let item = clone.find((e) => e.id === id);
-    if (type === "checkbox") item.value.options.push({ id: napid(), name: "Checkbox " + (item.value.options.length + 1), checked: false });
-    else if (type === "radio") item.value.options.push({ id: napid(), name: "Radio " + (item.value.options.length + 1) });
+    if (type === "checkbox") item.value.options.push({ id: generate(), name: "Checkbox " + (item.value.options.length + 1), checked: false });
+    else if (type === "radio") item.value.options.push({ id: generate(), name: "Radio " + (item.value.options.length + 1) });
 
     setData(clone);
   };
@@ -85,42 +85,42 @@ function useFormData() {
   const addBox = (type) => {
     let clone = [...data];
     if (type === "text") {
-      clone.push({ id: napid(), type: "text", value: { title: "Untitled question", answer: "" } });
+      clone.push({ id: generate(), type: "text", value: { title: "Untitled question", answer: "" } });
     } else if (type === "checkbox") {
       clone.push({
-        id: napid(),
+        id: generate(),
         type: "checkbox",
         value: {
           title: "Untitled checkbox",
           options: [
-            { id: napid(), name: "Checkbox 1", checked: false },
-            { id: napid(), name: "Checkbox 2", checked: false },
+            { id: generate(), name: "Checkbox 1", checked: false },
+            { id: generate(), name: "Checkbox 2", checked: false },
           ],
         },
       });
     } else if (type === "radio") {
       clone.push({
-        id: napid(),
+        id: generate(),
         type: "radio",
         value: {
           title: "Untitled radio",
           current: "",
           options: [
             {
-              id: napid(),
+              id: generate(),
               name: "Radio 1",
             },
             {
-              id: napid(),
+              id: generate(),
               name: "Radio 2",
             },
           ],
         },
       });
     } else if (type === "date") {
-      clone.push({ id: napid(), type: "date", value: { title: "Untitled date", answer: "" } });
+      clone.push({ id: generate(), type: "date", value: { title: "Untitled date", answer: "" } });
     } else if (type === "time") {
-      clone.push({ id: napid(), type: "time", value: { title: "Untitled time", answer: "" } });
+      clone.push({ id: generate(), type: "time", value: { title: "Untitled time", answer: "" } });
     }
 
     setData(clone);

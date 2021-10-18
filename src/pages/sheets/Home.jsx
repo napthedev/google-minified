@@ -35,7 +35,7 @@ function SheetsHome() {
     <>
       <Title title="My Sheets - Google Sheets Minified" />
       {!loading ? (
-        <HomeGrid allData={allSheets} pushRoute="/sheets/" name="sheet" thumbnail="https://ik.imagekit.io/nap/google-minified/sheetsThumbnail_Paqk0hhry.png" deleteItem={deleteSheet} createRoute="/sheets/create" />
+        <HomeGrid allData={allSheets} pushRoute="/sheets/" name="sheet" thumbnail="https://ik.imagekit.io/nap/google-minified/Google_sheets_template_ZSf69lX9V.png" deleteItem={deleteSheet} createRoute="/sheets/create" />
       ) : (
         <div className="center-container">
           <CircularProgress />

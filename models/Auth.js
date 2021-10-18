@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const napid = require("napid");
+const { generate } = require("shortid");
 const bcrypt = require("bcrypt");
 
 const AuthSchema = new mongoose.Schema({
@@ -23,7 +23,7 @@ const AuthSchema = new mongoose.Schema({
   id: {
     type: String,
     required: true,
-    default: napid,
+    default: generate,
   },
 });
 

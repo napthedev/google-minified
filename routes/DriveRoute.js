@@ -1,7 +1,7 @@
 const express = require("express");
 const route = express.Router();
 const path = require("path");
-const napid = require("napid");
+const { generate } = require("shortid");
 const fs = require("fs");
 
 const Folders = require("../models/Folders");
@@ -87,7 +87,7 @@ route.post("/file-info", async (req, res) => {
 route.post("/upload", verifyJWT, async (req, res) => {
   try {
     const newFile = new Files({
-      _id: napid(),
+      _id: generate(),
       name: req.body.name,
       path: JSON.parse(req.body.path),
       userId: req.user.id,

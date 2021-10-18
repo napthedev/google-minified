@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const napid = require("napid");
+const { generate } = require("shortid");
 
 const FormsSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: napid,
+    default: generate,
   },
   userId: {
     type: String,

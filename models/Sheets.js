@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const napid = require("napid");
+const { generate } = require("shortid");
 
 const SheetSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: napid,
+    default: generate,
   },
   name: {
     type: String,

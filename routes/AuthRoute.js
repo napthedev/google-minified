@@ -7,9 +7,7 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const md5 = require("md5");
 const EmailVerificationTemplate = require("../public/EmailVerificationTemplate");
-const sgMail = require("@sendgrid/mail");
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const nodemailer = require("nodemailer");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -50,28 +48,36 @@ route.post("/sign-up", async (req, res) => {
     });
     const saved = await user.save();
 
-    let mailOptions = {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "googlminifiedservice@gmail.com",
+        pass: "mern4life",
+      },
+      from: "googlminifiedservice@gmail.com",
+    });
+
+    const mailOptions = {
       from: "googlminifiedservice@gmail.com",
       to: req.body.email,
       subject: "Verify your email for google minified",
       html: EmailVerificationTemplate(req.body.username, req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id),
     };
 
-    sgMail
-      .send(mailOptions)
-      .then((info) => {
-        res.send({
-          user: saved,
-          emailSent: { success: true, info },
-        });
-      })
-      .catch((error) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
         console.log(error);
         res.send({
           user: saved,
           emailSent: { success: false, error },
         });
-      });
+      } else {
+        res.send({
+          user: saved,
+          emailSent: { success: true, info },
+        });
+      }
+    });
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

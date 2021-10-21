@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@sendgrid/mail": "^7.4.7",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -14,6 +13,7 @@
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "mongoose": "^5.12.15",
+    "nodemailer": "^6.7.0",
     "shortid": "^2.2.16",
     "socket.io": "^4.1.3"
   },

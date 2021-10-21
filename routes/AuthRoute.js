@@ -57,11 +57,14 @@ route.post("/sign-up", async (req, res) => {
       from: "googlminifiedservice@gmail.com",
     });
 
+    const template = EmailVerificationTemplate(req.body.username, req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id);
+
     const mailOptions = {
       from: "googlminifiedservice@gmail.com",
       to: req.body.email,
       subject: "Verify your email for google minified",
-      html: EmailVerificationTemplate(req.body.username, req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id),
+      html: template,
+      text: template,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

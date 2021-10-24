@@ -125,7 +125,7 @@ function Folder({ uploadFile }) {
 
   const handleClicks = (e, id, type) => {
     if (e.detail === 1) {
-      if (e.ctrlKey) {
+      if (e.ctrlKey || e.metaKey) {
         let clone = [...selected];
         if (clone.filter((e) => e.id === id).length > 0) {
           clone = clone.filter((e) => e.id !== id);

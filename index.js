@@ -90,7 +90,7 @@ io.of("/submits").on("connection", (socket) => {
 
 let meetRooms = {};
 io.of("/meet").on("connection", (socket) => {
-  socket.on("join-room", (roomId, peerId, username, userId, sendResponse) => {
+  socket.on("join-room", (roomId, peerId, username, userId, avatar, sendResponse) => {
     if (!meetRooms[roomId] && roomId !== userId) {
       sendResponse(false);
       return;
@@ -110,6 +110,7 @@ io.of("/meet").on("connection", (socket) => {
       id: peerId,
       username,
       userId,
+      avatar,
       camera: true,
       microphone: true,
     });
@@ -117,6 +118,11 @@ io.of("/meet").on("connection", (socket) => {
     io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
 
     socket.broadcast.to(roomId).emit("new-connection", peerId);
+
+    socket.on("meeting-ended", () => {
+      delete meetRooms[roomId];
+      io.of("/meet").to(roomId).emit("meeting-ended", meetRooms[roomId]);
+    });
 
     socket.on("toggle-camera", () => {
       if (meetRooms[roomId]) {
@@ -134,9 +140,6 @@ io.of("/meet").on("connection", (socket) => {
     socket.on("disconnect", () => {
       if (meetRooms[roomId]) {
         meetRooms[roomId] = meetRooms[roomId].filter((e) => e.id !== peerId);
-      }
-      if (roomId === userId) {
-        delete meetRooms[roomId];
       }
       socket.broadcast.to(roomId).emit("user-disconnected", peerId);
     });

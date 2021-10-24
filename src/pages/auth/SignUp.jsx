@@ -69,7 +69,7 @@ function SignUp() {
     setLoading(true);
 
     await axios
-      .post("auth/sign-up", { username, email, password })
+      .post("auth/sign-up", { username, email: email.toLowerCase(), password })
       .then((res) => {
         let url = new URL(window.location.href);
         let params = new URLSearchParams(url.search);

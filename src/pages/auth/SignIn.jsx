@@ -62,7 +62,7 @@ function SignIn() {
     setLoading(true);
 
     await axios
-      .post("auth/sign-in", { email, password })
+      .post("auth/sign-in", { email: email.toLowerCase(), password })
       .then((res) => {
         if (res.status === 200) {
           setCurrentUser(res.data);

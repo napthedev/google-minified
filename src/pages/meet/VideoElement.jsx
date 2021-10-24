@@ -7,7 +7,7 @@ function VideoElement({ source, ...others }) {
     videoRef.current.srcObject = source;
   }, [source]);
 
-  return <video ref={videoRef} {...others}></video>;
+  return <video className="center" ref={videoRef} {...others}></video>;
 }
 
 export default VideoElement;

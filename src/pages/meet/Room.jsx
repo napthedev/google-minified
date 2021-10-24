@@ -1,7 +1,7 @@
 import { Button, Dialog, TextField, Tooltip } from "@material-ui/core";
-import { Mic, MicOff, Share, Videocam, VideocamOff } from "@material-ui/icons";
+import { CallEnd, Mic, MicOff, Share, Videocam, VideocamOff } from "@material-ui/icons";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
 
 import Peer from "peerjs";
 import VideoStream from "./VideoStream";
@@ -18,6 +18,7 @@ function Room() {
   const [metadata, setMetadata] = useState([]);
   const [peerId, setPeerId] = useState("");
   const [dialogOpened, setDialogOpened] = useState(false);
+  const [meetingEnded, setMeetingEnded] = useState(false);
 
   const history = useHistory();
 
@@ -57,6 +58,10 @@ function Room() {
             });
           });
 
+          mySocket.on("meeting-ended", () => {
+            setMeetingEnded(true);
+          });
+
           peer.on("call", (call) => {
             call.answer(stream);
             call.on("stream", (remoteStream) => {
@@ -76,7 +81,7 @@ function Room() {
 
           peer.on("open", (id) => {
             setPeerId(id);
-            mySocket.emit("join-room", roomId, id, currentUser.username, currentUser.id, (response) => {
+            mySocket.emit("join-room", roomId, id, currentUser.username, currentUser.id, currentUser.avatar, (response) => {
               if (!response) history.push("/meet/error");
             });
             mySocket.on("update-metadata", (data) => {
@@ -98,13 +103,25 @@ function Room() {
     };
   }, [currentUser, history, roomId]);
 
+  if (meetingEnded)
+    return (
+      <div className="center-container" style={{ flexDirection: "column" }}>
+        <h1>Meeting Ended</h1>
+        <Link to="/meet">
+          <Button variant="contained" color="primary">
+            Return Home
+          </Button>
+        </Link>
+      </div>
+    );
+
   return (
     <>
       <div className="video-grid">
         {videos
           .sort((a, b) => (a.priority === b.priority ? 0 : a.priority ? -1 : 1))
           .map((e) => (
-            <VideoStream key={e.id} source={e.source} id={e.id} camera={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.camera} microphone={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.microphone} username={e.id === "self" ? currentUser.username : metadata?.find((i) => i.id === e.id)?.username || "User"} />
+            <VideoStream key={e.id} source={e.source} id={e.id} camera={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.camera} microphone={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.microphone} username={e.id === "self" ? currentUser.username : metadata?.find((i) => i.id === e.id)?.username || "User"} avatar={e.id === "self" ? currentUser.avatar : metadata?.find((i) => i.id === e.id)?.avatar} />
           ))}
       </div>
       <div className="room-control">
@@ -123,6 +140,13 @@ function Room() {
             <Share />
           </Button>
         </Tooltip>
+        {currentUser.id === roomId && (
+          <Tooltip title="End meeting" placement="top">
+            <Button onClick={() => socket.emit("meeting-ended")} style={{ borderRadius: 99999, aspectRatio: "1 / 1" }} variant="contained" color="secondary">
+              <CallEnd />
+            </Button>
+          </Tooltip>
+        )}
       </div>
       <Dialog open={dialogOpened} onClose={() => setDialogOpened(false)}>
         <div style={{ width: "100vw", maxWidth: 350, padding: 30 }}>

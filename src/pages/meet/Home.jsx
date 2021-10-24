@@ -13,7 +13,7 @@ function Home() {
   return (
     <div className="center-container" style={{ flexDirection: "column" }}>
       <div>
-        <img src="https://cdn.iconscout.com/icon/free/png-256/google-meet-2923654-2416657.png" alt="" />
+        <img src="https://ik.imagekit.io/nap/google-minified/meet-big_g9JIMN6DJgA.webp" alt="" />
       </div>
       <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", alignItems: "flex-end", gap: 20 }}>
         <Link to={`/meet/${currentUser.id}`}>

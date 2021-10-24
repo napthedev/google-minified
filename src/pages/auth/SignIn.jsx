@@ -124,7 +124,7 @@ function SignIn() {
             }}
             open={snackbarOpened}
             onClose={() => setSnackbarOpened(false)}
-            message="Please verify your email address."
+            message="Please verify your email address. You should check your spam folder"
             action={
               <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpened(false)}>
                 <Close fontSize="small" />

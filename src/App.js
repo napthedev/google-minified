@@ -1,8 +1,7 @@
 import { CircularProgress, CssBaseline, useMediaQuery } from "@material-ui/core";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
-import { animated, useTransition } from "react-spring";
 
 import Cookie from "./components/Cookie";
 import NotFound from "./components/NotFound";
@@ -74,47 +73,25 @@ function App() {
       });
   }, [setCurrentUser]);
 
-  const location = useLocation();
-  const transitions = useTransition(location, {
-    from: {
-      position: "absolute",
-      opacity: 0,
-    },
-    enter: {
-      position: "absolute",
-      opacity: 1,
-    },
-    leave: {
-      position: "absolute",
-      opacity: 0,
-    },
-  });
-
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       {cookie ? (
         <>
           {typeof currentUser !== "undefined" ? (
-            <>
-              {transitions((props, item) => (
-                <animated.div style={props} className="root">
-                  <Suspense fallback={<TopBarProgress />}>
-                    <Switch location={item}>
-                      <Route path="/" exact component={Landing}></Route>
-                      <Route path="/sign-in" component={SignIn}></Route>
-                      <Route path="/sign-up" component={SignUp}></Route>
-                      {routes.map((e) => (
-                        <Route key={e.route} path={e.route} component={e.component} />
-                      ))}
-                      <Route>
-                        <NotFound />
-                      </Route>
-                    </Switch>
-                  </Suspense>
-                </animated.div>
-              ))}
-            </>
+            <Suspense fallback={<TopBarProgress />}>
+              <Switch>
+                <Route path="/" exact component={Landing}></Route>
+                <Route path="/sign-in" component={SignIn}></Route>
+                <Route path="/sign-up" component={SignUp}></Route>
+                {routes.map((e) => (
+                  <Route key={e.route} path={e.route} component={e.component} />
+                ))}
+                <Route>
+                  <NotFound />
+                </Route>
+              </Switch>
+            </Suspense>
           ) : (
             <div className="center-container">
               <CircularProgress />

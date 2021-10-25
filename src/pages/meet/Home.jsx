@@ -3,7 +3,6 @@ import { Link, useHistory } from "react-router-dom";
 
 import { useState } from "react";
 import { useStore } from "../../shared/store";
-import { userContext } from "../../App";
 
 function Home() {
   const currentUser = useStore((state) => state.currentUser);

@@ -56,8 +56,11 @@ function Files() {
             setData(res.data.url);
             setType("image");
           } else if (res.data.type === "application/pdf") {
-            setData(res.data.url);
-            setType("pdf");
+            setData(`${res.data.url}#toolbar=0`);
+            setType("iframe");
+          } else if (res.data.name.endsWith("docx") || res.data.name.endsWith("doc") || res.data.name.endsWith("xls") || res.data.name.endsWith("xlsx") || res.data.name.endsWith("ppt") || res.data.name.endsWith("pptx")) {
+            setData(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(res.data.url)}`);
+            setType("iframe");
           } else {
             setType("unknown");
           }
@@ -127,9 +130,9 @@ function Files() {
               <div className="center-container" style={{ flex: "1" }}>
                 <img className="responsive-image" src={data} alt="" />
               </div>
-            ) : type === "pdf" ? (
+            ) : type === "iframe" ? (
               <div style={{ display: "flex", flexDirection: "column", height: "100%", alignItems: "center" }}>
-                <iframe frameBorder={0} title="PDF File" style={{ maxWidth: 600, width: "100%", height: "100%", flexGrow: 1 }} src={data + "#toolbar=0"} />
+                <iframe frameBorder={0} title={type} style={{ maxWidth: 800, width: "100%", height: "100%", flexGrow: 1 }} src={data} />
               </div>
             ) : (
               <div className="center-container">

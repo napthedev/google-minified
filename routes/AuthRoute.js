@@ -23,6 +23,14 @@ route.post("/google", verifyJWT, async (req, res) => {
         id: req.user.id,
         photoURL: req.user.photoURL,
       });
+    } else if (data.username !== req.user.username || data.photoURL !== req.user.photoURL) {
+      await Auth.updateOne(
+        { email: req.user.email },
+        {
+          username: req.user.username,
+          photoURL: req.user.photoURL,
+        }
+      );
     }
 
     const user = {

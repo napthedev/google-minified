@@ -1,8 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const path = require("path");
 const { generate } = require("shortid");
-const fs = require("fs");
 
 const Folders = require("../models/Folders");
 const Files = require("../models/Files");

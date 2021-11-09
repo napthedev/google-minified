@@ -10,8 +10,7 @@ import axios from "axios";
 import { routes } from "./shared/routes";
 import { useStore } from "./shared/store";
 
-const SignUp = lazy(() => import("./pages/auth/SignUp"));
-const SignIn = lazy(() => import("./pages/auth/SignIn"));
+const AuthRoute = lazy(() => import("./pages/auth"));
 const Landing = lazy(() => import("./pages/landing"));
 
 axios.defaults.withCredentials = true;
@@ -58,7 +57,7 @@ function App() {
     }
 
     axios
-      .post("auth/sign-in")
+      .post("auth/google")
       .then((res) => {
         if (res.status === 200) {
           setCurrentUser(res.data);
@@ -82,8 +81,7 @@ function App() {
             <Suspense fallback={<TopBarProgress />}>
               <Switch>
                 <Route path="/" exact component={Landing}></Route>
-                <Route path="/sign-in" component={SignIn}></Route>
-                <Route path="/sign-up" component={SignUp}></Route>
+                <Route path="/auth" component={AuthRoute}></Route>
                 {routes.map((e) => (
                   <Route key={e.route} path={e.route} component={e.component} />
                 ))}

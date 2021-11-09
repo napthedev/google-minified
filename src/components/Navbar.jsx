@@ -1,4 +1,4 @@
-import { AccountCircle, AssignmentReturn, ExitToApp, Home, VpnKey } from "@material-ui/icons";
+import { AccountCircle, ExitToApp, Home } from "@material-ui/icons";
 import { AppBar, Divider, IconButton, Menu, MenuItem, Toolbar, Typography } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 
@@ -13,7 +13,6 @@ function Navbar({ name }) {
   const location = useLocation();
 
   const [userMenuOpened, setUserMenuOpened] = useState(null);
-  const [authMenuOpened, setAuthMenuOpened] = useState(null);
 
   const signOut = () => {
     axios
@@ -42,7 +41,7 @@ function Navbar({ name }) {
         {currentUser ? (
           <>
             <IconButton style={{ padding: 0 }} onClick={(e) => setUserMenuOpened(e.currentTarget)}>
-              <img style={{ borderRadius: 50 }} height="40" src={currentUser.avatar} alt="" />
+              <img style={{ borderRadius: 50 }} height="40" src={currentUser.photoURL} alt="" />
             </IconButton>
             <Menu id="profile-menu" anchorEl={userMenuOpened} keepMounted open={Boolean(userMenuOpened)} onClose={() => setUserMenuOpened(null)}>
               <MenuItem
@@ -84,31 +83,9 @@ function Navbar({ name }) {
           </>
         ) : (
           <>
-            <IconButton onClick={(e) => setAuthMenuOpened(e.currentTarget)}>
+            <IconButton onClick={() => history.push("/auth")}>
               <AccountCircle />
             </IconButton>
-            <Menu anchorEl={authMenuOpened} keepMounted open={Boolean(authMenuOpened)} onClose={() => setAuthMenuOpened(null)}>
-              <MenuItem
-                style={{ gap: 10 }}
-                onClick={() => {
-                  setAuthMenuOpened(null);
-                  history.push(`/sign-in?redirect=${encodeURIComponent(location.pathname)}`);
-                }}
-              >
-                <AssignmentReturn />
-                Sign in
-              </MenuItem>
-              <MenuItem
-                style={{ gap: 10 }}
-                onClick={() => {
-                  setAuthMenuOpened(null);
-                  history.push(`/sign-up?redirect=${encodeURIComponent(location.pathname)}`);
-                }}
-              >
-                <VpnKey />
-                Sign up
-              </MenuItem>
-            </Menu>
           </>
         )}
       </Toolbar>

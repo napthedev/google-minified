@@ -81,7 +81,7 @@ function Room() {
 
           peer.on("open", (id) => {
             setPeerId(id);
-            mySocket.emit("join-room", roomId, id, currentUser.username, currentUser.id, currentUser.avatar, (response) => {
+            mySocket.emit("join-room", roomId, id, currentUser.username, currentUser.id, currentUser.photoURL, (response) => {
               if (!response) history.push("/meet/error");
             });
             mySocket.on("update-metadata", (data) => {
@@ -121,7 +121,7 @@ function Room() {
         {videos
           .sort((a, b) => (a.priority === b.priority ? 0 : a.priority ? -1 : 1))
           .map((e) => (
-            <VideoStream key={e.id} source={e.source} id={e.id} camera={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.camera} microphone={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.microphone} username={e.id === "self" ? currentUser.username : metadata?.find((i) => i.id === e.id)?.username || "User"} avatar={e.id === "self" ? currentUser.avatar : metadata?.find((i) => i.id === e.id)?.avatar} />
+            <VideoStream key={e.id} source={e.source} id={e.id} camera={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.camera} microphone={metadata?.find((i) => i.id === (e.id === "self" ? peerId : e.id))?.microphone} username={e.id === "self" ? currentUser.username : metadata?.find((i) => i.id === e.id)?.username || "User"} photoURL={e.id === "self" ? currentUser.photoURL : metadata?.find((i) => i.id === e.id)?.photoURL} />
           ))}
       </div>
       <div className="room-control">

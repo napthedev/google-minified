@@ -14,7 +14,7 @@ function PrivateRoute({ component: Component, children, ...others }) {
           {children}
         </Route>
       ) : (
-        <Redirect to={`/sign-in?redirect=${encodeURIComponent(location.pathname)}`} />
+        <Redirect to={`/auth?redirect=${encodeURIComponent(location.pathname)}`} />
       )}
     </>
   );

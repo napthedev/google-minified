@@ -3,11 +3,8 @@ require("dotenv/config");
 
 function verifyJWT(req, res, next) {
   const authToken = req.cookies.token;
-  if (req.body.email && req.body.password) {
-    req.user = {
-      email: req.body.email,
-      password: req.body.password,
-    };
+  if (req.body.user) {
+    req.user = req.body.user;
     return next();
   }
   if (!authToken)

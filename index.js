@@ -7,7 +7,6 @@ const io = new Server(server, { cors: { origin: "*" } });
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const fileUpload = require("express-fileupload");
 
 require("dotenv/config");
 
@@ -21,7 +20,6 @@ const SheetsRoute = require("./routes/SheetsRoute");
 
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
-app.use(fileUpload({ createParentPath: true, useTempFiles: true }));
 
 app.use(cookieParser());
 
@@ -90,7 +88,7 @@ io.of("/submits").on("connection", (socket) => {
 
 let meetRooms = {};
 io.of("/meet").on("connection", (socket) => {
-  socket.on("join-room", (roomId, peerId, username, userId, avatar, sendResponse) => {
+  socket.on("join-room", (roomId, peerId, username, userId, photoURL, sendResponse) => {
     if (!meetRooms[roomId] && roomId !== userId) {
       sendResponse(false);
       return;
@@ -110,7 +108,7 @@ io.of("/meet").on("connection", (socket) => {
       id: peerId,
       username,
       userId,
-      avatar,
+      photoURL,
       camera: true,
       microphone: true,
     });

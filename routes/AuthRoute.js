@@ -3,11 +3,6 @@ const route = express.Router();
 const { verifyJWT } = require("../verifyJWT");
 const Auth = require("../models/Auth");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const path = require("path");
-const md5 = require("md5");
-const EmailVerificationTemplate = require("../public/EmailVerificationTemplate");
-const nodemailer = require("nodemailer");
 
 const getDomainWithoutSubdomain = (url) => {
   const urlParts = new URL(url).hostname.split(".");
@@ -18,105 +13,23 @@ const getDomainWithoutSubdomain = (url) => {
     .join(".");
 };
 
-route.get("/verify/:id", async (req, res) => {
-  try {
-    const data = await Auth.findOneAndUpdate({ id: req.params.id }, { emailVerified: true });
-
-    if (!data) return res.sendFile(path.join(__dirname + "./../public/NotFound.html"));
-
-    res.sendFile(path.join(__dirname + "./../public/EmailVerified.html"));
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-});
-
-route.post("/sign-up", async (req, res) => {
-  try {
-    const data = await Auth.findOne({ email: req.body.email });
-
-    if (data)
-      return res.status(400).send({
-        code: "email-in-use",
-        message: "This email has already been in use",
-      });
-
-    const user = new Auth({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-    });
-    const saved = await user.save();
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "googlminifiedservice@gmail.com",
-        pass: "mern4life",
-      },
-      from: "googlminifiedservice@gmail.com",
-    });
-
-    const template = EmailVerificationTemplate(req.body.username, req.protocol + "://" + req.get("host") + "/auth/verify/" + saved.id);
-
-    const mailOptions = {
-      from: "googlminifiedservice@gmail.com",
-      to: req.body.email,
-      subject: "Verify your email for google minified",
-      html: template,
-      text: template,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log(error);
-        res.send({
-          user: saved,
-          emailSent: { success: false, error },
-        });
-      } else {
-        res.send({
-          user: saved,
-          emailSent: { success: true, info },
-        });
-      }
-    });
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-});
-
-route.post("/sign-in", verifyJWT, async (req, res) => {
+route.post("/google", verifyJWT, async (req, res) => {
   try {
     const data = await Auth.findOne({ email: req.user.email });
-    if (!data)
-      return res.status(404).send({
-        code: "email-not-found",
-        message: "The email provided isn't connected to any account",
+    if (!data) {
+      await Auth.create({
+        email: req.user.email,
+        username: req.user.username,
+        id: req.user.id,
+        photoURL: req.user.photoURL,
       });
-
-    let passwordCompare = await bcrypt.compare(req.user.password, data.password);
-    if (req.cookies.token) {
-      passwordCompare = req.user.password === data.password ? true : passwordCompare;
     }
-    if (!passwordCompare)
-      return res.status(400).send({
-        code: "incorrect-password",
-        message: "Password is incorrect",
-      });
-
-    if (!data.emailVerified)
-      return res.status(400).send({
-        code: "email-not-verified",
-        message: "Your email hasn't been verified",
-      });
 
     const user = {
-      id: data.id,
-      username: data.username,
-      email: data.email,
-      password: data.password,
+      email: req.user.email,
+      username: req.user.username,
+      id: req.user.id,
+      photoURL: req.user.photoURL,
     };
 
     const accessToken = jwt.sign(user, process.env.JWT_SECRET_TOKEN, { expiresIn: "7d" });
@@ -131,7 +44,7 @@ route.post("/sign-in", verifyJWT, async (req, res) => {
         path: "/",
         domain: getDomainWithoutSubdomain(req.get("origin")) !== "localhost" ? "." + getDomainWithoutSubdomain(req.get("origin")) : "localhost",
       })
-      .send({ ...user, avatar: `https://www.gravatar.com/avatar/${md5(user.email)}?d=${encodeURIComponent(`https://ui-avatars.com/api/${user.username}/64/0D8ABC/FFFFFF`)}` });
+      .send(user);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

@@ -157,7 +157,7 @@ function Room() {
             <TextField style={{ width: "100%" }} label="URL" value={window.location.href} onFocus={(e) => e.target.select()} />
           </div>
           <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-            <img style={{ maxWidth: "100%", height: "auto" }} src={`https://qrtag.net/api/qr_5.png?url=${encodeURIComponent(window.location.href)}`} alt="QR Code" />
+            <img style={{ maxWidth: "100%", height: "auto" }} src={`https://api.qrserver.com/v1/create-qr-code/?size=300&data=${encodeURIComponent(window.location.href)}`} alt="QR Code" />
           </div>
         </div>
       </Dialog>

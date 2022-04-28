@@ -2,7 +2,12 @@ import "../../css/railscasts.min.css";
 import "../../css/vs.min.css";
 
 import { ArrowBack, GetApp, InsertLink } from "@material-ui/icons";
-import { Button, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Tooltip,
+} from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
@@ -42,9 +47,16 @@ function Files() {
       axios
         .post("drive/file-info", { _id: id })
         .then(async (res) => {
-          if (res.data.type.startsWith("text") || res.data.type === "application/json") {
+          if (
+            res.data.type.startsWith("text") ||
+            res.data.type === "application/json"
+          ) {
             const textData = (await axios.get(res.data.url)).data;
-            setData(typeof textData === "string" ? textData : JSON.stringify(textData, null, 4));
+            setData(
+              typeof textData === "string"
+                ? textData
+                : JSON.stringify(textData, null, 4)
+            );
             setType("text");
           } else if (res.data.type.startsWith("audio")) {
             setType("audio");
@@ -58,8 +70,19 @@ function Files() {
           } else if (res.data.type === "application/pdf") {
             setData(`${res.data.url}#toolbar=0`);
             setType("iframe");
-          } else if (res.data.name.endsWith("docx") || res.data.name.endsWith("doc") || res.data.name.endsWith("xls") || res.data.name.endsWith("xlsx") || res.data.name.endsWith("ppt") || res.data.name.endsWith("pptx")) {
-            setData(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(res.data.url)}`);
+          } else if (
+            res.data.name.endsWith("docx") ||
+            res.data.name.endsWith("doc") ||
+            res.data.name.endsWith("xls") ||
+            res.data.name.endsWith("xlsx") ||
+            res.data.name.endsWith("ppt") ||
+            res.data.name.endsWith("pptx")
+          ) {
+            setData(
+              `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+                res.data.url
+              )}`
+            );
             setType("iframe");
           } else {
             setType("unknown");
@@ -78,15 +101,26 @@ function Files() {
   }, [id]);
 
   const downloadFile = () => {
-    anchorDownloadFile(file.url + "?dl=1");
+    anchorDownloadFile(file.url);
   };
 
   return (
     <>
       <Title title={`${file.name} - File - Google Drive Minified"`} />
       {view === 200 ? (
-        <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 50, paddingLeft: 10, width: "100%" }}>
+        <div
+          style={{ height: "100vh", display: "flex", flexDirection: "column" }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              height: 50,
+              paddingLeft: 10,
+              width: "100%",
+            }}
+          >
             <div style={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
               {Boolean(Number(back)) && (
                 <Tooltip title="Back" onClick={() => history.goBack()}>
@@ -95,11 +129,35 @@ function Files() {
                   </IconButton>
                 </Tooltip>
               )}
-              <img style={{ height: 30, width: "auto", padding: "0 20px 0 10px" }} onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${file.name.split(".")[file.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" alt="" />
-              <p style={{ maxWidth: Boolean(Number(back)) ? "calc(100vw - 230px)" : "calc(100vw - 180px)" }}>{file.name}</p>
+              <img
+                style={{ height: 30, width: "auto", padding: "0 20px 0 10px" }}
+                onError={(e) =>
+                  (e.target.src =
+                    "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")
+                }
+                src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${file.name
+                  .split(".")
+                  [file.name.split(".").length - 1].toLowerCase()}.svg`}
+                height="100%"
+                alt=""
+              />
+              <p
+                style={{
+                  maxWidth: Boolean(Number(back))
+                    ? "calc(100vw - 230px)"
+                    : "calc(100vw - 180px)",
+                }}
+              >
+                {file.name}
+              </p>
             </div>
-            <div style={{ display: "flex", alignItems: "center", marginRight: 10 }}>
-              <ClipboardSnackbar content={window.location.origin + window.location.pathname} message="URL Copied to clipboard">
+            <div
+              style={{ display: "flex", alignItems: "center", marginRight: 10 }}
+            >
+              <ClipboardSnackbar
+                content={window.location.origin + window.location.pathname}
+                message="URL Copied to clipboard"
+              >
                 <Tooltip title="Copy link">
                   <IconButton>
                     <InsertLink />
@@ -116,11 +174,25 @@ function Files() {
           <div style={{ flex: 1, height: "calc(100vh - 50px)" }}>
             {type === "text" ? (
               <div className={`highlight-js-container ${theme}`}>
-                <Highlight className={file.name.split(".")[file.name.split(".").length - 1]}>{data}</Highlight>
+                <Highlight
+                  className={
+                    file.name.split(".")[file.name.split(".").length - 1]
+                  }
+                >
+                  {data}
+                </Highlight>
               </div>
             ) : type === "video" ? (
               <div className="center-container">
-                <video style={{ maxHeight: "60%", maxWidth: "100%", outline: "none" }} controls src={data}></video>
+                <video
+                  style={{
+                    maxHeight: "60%",
+                    maxWidth: "100%",
+                    outline: "none",
+                  }}
+                  controls
+                  src={data}
+                ></video>
               </div>
             ) : type === "audio" ? (
               <div className="center-container">
@@ -131,14 +203,41 @@ function Files() {
                 <img className="responsive-image" src={data} alt="" />
               </div>
             ) : type === "iframe" ? (
-              <div style={{ display: "flex", flexDirection: "column", height: "100%", alignItems: "center" }}>
-                <iframe frameBorder={0} title={type} style={{ maxWidth: 800, width: "100%", height: "100%", flexGrow: 1 }} src={data} />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <iframe
+                  frameBorder={0}
+                  title={type}
+                  style={{
+                    maxWidth: 800,
+                    width: "100%",
+                    height: "100%",
+                    flexGrow: 1,
+                  }}
+                  src={data}
+                />
               </div>
             ) : (
               <div className="center-container">
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
                   <h1>File cannot be previewed</h1>
-                  <Button color="primary" variant="contained" onClick={downloadFile}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={downloadFile}
+                  >
                     <GetApp style={{ marginRight: 10 }} />
                     Download
                   </Button>
@@ -155,7 +254,9 @@ function Files() {
         </div>
       ) : (
         <div className="center-container">
-          <h1 style={{ textAlign: "center" }}>Something went wrong. Try again later</h1>
+          <h1 style={{ textAlign: "center" }}>
+            Something went wrong. Try again later
+          </h1>
         </div>
       )}
     </>

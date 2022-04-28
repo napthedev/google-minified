@@ -47,6 +47,7 @@ export const anchorDownloadFile = (url) => {
   anchor.href = url;
   anchor.download = url;
   anchor.style.display = "none";
+  anchor.target = "_blank";
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);

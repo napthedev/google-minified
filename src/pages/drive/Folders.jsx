@@ -1,5 +1,18 @@
-import { Breadcrumbs, CircularProgress, IconButton, Tooltip, Typography } from "@material-ui/core";
-import { Delete, FileCopy, Folder as FolderIcon, GetApp, InsertDriveFile, InsertLink } from "@material-ui/icons";
+import {
+  Breadcrumbs,
+  CircularProgress,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
+import {
+  Delete,
+  FileCopy,
+  Folder as FolderIcon,
+  GetApp,
+  InsertDriveFile,
+  InsertLink,
+} from "@material-ui/icons";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
@@ -17,7 +30,8 @@ import { useStore } from "../../shared/store";
 function Folder({ uploadFile }) {
   const currentUser = useStore((state) => state.currentUser);
   let { id: currentFolderId } = useParams();
-  currentFolderId = typeof currentFolderId === "undefined" ? null : currentFolderId;
+  currentFolderId =
+    typeof currentFolderId === "undefined" ? null : currentFolderId;
 
   useEffect(() => {
     (async () => {
@@ -38,8 +52,12 @@ function Folder({ uploadFile }) {
       const clickHandler = (e) => {
         let clickedOutside = true;
 
-        let foldersEl = Array.prototype.slice.call(document.getElementsByClassName("folder-box"));
-        let filesEl = Array.prototype.slice.call(document.getElementsByClassName("file-box"));
+        let foldersEl = Array.prototype.slice.call(
+          document.getElementsByClassName("folder-box")
+        );
+        let filesEl = Array.prototype.slice.call(
+          document.getElementsByClassName("file-box")
+        );
         let allEl = foldersEl.concat(filesEl);
 
         for (const el of allEl) {
@@ -147,7 +165,7 @@ function Folder({ uploadFile }) {
       if (i < selected.length) {
         const file = allFiles.find((elem) => elem._id === selected[i].id);
 
-        anchorDownloadFile(file.url + "?dl=1");
+        anchorDownloadFile(file.url);
 
         setTimeout(() => {
           i++;
@@ -201,10 +219,31 @@ function Folder({ uploadFile }) {
 
   return (
     <>
-      <Title title={currentFolderId ? `${breadcrumb.length > 0 ? breadcrumb.slice(-1)[0].name : ""} - Folder - Google Drive Minified` : "My Drive - Google Drive Minified"} />
-      <div style={{ flexGrow: 1, display: "flex", flexDirection: "column" }} onDrop={dropFile} onDragLeave={dragBlur} onDragEnter={dragFocus} onDragOver={dragFocus} className={fileDragging ? "file-dragging" : ""}>
+      <Title
+        title={
+          currentFolderId
+            ? `${
+                breadcrumb.length > 0 ? breadcrumb.slice(-1)[0].name : ""
+              } - Folder - Google Drive Minified`
+            : "My Drive - Google Drive Minified"
+        }
+      />
+      <div
+        style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+        onDrop={dropFile}
+        onDragLeave={dragBlur}
+        onDragEnter={dragFocus}
+        onDragOver={dragFocus}
+        className={fileDragging ? "file-dragging" : ""}
+      >
         {(permission || typeof permission === "undefined") && !notFound && (
-          <div style={{ padding: "20px 20px 0 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
+          <div
+            style={{
+              padding: "20px 20px 0 20px",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+            }}
+          >
             <CreateNewFolder path={path} permission={permission} />
             <FileInput
               className="center-div"
@@ -241,7 +280,11 @@ function Folder({ uploadFile }) {
           <div className="main">
             <div className="actions-wrapper">
               <Breadcrumbs>
-                {permission !== false ? <Link to="/drive">My Drive</Link> : <span>Shared with me</span>}
+                {permission !== false ? (
+                  <Link to="/drive">My Drive</Link>
+                ) : (
+                  <span>Shared with me</span>
+                )}
 
                 {breadcrumb.map((e, index) => (
                   <Link key={index} to={e._id}>
@@ -251,7 +294,14 @@ function Folder({ uploadFile }) {
               </Breadcrumbs>
               <div>
                 {selected.length === 1 && (
-                  <ClipboardSnackbar content={selected[0].type === "folder" ? `${window.location.origin}/drive/folder/${selected[0].id}` : `${window.location.origin}/drive/file/${selected[0].id}`} message="URL Copied to clipboard">
+                  <ClipboardSnackbar
+                    content={
+                      selected[0].type === "folder"
+                        ? `${window.location.origin}/drive/folder/${selected[0].id}`
+                        : `${window.location.origin}/drive/file/${selected[0].id}`
+                    }
+                    message="URL Copied to clipboard"
+                  >
                     <Tooltip title="Copy Link">
                       <IconButton color="default">
                         <InsertLink />
@@ -260,13 +310,14 @@ function Folder({ uploadFile }) {
                   </ClipboardSnackbar>
                 )}
 
-                {selected.length > 0 && selected.every((e) => e.type === "file") && (
-                  <Tooltip title="Download" onClick={downloadFile}>
-                    <IconButton color="primary">
-                      <GetApp />
-                    </IconButton>
-                  </Tooltip>
-                )}
+                {selected.length > 0 &&
+                  selected.every((e) => e.type === "file") && (
+                    <Tooltip title="Download" onClick={downloadFile}>
+                      <IconButton color="primary">
+                        <GetApp />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 {permission && (
                   <>
                     <RenameDialog selected={selected} />
@@ -296,7 +347,13 @@ function Folder({ uploadFile }) {
               </div>
             ) : (
               <>
-                {allFolder.length === 0 && allFiles.length === 0 && (currentFolderId ? <Typography>This folder is empty</Typography> : <Typography>Your Drive is empty</Typography>)}
+                {allFolder.length === 0 &&
+                  allFiles.length === 0 &&
+                  (currentFolderId ? (
+                    <Typography>This folder is empty</Typography>
+                  ) : (
+                    <Typography>Your Drive is empty</Typography>
+                  ))}
 
                 {allFolder.length > 0 && (
                   <Typography style={{ margin: 10 }} variant="subtitle2">
@@ -306,7 +363,17 @@ function Folder({ uploadFile }) {
 
                 <div className="main-grid">
                   {allFolder.map((e) => (
-                    <div onClick={(event) => handleClicks(event, e._id, "folder")} key={e._id} className={"folder-box" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")}>
+                    <div
+                      onClick={(event) => handleClicks(event, e._id, "folder")}
+                      key={e._id}
+                      className={
+                        "folder-box" +
+                        (selected.filter((elem) => elem.id === e._id).length ===
+                        1
+                          ? " selected"
+                          : "")
+                      }
+                    >
                       <FolderIcon className="dynamic-icon" />
                       <Typography>{e.name}</Typography>
                     </div>
@@ -321,12 +388,53 @@ function Folder({ uploadFile }) {
 
                 <div className="main-grid">
                   {allFiles.map((e) => (
-                    <div onClick={(event) => handleClicks(event, e._id, "file")} className={"file-box square" + (selected.filter((elem) => elem.id === e._id).length === 1 ? " selected" : "")} key={e._id}>
-                      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}>
-                        <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
+                    <div
+                      onClick={(event) => handleClicks(event, e._id, "file")}
+                      className={
+                        "file-box square" +
+                        (selected.filter((elem) => elem.id === e._id).length ===
+                        1
+                          ? " selected"
+                          : "")
+                      }
+                      key={e._id}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        >
                           <div className="center-div" style={{ flexGrow: 1 }}>
-                            <div className="center-div" style={{ height: "40%" }}>
-                              <img draggable={false} alt="" onError={(e) => (e.target.src = "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")} src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name.split(".")[e.name.split(".").length - 1].toLowerCase()}.svg`} height="100%" />
+                            <div
+                              className="center-div"
+                              style={{ height: "40%" }}
+                            >
+                              <img
+                                draggable={false}
+                                alt=""
+                                onError={(e) =>
+                                  (e.target.src =
+                                    "https://raw.githubusercontent.com/NAPTheDev/file-icons/master/default_file.svg")
+                                }
+                                src={`https://raw.githubusercontent.com/NAPTheDev/file-icons/master/file/${e.name
+                                  .split(".")
+                                  [
+                                    e.name.split(".").length - 1
+                                  ].toLowerCase()}.svg`}
+                                height="100%"
+                              />
                             </div>
                           </div>
                           <div className="file-box-label">

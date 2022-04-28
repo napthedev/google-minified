@@ -12,9 +12,20 @@ function Home() {
   return (
     <div className="center-container" style={{ flexDirection: "column" }}>
       <div>
-        <img src="https://ik.imagekit.io/nap/google-minified/meet-big_g9JIMN6DJgA.webp" alt="" />
+        <img
+          src="https://ik.imagekit.io/nap/google-minified/meet-big_g9JIMN6DJgA.webp"
+          alt=""
+        />
       </div>
-      <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", alignItems: "flex-end", gap: 20 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          alignItems: "flex-end",
+          gap: 20,
+        }}
+      >
         <Link to={`/meet/${currentUser.id}`}>
           <Button color="primary" variant="contained">
             New Meeting
@@ -29,8 +40,13 @@ function Home() {
           }}
           style={{ display: "flex", alignItems: "flex-end", gap: 8 }}
         >
-          <TextField value={inputValue} onChange={(e) => setInputValue(e.target.value)} variant="standard" label="Room ID" />
-          <Button variant="contained" color="primary">
+          <TextField
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            variant="standard"
+            label="Room ID"
+          />
+          <Button type="submit" variant="contained" color="primary">
             Join
           </Button>
         </form>

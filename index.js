@@ -10,7 +10,11 @@ const cookieParser = require("cookie-parser");
 
 require("dotenv/config");
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, () => console.log("MongoDB database connected"));
+mongoose.connect(
+  process.env.MONGODB_URI,
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
+  () => console.log("MongoDB database connected")
+);
 
 const AuthRoute = require("./routes/AuthRoute");
 const FormsRoute = require("./routes/FormsRoute");
@@ -88,61 +92,75 @@ io.of("/submits").on("connection", (socket) => {
 
 let meetRooms = {};
 io.of("/meet").on("connection", (socket) => {
-  socket.on("join-room", (roomId, peerId, username, userId, photoURL, sendResponse) => {
-    if (!meetRooms[roomId] && roomId !== userId) {
-      sendResponse(false);
-      return;
+  socket.on(
+    "join-room",
+    (roomId, peerId, username, userId, photoURL, sendResponse) => {
+      if (!meetRooms[roomId] && roomId !== userId) {
+        sendResponse(false);
+        return;
+      }
+      if (
+        meetRooms[roomId] &&
+        meetRooms[roomId].find((e) => e.userId === userId)
+      ) {
+        sendResponse(false);
+        return;
+      } else {
+        sendResponse(true);
+      }
+
+      socket.join(roomId);
+
+      if (!meetRooms[roomId]) meetRooms[roomId] = [];
+
+      meetRooms[roomId].push({
+        id: peerId,
+        username,
+        userId,
+        photoURL,
+        camera: true,
+        microphone: true,
+      });
+
+      io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
+
+      socket.broadcast.to(roomId).emit("new-connection", peerId);
+
+      socket.on("meeting-ended", () => {
+        delete meetRooms[roomId];
+        io.of("/meet").to(roomId).emit("meeting-ended", meetRooms[roomId]);
+      });
+
+      socket.on("toggle-camera", () => {
+        if (meetRooms[roomId]) {
+          meetRooms[roomId].find((i) => i.id === peerId).camera = !meetRooms[
+            roomId
+          ].find((i) => i.id === peerId).camera;
+          io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
+        }
+      });
+      socket.on("toggle-microphone", () => {
+        if (meetRooms[roomId]) {
+          meetRooms[roomId].find((i) => i.id === peerId).microphone =
+            !meetRooms[roomId].find((i) => i.id === peerId).microphone;
+          io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
+        }
+      });
+
+      socket.on("disconnect", () => {
+        if (meetRooms[roomId]) {
+          meetRooms[roomId] = meetRooms[roomId].filter((e) => e.id !== peerId);
+        }
+        socket.broadcast.to(roomId).emit("user-disconnected", peerId);
+      });
     }
-    if (meetRooms[roomId] && meetRooms[roomId].find((e) => e.userId === userId)) {
-      sendResponse(false);
-      return;
-    } else {
-      sendResponse(true);
-    }
-
-    socket.join(roomId);
-
-    if (!meetRooms[roomId]) meetRooms[roomId] = [];
-
-    meetRooms[roomId].push({
-      id: peerId,
-      username,
-      userId,
-      photoURL,
-      camera: true,
-      microphone: true,
-    });
-
-    io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
-
-    socket.broadcast.to(roomId).emit("new-connection", peerId);
-
-    socket.on("meeting-ended", () => {
-      delete meetRooms[roomId];
-      io.of("/meet").to(roomId).emit("meeting-ended", meetRooms[roomId]);
-    });
-
-    socket.on("toggle-camera", () => {
-      if (meetRooms[roomId]) {
-        meetRooms[roomId].find((i) => i.id === peerId).camera = !meetRooms[roomId].find((i) => i.id === peerId).camera;
-        io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
-      }
-    });
-    socket.on("toggle-microphone", () => {
-      if (meetRooms[roomId]) {
-        meetRooms[roomId].find((i) => i.id === peerId).microphone = !meetRooms[roomId].find((i) => i.id === peerId).microphone;
-        io.of("/meet").to(roomId).emit("update-metadata", meetRooms[roomId]);
-      }
-    });
-
-    socket.on("disconnect", () => {
-      if (meetRooms[roomId]) {
-        meetRooms[roomId] = meetRooms[roomId].filter((e) => e.id !== peerId);
-      }
-      socket.broadcast.to(roomId).emit("user-disconnected", peerId);
-    });
-  });
+  );
 });
+
+setInterval(() => {
+  console.clear();
+  console.log(meetRooms);
+}, 1000);
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Listening on port ${port}`));

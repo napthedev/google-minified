@@ -39,6 +39,8 @@ function Room() {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
+          console.log(stream);
+
           setVideos((prev) => [
             ...prev,
             {
@@ -86,7 +88,12 @@ function Room() {
             });
           });
 
-          peer.on("open", (id) => {
+          peer.on("error", (err) => {
+            alert("Cannot connect to peer server");
+            console.log(err);
+          });
+
+          const joinRoom = (id) => {
             setPeerId(id);
             mySocket.emit(
               "join-room",
@@ -99,12 +106,16 @@ function Room() {
                 if (!response) history.push("/meet/error");
               }
             );
-            mySocket.on("update-metadata", (data) => {
-              setMetadata(data);
-            });
-            mySocket.on("user-disconnected", (userId) => {
-              setVideos((prev) => prev.filter((e) => e.id !== userId));
-            });
+          };
+
+          if (peer.id) joinRoom(peer.id);
+          else peer.on("open", (id) => joinRoom(id));
+
+          mySocket.on("update-metadata", (data) => {
+            setMetadata(data);
+          });
+          mySocket.on("user-disconnected", (userId) => {
+            setVideos((prev) => prev.filter((e) => e.id !== userId));
           });
         })
         .catch((err) => {
@@ -144,14 +155,18 @@ function Room() {
               source={e.source}
               id={e.id}
               camera={
-                metadata?.find(
-                  (i) => i.id === (e.id === "self" ? peerId : e.id)
-                )?.camera
+                e.id === "self"
+                  ? true
+                  : metadata?.find(
+                      (i) => i.id === (e.id === "self" ? peerId : e.id)
+                    )?.camera
               }
               microphone={
-                metadata?.find(
-                  (i) => i.id === (e.id === "self" ? peerId : e.id)
-                )?.microphone
+                e.id === "self"
+                  ? true
+                  : metadata?.find(
+                      (i) => i.id === (e.id === "self" ? peerId : e.id)
+                    )?.microphone
               }
               username={
                 e.id === "self"

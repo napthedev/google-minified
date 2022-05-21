@@ -155,18 +155,14 @@ function Room() {
               source={e.source}
               id={e.id}
               camera={
-                e.id === "self"
-                  ? true
-                  : metadata?.find(
-                      (i) => i.id === (e.id === "self" ? peerId : e.id)
-                    )?.camera
+                metadata?.find(
+                  (i) => i.id === (e.id === "self" ? peerId : e.id)
+                )?.camera
               }
               microphone={
-                e.id === "self"
-                  ? true
-                  : metadata?.find(
-                      (i) => i.id === (e.id === "self" ? peerId : e.id)
-                    )?.microphone
+                metadata?.find(
+                  (i) => i.id === (e.id === "self" ? peerId : e.id)
+                )?.microphone
               }
               username={
                 e.id === "self"
